@@ -13,7 +13,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}e
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -157,6 +157,7 @@ bzcat %{SOURCE3} > make-dummy-cert
 bzcat %{SOURCE4} > openssl-thread-test.c
 
 %build 
+%serverbuild
 
 # Figure out which flags we want to use.
 # default
