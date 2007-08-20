@@ -45,7 +45,7 @@ Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 Patch14:	openssl-0.9.8-3desfix.patch
 
 Requires:	%{libname} = %{version}-%{release}
-Requires:	/usr/bin/perl
+Requires:	perl-base
 Requires:	rootcerts
 %{?_with_krb5:BuildRequires: krb5-devel}
 %if %mdkversion >= 1020
