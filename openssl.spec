@@ -53,6 +53,8 @@ BuildRequires:	multiarch-utils >= 1.0.3
 %endif
 BuildRequires:	chrpath
 BuildRequires:	zlib-devel
+# (tv) for test suite:
+BuildRequires:	bc
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 
 %description
