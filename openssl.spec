@@ -13,7 +13,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}e
-Release:	%mkrel 6
+Release:	%mkrel 7
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -48,6 +48,11 @@ Patch15:        openssl-0.9.8e-crt.patch
 # http://qa.mandriva.com/show_bug.cgi?id=32769
 # http://cvs.openssl.org/chngview?cn=16526
 Patch16:        openssl-0.9.8e-sigill.patch
+# http://cvs.openssl.org/chngview?cn=16643
+# http://qa.mandriva.com/show_bug.cgi?id=34405
+Patch17:        openssl-0.9.8b-cvs-CVE-2007-5135.patch
+# http://qa.mandriva.com/show_bug.cgi?id=32376
+Patch18:        openssl-0.9.8a-ubuntu-CVE-2007-3108.patch
 
 Requires:	%{libname} = %{version}-%{release}
 Requires:	perl-base
@@ -155,6 +160,8 @@ Patches for many networking apps can be found at:
 %patch14 -p1 -b .3desfix
 %patch15 -p1 -b .crt
 %patch16 -p1 -b .sigill
+%patch17 -p1 -b .CVE-2007-5135
+%patch18 -p1 -b .CVE-2007-3108
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
