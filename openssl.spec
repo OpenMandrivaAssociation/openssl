@@ -12,8 +12,8 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	%{maj}e
-Release:	%mkrel 8
+Version:	%{maj}f
+Release:	%mkrel 1
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -27,11 +27,9 @@ Patch0:		openssl-0.9.6b-mdkconfig.patch
 # (fg) 20010202 Patch from RH: some funcs now implemented with ia64 asm
 Patch1:		openssl-0.9.7-ia64-asm.patch
 # (gb) 0.9.7b-4mdk: Handle RPM_OPT_FLAGS in Configure
-Patch2:		openssl-0.9.8a-optflags.diff
+Patch2:		openssl-optflags.diff
 # (gb) 0.9.7b-4mdk: Make it lib64 aware. TODO: detect in Configure
 Patch3:		openssl-0.9.8b-lib64.diff
-# (gb) 0.9.8d-2mdv: fix build on ppc64
-Patch4:		openssl-0.9.8b-ppc64.patch
 # (oe) support Brazilian Government OTHERNAME X509v3 field (#14158)
 # http://www.iti.gov.br/resolucoes/RESOLU__O_13_DE_26_04_2002.PDF
 Patch6:		openssl-0.9.8-beta6-icpbrasil.diff
@@ -41,19 +39,8 @@ Patch9:		openssl-0.9.8a-enginesdir.patch
 Patch10:	openssl-0.9.7-beta6-ia64.patch
 Patch12:	openssl-0.9.6-x509.patch
 Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
-# http://qa.mandriva.com/show_bug.cgi?id=30431
-Patch14:	openssl-0.9.8-3desfix.patch
 # http://qa.mandriva.com/show_bug.cgi?id=32621
 Patch15:        openssl-0.9.8e-crt.patch
-# http://qa.mandriva.com/show_bug.cgi?id=32769
-# http://cvs.openssl.org/chngview?cn=16526
-Patch16:        openssl-0.9.8e-sigill.patch
-# http://cvs.openssl.org/chngview?cn=16643
-# http://qa.mandriva.com/show_bug.cgi?id=34405
-Patch17:        openssl-0.9.8b-cvs-CVE-2007-5135.patch
-# http://qa.mandriva.com/show_bug.cgi?id=32376
-Patch18:        openssl-0.9.8a-ubuntu-CVE-2007-3108.patch
-
 Requires:	%{libname} = %{version}-%{release}
 Requires:	perl-base
 Requires:	rootcerts
@@ -149,7 +136,6 @@ Patches for many networking apps can be found at:
 %patch1 -p1 -b .ia64-asm
 %patch2 -p0 -b .optflags
 %patch3 -p1 -b .lib64
-%patch4 -p1 -b .ppc64
 %patch6 -p0 -b .icpbrasil
 %patch7 -p1 -b .defaults
 %{?_with_krb5:%patch8 -p1 -b .krb5}
@@ -157,11 +143,7 @@ Patches for many networking apps can be found at:
 %patch10 -p1 -b .ia64
 %patch12 -p1 -b .x509
 %patch13 -p1 -b .version-add-engines
-%patch14 -p1 -b .3desfix
 %patch15 -p1 -b .crt
-%patch16 -p1 -b .sigill
-%patch17 -p1 -b .CVE-2007-5135
-%patch18 -p1 -b .CVE-2007-3108
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
