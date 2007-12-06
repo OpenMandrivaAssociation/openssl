@@ -12,8 +12,8 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	%{maj}f
-Release:	%mkrel 1
+Version:	%{maj}g
+Release:	%mkrel 0
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -374,4 +374,3 @@ rm -fr %{buildroot}
 %files -n %{libname}-static-devel
 %defattr(-,root,root)
 %attr(0644,root,root) %{_libdir}/lib*.a
-
