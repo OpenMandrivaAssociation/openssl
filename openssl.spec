@@ -52,7 +52,6 @@ BuildRequires:	chrpath
 BuildRequires:	zlib-devel
 # (tv) for test suite:
 BuildRequires:	bc
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 
 %description
 The openssl certificate management tool and the shared libraries that provide
