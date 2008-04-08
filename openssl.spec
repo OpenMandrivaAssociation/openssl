@@ -217,7 +217,7 @@ gcc -o openssl-thread-test \
     %{?_with_krb5:`krb5-config --libs`} \
     -lpthread -lz -ldl
 
-./openssl-thread-test --threads %{thread_test_threads}
+LD_LIBRARY_PATH=. ./openssl-thread-test --threads %{thread_test_threads}
 
 %install
 rm -fr %{buildroot}
