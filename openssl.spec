@@ -81,7 +81,7 @@ Obsoletes:	%{conflict1}-devel
 Provides:	%{name}-devel = %{version}-%{release}
 
 %description -n	%{libname}-devel
-The static libraries and include files needed to compile apps with support
+The libraries and include files needed to compile apps with support
 for various cryptographic algorithms and protocols, including DES, RC4, RSA
 and SSL.
 
@@ -97,9 +97,8 @@ Obsoletes:	%{conflict1}-static-devel
 Provides:	%{name}-static-devel = %{version}-%{release}
 
 %description -n	%{libname}-static-devel
-The static libraries and include files needed to compile apps with support
-for various cryptographic algorithms and protocols, including DES, RC4, RSA
-and SSL.
+The static libraries needed to compile apps with support for various
+cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 
 %prep
 
