@@ -59,10 +59,9 @@ The openssl certificate management tool and the shared libraries that provide
 various encryption and decription algorithms and protocols, including DES, RC4,
 RSA and SSL.
 This product includes software developed by the OpenSSL Project for use in the
-OpenSSL Toolkit (http://www.openssl.org/).
-This product includes cryptographic software written by Eric Young
-(eay@cryptsoft.com).
-This product includes software written by Tim Hudson (tjh@cryptsoft.com).
+OpenSSL Toolkit.
+This product includes cryptographic software written by Eric Young.
+This product includes software written by Tim Hudson.com).
 
 %package -n	%{libname}
 Summary:	Secure Sockets Layer communications libs
@@ -73,10 +72,9 @@ Conflicts:	openssh < 3.5p1-4mdk
 The libraries files are needed for various cryptographic algorithms
 and protocols, including DES, RC4, RSA and SSL.
 This product includes software developed by the OpenSSL Project for use in
-the OpenSSL Toolkit (http://www.openssl.org/).
-This product includes cryptographic software written by Eric Young
-(eay@cryptsoft.com).
-This product includes software written by Tim Hudson (tjh@cryptsoft.com).
+the OpenSSL Toolkit.
+This product includes cryptographic software written by Eric Young.
+This product includes software written by Tim Hudson.
 Patches for many networking apps can be found at: 
 	ftp://ftp.psy.uq.oz.au/pub/Crypto/SSLapps/
 
@@ -97,10 +95,9 @@ The static libraries and include files needed to compile apps with support
 for various cryptographic algorithms and protocols, including DES, RC4, RSA
 and SSL.
 This product includes software developed by the OpenSSL Project for use in
-the OpenSSL Toolkit (http://www.openssl.org/).
-This product includes cryptographic software written by Eric Young
-(eay@cryptsoft.com).
-This product includes software written by Tim Hudson (tjh@cryptsoft.com).
+the OpenSSL Toolkit.
+This product includes cryptographic software written by Eric Young.
+This product includes software written by Tim Hudson.
 Patches for many networking apps can be found at: 
 	ftp://ftp.psy.uq.oz.au/pub/Crypto/SSLapps/
 
@@ -120,10 +117,9 @@ The static libraries and include files needed to compile apps with support
 for various cryptographic algorithms and protocols, including DES, RC4, RSA
 and SSL.
 This product includes software developed by the OpenSSL Project for use in
-the OpenSSL Toolkit (http://www.openssl.org/).
-This product includes cryptographic software written by Eric Young
-(eay@cryptsoft.com).
-This product includes software written by Tim Hudson (tjh@cryptsoft.com).
+the OpenSSL Toolkit.
+This product includes cryptographic software written by Eric Young.
+This product includes software written by Tim Hudson.
 Patches for many networking apps can be found at: 
 	ftp://ftp.psy.uq.oz.au/pub/Crypto/SSLapps/
 
