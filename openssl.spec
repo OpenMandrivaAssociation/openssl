@@ -12,8 +12,8 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	%{maj}g
-Release:	%mkrel 9
+Version:	%{maj}h
+Release:	%mkrel 1
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -41,8 +41,6 @@ Patch12:	openssl-0.9.6-x509.patch
 Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 # http://qa.mandriva.com/show_bug.cgi?id=32621
 Patch15:        openssl-0.9.8e-crt.patch
-Patch16:	openssl-0.9.8g-upstream-CVE-2008-0891.patch
-Patch17:	openssl-0.9.8g-upstream-CVE-2008-1672.patch
 Requires:	%{libname} = %{version}-%{release}
 Requires:	perl-base
 Requires:	rootcerts
@@ -119,8 +117,6 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch12 -p1 -b .x509
 %patch13 -p1 -b .version-add-engines
 %patch15 -p1 -b .crt
-%patch16 -p0 -b .cve-2008-0891
-%patch17 -p0 -b .cve-2008-1672
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
