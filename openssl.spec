@@ -3,7 +3,7 @@
 %define conflict1 %mklibname openssl 0.9.7
 
 # Number of threads to spawn when testing some threading fixes.
-#%define thread_test_threads %{?threads:%{threads}}%{!?threads:1}
+#define thread_test_threads %{?threads:%{threads}}%{!?threads:1}
 
 # French policy is to not use ciphers stronger than 128 bits
 %define french_policy 0
