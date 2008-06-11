@@ -13,7 +13,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}h
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -30,6 +30,7 @@ Patch1:		openssl-0.9.7-ia64-asm.patch
 Patch2:		openssl-optflags.diff
 # (gb) 0.9.7b-4mdk: Make it lib64 aware. TODO: detect in Configure
 Patch3:		openssl-0.9.8b-lib64.diff
+Patch4:		openssl-mbstring_flag.diff
 # (oe) support Brazilian Government OTHERNAME X509v3 field (#14158)
 # http://www.iti.gov.br/resolucoes/RESOLU__O_13_DE_26_04_2002.PDF
 Patch6:		openssl-0.9.8-beta6-icpbrasil.diff
@@ -109,6 +110,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch1 -p1 -b .ia64-asm
 %patch2 -p0 -b .optflags
 %patch3 -p1 -b .lib64
+%patch4 -p0 -b .mbstring_flag
 %patch6 -p0 -b .icpbrasil
 %patch7 -p1 -b .defaults
 %{?_with_krb5:%patch8 -p1 -b .krb5}
