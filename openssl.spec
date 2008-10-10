@@ -12,8 +12,8 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	%{maj}h
-Release:	%mkrel 3
+Version:	%{maj}i
+Release:	%mkrel 1
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -30,7 +30,6 @@ Patch1:		openssl-0.9.7-ia64-asm.patch
 Patch2:		openssl-optflags.diff
 # (gb) 0.9.7b-4mdk: Make it lib64 aware. TODO: detect in Configure
 Patch3:		openssl-0.9.8b-lib64.diff
-Patch4:		openssl-mbstring_flag.diff
 # (oe) support Brazilian Government OTHERNAME X509v3 field (#14158)
 # http://www.iti.gov.br/resolucoes/RESOLU__O_13_DE_26_04_2002.PDF
 Patch6:		openssl-0.9.8-beta6-icpbrasil.diff
@@ -42,6 +41,8 @@ Patch12:	openssl-0.9.6-x509.patch
 Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 # http://qa.mandriva.com/show_bug.cgi?id=32621
 Patch15:        openssl-0.9.8e-crt.patch
+# http://blogs.sun.com/janp/
+Patch16:	pkcs11_engine-0.9.8i.diff
 Requires:	%{libname} = %{version}-%{release}
 Requires:	perl-base
 Requires:	rootcerts
@@ -110,7 +111,6 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch1 -p1 -b .ia64-asm
 %patch2 -p0 -b .optflags
 %patch3 -p1 -b .lib64
-%patch4 -p0 -b .mbstring_flag
 %patch6 -p0 -b .icpbrasil
 %patch7 -p1 -b .defaults
 %{?_with_krb5:%patch8 -p1 -b .krb5}
@@ -119,6 +119,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch12 -p1 -b .x509
 %patch13 -p1 -b .version-add-engines
 %patch15 -p1 -b .crt
+%patch16 -p1 -b .pkcs11_engine
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
@@ -160,8 +161,8 @@ sslarch="linux-generic64 -DB_ENDIAN -DNO_ASM"
 # RPM_OPT_FLAGS, so we can skip specifiying them here.
 ./Configure \
     --prefix=%{_prefix} --openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
-    --enginesdir=%{_libdir}/openssl/engines %{?_with_krb5:--with-krb5-flavor=MIT-I%{_prefix}/kerberos/include -L%{_prefix}/kerberos/%{_lib}} \
-     no-idea no-rc5 enable-camellia shared enable-tlsext ${sslarch}
+    --enginesdir=%{_libdir}/openssl/engines %{?_with_krb5:--with-krb5-flavor=MIT -I%{_prefix}/kerberos/include -L%{_prefix}/kerberos/%{_lib}} \
+     no-idea no-rc5 enable-camellia shared enable-tlsext ${sslarch} --pk11-libname=%{_libdir}/pkcs11/PKCS11_API.so
 
 #    zlib no-idea no-mdc2 no-rc5 no-ec no-ecdh no-ecdsa shared ${sslarch}
 
@@ -315,7 +316,8 @@ rm -fr %{buildroot}
 
 %files 
 %defattr(-,root,root)
-%doc FAQ INSTALL LICENSE NEWS PROBLEMS README* main-doc-info/README* README.urpmi 
+%doc FAQ INSTALL LICENSE NEWS PROBLEMS main-doc-info/README* README.urpmi 
+%doc README README.ASN1 README.ENGINE README.pkcs11
 %dir %{_sysconfdir}/pki
 %dir %{_sysconfdir}/pki/CA
 %dir %{_sysconfdir}/pki/CA/private
