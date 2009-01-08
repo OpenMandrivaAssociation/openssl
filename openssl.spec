@@ -13,7 +13,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}i
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -44,6 +44,8 @@ Patch15:        openssl-0.9.8e-crt.patch
 # http://blogs.sun.com/janp/
 Patch16:	pkcs11_engine-0.9.8i.diff
 Patch17:	openssl-0.9.8i-format_not_a_string_literal_and_no_format_arguments.diff
+# http://openssl.org/news/secadv_20090107.txt
+Patch18:	openssl-0.9.8i-cve-2008-5077.patch
 Requires:	%{libname} = %{version}-%{release}
 Requires:	perl-base
 Requires:	rootcerts
@@ -122,6 +124,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch15 -p1 -b .crt
 %patch16 -p1 -b .pkcs11_engine
 %patch17 -p0 -b .format_not_a_string_literal_and_no_format_arguments
+%patch18 -p1 -b .cve-2008-5077
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
