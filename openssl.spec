@@ -289,9 +289,6 @@ perl -pi -e "s|^CATOP=.*|CATOP=%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfd
 perl -pi -e "s|^\\\$CATOP\=\".*|\\\$CATOP\=\"%{_sysconfdir}/pki/tls\";|g" %{buildroot}%{_sysconfdir}/pki/tls/misc/CA.pl
 perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pki/tls/openssl.cnf
 
-# fix one conflicting manpage with rsbac-admin
-mv %{buildroot}%{_mandir}/man3/buffer.3 %{buildroot}%{_mandir}/man3/openssl_buffer.3
-
 cat > README.urpmi << EOF
 
 The most significant changes made and starting from the 
@@ -304,8 +301,6 @@ The most significant changes made and starting from the
 
  o The static development libraries (*.a) has been packaged in the
   %{libname}-static-devel sub package.
- o %{_mandir}/man3/buffer.3 has been renamed to %{_mandir}/man3/openssl_buffer.3
-   to solve a file conflict with rsbac-admin.
 
 EOF
 
