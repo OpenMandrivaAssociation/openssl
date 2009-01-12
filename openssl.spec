@@ -19,9 +19,9 @@ Group:		System/Libraries
 URL:		http://www.openssl.org/
 Source0:	ftp://ftp.openssl.org/source/%{name}-%{version}.tar.gz
 Source1:	ftp://ftp.openssl.org/source/%{name}-%{version}.tar.gz.asc
-Source2:	Makefile.certificate.bz2
-Source3:	make-dummy-cert.bz2
-Source4:	openssl-thread-test.c.bz2
+Source2:	Makefile.certificate
+Source3:	make-dummy-cert
+Source4:	openssl-thread-test.c
 Source5:	bash-completion
 # (gb) 0.9.6b-5mdk: Limit available SSL ciphers to 128 bits
 Patch0:		openssl-0.9.6b-mdkconfig.patch
@@ -132,9 +132,9 @@ perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 # fix perl path
 perl util/perlpath.pl %{_bindir}/perl
 
-bzcat %{SOURCE2} > Makefile.certificate
-bzcat %{SOURCE3} > make-dummy-cert
-bzcat %{SOURCE4} > openssl-thread-test.c
+cp %{SOURCE2} Makefile.certificate
+cp %{SOURCE3} make-dummy-cert
+cp %{SOURCE4} openssl-thread-test.c
 
 %build 
 %serverbuild
