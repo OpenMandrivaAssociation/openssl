@@ -13,7 +13,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}i
-Release:	%mkrel 4
+Release:	%mkrel 5
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -22,7 +22,6 @@ Source1:	ftp://ftp.openssl.org/source/%{name}-%{version}.tar.gz.asc
 Source2:	Makefile.certificate
 Source3:	make-dummy-cert
 Source4:	openssl-thread-test.c
-Source5:	bash-completion
 # (gb) 0.9.6b-5mdk: Limit available SSL ciphers to 128 bits
 Patch0:		openssl-0.9.6b-mdkconfig.patch
 # (fg) 20010202 Patch from RH: some funcs now implemented with ia64 asm
@@ -304,10 +303,6 @@ The most significant changes made and starting from the
 
 EOF
 
-# bash completion
-install -d -m 755 %{buildroot}%{_sysconfdir}/bash_completion.d
-install -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/bash_completion.d/%{name}
-
 %if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
 %endif
@@ -335,7 +330,6 @@ rm -fr %{buildroot}
 %attr(0755,root,root) %{_sysconfdir}/pki/tls/certs/make-dummy-cert
 %attr(0644,root,root) %{_sysconfdir}/pki/tls/certs/Makefile
 %attr(0755,root,root) %{_sysconfdir}/pki/tls/misc/*
-%{_sysconfdir}/bash_completion.d/%{name}
 %attr(0755,root,root) %{_bindir}/*
 %attr(0644,root,root) %{_mandir}/man[157]/*
 
