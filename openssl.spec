@@ -79,7 +79,7 @@ The libraries files are needed for various cryptographic algorithms
 and protocols, including DES, RC4, RSA and SSL.
 
 %package -n	%{libname}-devel
-Summary:	Secure Sockets Layer communications static libs & headers & utils
+Summary:	Secure Sockets Layer communications libs & headers & utils
 Group:		Development/Other
 Requires:	%{libname} = %{version}-%{release}
 Provides:	libopenssl-devel
