@@ -12,8 +12,8 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	%{maj}k
-Release:	%mkrel 5
+Version:	%{maj}l
+Release:	%mkrel 1
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -97,7 +97,7 @@ for various cryptographic algorithms and protocols, including DES, RC4, RSA
 and SSL.
 
 %package -n	%{libname}-static-devel
-Summary:	Secure Sockets Layer communications static libs & headers & utils
+Summary:	Secure Sockets Layer communications static libs
 Group:		Development/Other
 Requires:	%{libname}-devel = %{version}-%{release}
 Provides:	libopenssl-static-devel
