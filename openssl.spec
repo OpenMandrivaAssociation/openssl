@@ -50,6 +50,7 @@ Patch20:	openssl-0.9.8h-CVE-2009-1387.diff
 Patch21:	openssl-0.9.8g-CVE-2009-2409.diff
 Patch22:	no_check_self_signed.patch
 Patch23:	openssl-0.9.8h-CVE-2009-4355.diff
+Patch24:	openssl-0.9.8l-fix_build_with_binutils-2.20.51.0.x.diff
 # MIPS and ARM support
 Patch30:	openssl-0.9.8-mips.patch
 Patch31:	openssl-0.9.8-arm.patch
@@ -137,6 +138,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch21 -p1 -b .CVE-2009-2409
 %patch22 -p0 -b .no_check_self_signed
 %patch23 -p0 -b .CVE-2009-4355
+%patch24 -p1 -b .binutils
 %patch30 -p1 -b .mips
 %patch31 -p1 -b .arm
 
