@@ -12,8 +12,8 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	%{maj}l
-Release:	%mkrel 2
+Version:	%{maj}m
+Release:	%mkrel 1
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -35,22 +35,14 @@ Patch3:		openssl-0.9.8b-lib64.diff
 Patch6:		openssl-0.9.8-beta6-icpbrasil.diff
 Patch7:		openssl-0.9.8a-defaults.patch
 Patch8:		openssl-0.9.8a-link-krb5.patch
-Patch9:		openssl-0.9.8a-enginesdir.patch
+Patch9:		openssl-0.9.8m-enginesdir.patch
 Patch10:	openssl-0.9.7-beta6-ia64.patch
 Patch12:	openssl-0.9.6-x509.patch
 Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 # http://qa.mandriva.com/show_bug.cgi?id=32621
 Patch15:        openssl-0.9.8e-crt.patch
 # http://blogs.sun.com/janp/
-Patch16:	pkcs11_engine-0.9.8i.diff
-Patch17:	openssl-0.9.8k-CVE-2009-1377.diff
-Patch18:	openssl-0.9.8-CVE-2009-1378.diff
-Patch19:	openssl-0.9.8h-CVE-2009-1379.diff
-Patch20:	openssl-0.9.8h-CVE-2009-1387.diff
-Patch21:	openssl-0.9.8g-CVE-2009-2409.diff
-Patch22:	no_check_self_signed.patch
-Patch23:	openssl-0.9.8h-CVE-2009-4355.diff
-Patch24:	openssl-0.9.8l-fix_build_with_binutils-2.20.51.0.x.diff
+Patch16:	pkcs11_engine-0.9.8m.diff
 # MIPS and ARM support
 Patch30:	openssl-0.9.8-mips.patch
 Patch31:	openssl-0.9.8-arm.patch
@@ -120,8 +112,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch0 -p1 -b .frenchpolicy
 %endif
 %patch1 -p1 -b .ia64-asm
-%patch2 -p0 -b .optflags
-%patch3 -p1 -b .lib64
+%patch2 -p1 -b .optflags
 %patch6 -p0 -b .icpbrasil
 %patch7 -p1 -b .defaults
 %{?_with_krb5:%patch8 -p1 -b .krb5}
@@ -131,14 +122,6 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch13 -p1 -b .version-add-engines
 %patch15 -p1 -b .crt
 %patch16 -p1 -b .pkcs11_engine
-%patch17 -p1 -b .CVE-2009-1377
-%patch18 -p0 -b .CVE-2009-1378
-%patch19 -p0 -b .CVE-2009-1379
-%patch20 -p0 -b .CVE-2009-1387
-%patch21 -p1 -b .CVE-2009-2409
-%patch22 -p0 -b .no_check_self_signed
-%patch23 -p0 -b .CVE-2009-4355
-%patch24 -p1 -b .binutils
 %patch30 -p1 -b .mips
 %patch31 -p1 -b .arm
 
