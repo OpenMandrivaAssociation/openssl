@@ -28,14 +28,11 @@ Patch0:		openssl-0.9.6b-mdkconfig.patch
 Patch1:		openssl-0.9.7-ia64-asm.patch
 # (gb) 0.9.7b-4mdk: Handle RPM_OPT_FLAGS in Configure
 Patch2:		openssl-optflags.diff
-# (gb) 0.9.7b-4mdk: Make it lib64 aware. TODO: detect in Configure
-Patch3:		openssl-0.9.8b-lib64.diff
 # (oe) support Brazilian Government OTHERNAME X509v3 field (#14158)
 # http://www.iti.gov.br/resolucoes/RESOLU__O_13_DE_26_04_2002.PDF
 Patch6:		openssl-0.9.8-beta6-icpbrasil.diff
 Patch7:		openssl-0.9.8a-defaults.patch
 Patch8:		openssl-0.9.8a-link-krb5.patch
-Patch9:		openssl-0.9.8m-enginesdir.patch
 Patch10:	openssl-0.9.7-beta6-ia64.patch
 Patch12:	openssl-0.9.6-x509.patch
 Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
@@ -116,7 +113,6 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch6 -p0 -b .icpbrasil
 %patch7 -p1 -b .defaults
 %{?_with_krb5:%patch8 -p1 -b .krb5}
-%patch9 -p1 -b .enginesdir
 %patch10 -p0 -b .ia64
 %patch12 -p1 -b .x509
 %patch13 -p1 -b .version-add-engines
@@ -164,14 +160,11 @@ sslarch="linux-generic64 -DB_ENDIAN -DNO_ASM"
 # usable on all platforms.  The Configure script already knows to use -fPIC and
 # RPM_OPT_FLAGS, so we can skip specifiying them here.
 ./Configure \
-    --prefix=%{_prefix} --openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
-    --enginesdir=%{_libdir}/openssl/engines %{?_with_krb5:--with-krb5-flavor=MIT -I%{_prefix}/kerberos/include -L%{_prefix}/kerberos/%{_lib}} \
+    --openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
+    --prefix=%{_prefix} --libdir=%{_lib}/ %{?_with_krb5:--with-krb5-flavor=MIT -I%{_prefix}/kerberos/include -L%{_prefix}/kerberos/%{_lib}} \
      no-idea no-rc5 enable-camellia shared enable-tlsext ${sslarch} --pk11-libname=%{_libdir}/pkcs11/PKCS11_API.so
 
 #    zlib no-idea no-mdc2 no-rc5 no-ec no-ecdh no-ecdsa shared ${sslarch}
-
-# antibork stuff...
-perl -pi -e "s|^#define ENGINESDIR .*|#define ENGINESDIR \"%{_libdir}/openssl/engines\"|g" crypto/opensslconf.h
 
 # Add -Wa,--noexecstack here so that libcrypto's assembler modules will be
 # marked as not requiring an executable stack.
