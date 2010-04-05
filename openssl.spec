@@ -1,6 +1,7 @@
-%define maj 0.9.8
+%define maj 1.0.0
 %define libname %mklibname openssl %{maj}
 %define conflict1 %mklibname openssl 0.9.7
+%define conflict2 %mklibname openssl 0.9.8
 
 # Number of threads to spawn when testing some threading fixes.
 #define thread_test_threads %{?threads:%{threads}}%{!?threads:1}
@@ -12,7 +13,7 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	%{maj}n
+Version:	%{maj}
 Release:	%mkrel 1
 License:	BSD-like
 Group:		System/Libraries
@@ -22,16 +23,15 @@ Source1:	ftp://ftp.openssl.org/source/%{name}-%{version}.tar.gz.asc
 Source2:	Makefile.certificate
 Source3:	make-dummy-cert
 Source4:	openssl-thread-test.c
+Source5:	README.pkcs11
 # (gb) 0.9.6b-5mdk: Limit available SSL ciphers to 128 bits
 Patch0:		openssl-0.9.6b-mdkconfig.patch
-# (fg) 20010202 Patch from RH: some funcs now implemented with ia64 asm
-Patch1:		openssl-0.9.7-ia64-asm.patch
 # (gb) 0.9.7b-4mdk: Handle RPM_OPT_FLAGS in Configure
 Patch2:		openssl-optflags.diff
 # (oe) support Brazilian Government OTHERNAME X509v3 field (#14158)
 # http://www.iti.gov.br/resolucoes/RESOLU__O_13_DE_26_04_2002.PDF
 Patch6:		openssl-0.9.8-beta6-icpbrasil.diff
-Patch7:		openssl-0.9.8a-defaults.patch
+Patch7:		openssl-1.0.0-defaults.patch
 Patch8:		openssl-0.9.8a-link-krb5.patch
 Patch10:	openssl-0.9.7-beta6-ia64.patch
 Patch12:	openssl-0.9.6-x509.patch
@@ -39,10 +39,11 @@ Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 # http://qa.mandriva.com/show_bug.cgi?id=32621
 Patch15:        openssl-0.9.8e-crt.patch
 # http://blogs.sun.com/janp/
-Patch16:	pkcs11_engine-0.9.8m.diff
+Patch16:	pkcs11_engine-1.0.0.diff
 # MIPS and ARM support
-Patch30:	openssl-0.9.8-mips.patch
-Patch31:	openssl-0.9.8-arm.patch
+Patch30:	openssl-1.0.0-mips.patch
+Patch31:	openssl-1.0.0-arm.patch
+Patch32:	openssl-1.0.0-enginesdir.patch
 Requires:	%{libname} = %{version}-%{release}
 Requires:	perl-base
 Requires:	rootcerts
@@ -61,9 +62,17 @@ The openssl certificate management tool and the shared libraries that provide
 various encryption and decription algorithms and protocols, including DES, RC4,
 RSA and SSL.
 
+%package -n	openssl-engines
+Summary:	Engines for openssl
+Group:		System/Libraries
+
+%description -n	openssl-engines
+This package provides engines for openssl.
+
 %package -n	%{libname}
 Summary:	Secure Sockets Layer communications libs
 Group:		System/Libraries
+Requires:	openssl-engines = %{version}-%{release}
 Conflicts:	openssh < 3.5p1-4mdk
 
 %description -n	%{libname}
@@ -80,6 +89,7 @@ Obsoletes:	openssl-devel
 # temporary opsolete, will be a conflict later. a compat package
 # with openssl-0.9.7 devel libs will be provided soon
 Obsoletes:	%{conflict1}-devel
+Obsoletes:	%{conflict2}-devel
 Provides:	%{name}-devel = %{version}-%{release}
 
 %description -n	%{libname}-devel
@@ -108,7 +118,6 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %if %{french_policy}
 %patch0 -p1 -b .frenchpolicy
 %endif
-%patch1 -p1 -b .ia64-asm
 %patch2 -p1 -b .optflags
 %patch6 -p0 -b .icpbrasil
 %patch7 -p1 -b .defaults
@@ -120,6 +129,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch16 -p1 -b .pkcs11_engine
 %patch30 -p1 -b .mips
 %patch31 -p1 -b .arm
+%patch32 -p1 -b .engines
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
@@ -129,6 +139,7 @@ perl util/perlpath.pl %{_bindir}/perl
 cp %{SOURCE2} Makefile.certificate
 cp %{SOURCE3} make-dummy-cert
 cp %{SOURCE4} openssl-thread-test.c
+cp %{SOURCE5} README.pkcs11
 
 %build 
 %serverbuild
@@ -161,6 +172,7 @@ sslarch="linux-generic64 -DB_ENDIAN -DNO_ASM"
 # RPM_OPT_FLAGS, so we can skip specifiying them here.
 ./Configure \
     --openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
+    --enginesdir=%{_libdir}/openssl-%{version}/engines \
     --prefix=%{_prefix} --libdir=%{_lib}/ %{?_with_krb5:--with-krb5-flavor=MIT -I%{_prefix}/kerberos/include -L%{_prefix}/kerberos/%{_lib}} \
      no-idea no-rc5 enable-camellia shared enable-tlsext ${sslarch} --pk11-libname=%{_libdir}/pkcs11/PKCS11_API.so
 
@@ -201,8 +213,8 @@ rm -fr %{buildroot}
     build-shared
 
 # the makefiles is too borked...
-install -d %{buildroot}%{_libdir}/openssl
-mv %{buildroot}%{_libdir}/engines %{buildroot}%{_libdir}/openssl/
+install -d %{buildroot}%{_libdir}/openssl-%{version}
+mv %{buildroot}%{_libdir}/engines %{buildroot}%{_libdir}/openssl-%{version}/engines
 
 # make the rootcerts dir
 install -d %{buildroot}%{_sysconfdir}/pki/tls/rootcerts
@@ -255,7 +267,7 @@ chmod 755 %{buildroot}%{_libdir}/pkgconfig
 %endif
 
 # strip cannot touch these unless 755
-chmod 755 %{buildroot}%{_libdir}/openssl/engines/*.so*
+chmod 755 %{buildroot}%{_libdir}/openssl-%{version}/engines/*.so*
 chmod 755 %{buildroot}%{_libdir}/*.so*
 chmod 755 %{buildroot}%{_bindir}/*
 
@@ -280,21 +292,6 @@ perl -pi -e "s|^CATOP=.*|CATOP=%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfd
 perl -pi -e "s|^\\\$CATOP\=\".*|\\\$CATOP\=\"%{_sysconfdir}/pki/tls\";|g" %{buildroot}%{_sysconfdir}/pki/tls/misc/CA.pl
 perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pki/tls/openssl.cnf
 
-cat > README.urpmi << EOF
-
-The most significant changes made and starting from the 
-openssl-0.9.8a-2mdk package is these:
-
- o The OPENSSLDIR has moved from %{_libdir}/ssl to %{_sysconfdir}/pki/tls
-
-The most significant changes made and starting from the 
-%{libname}-devel-0.9.8a-10mdk package is these:
-
- o The static development libraries (*.a) has been packaged in the
-  %{libname}-static-devel sub package.
-
-EOF
-
 %if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
 %endif
@@ -308,7 +305,7 @@ rm -fr %{buildroot}
 
 %files 
 %defattr(-,root,root)
-%doc FAQ INSTALL LICENSE NEWS PROBLEMS main-doc-info/README* README.urpmi 
+%doc FAQ INSTALL LICENSE NEWS PROBLEMS main-doc-info/README*
 %doc README README.ASN1 README.ENGINE README.pkcs11
 %dir %{_sysconfdir}/pki
 %dir %{_sysconfdir}/pki/CA
@@ -329,8 +326,11 @@ rm -fr %{buildroot}
 %defattr(-,root,root)
 %doc FAQ INSTALL LICENSE NEWS PROBLEMS README*
 %attr(0755,root,root) %{_libdir}/lib*.so.*
-%attr(0755,root,root) %dir %{_libdir}/openssl/engines
-%attr(0755,root,root) %{_libdir}/openssl/engines/*.so
+
+%files -n openssl-engines
+%defattr(-,root,root)
+%attr(0755,root,root) %dir %{_libdir}/openssl-%{version}/engines
+%attr(0755,root,root) %{_libdir}/openssl-%{version}/engines/*.so
 
 %files -n %{libname}-devel
 %defattr(-,root,root)
