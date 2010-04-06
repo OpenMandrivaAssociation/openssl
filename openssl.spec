@@ -14,7 +14,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -175,7 +175,7 @@ sslarch="linux-generic64 -DB_ENDIAN -DNO_ASM"
     --openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
     --enginesdir=%{_libdir}/openssl-%{version}/engines \
     --prefix=%{_prefix} --libdir=%{_lib}/ %{?_with_krb5:--with-krb5-flavor=MIT -I%{_prefix}/kerberos/include -L%{_prefix}/kerberos/%{_lib}} \
-     no-idea no-rc5 enable-camellia shared enable-tlsext ${sslarch} --pk11-libname=%{_libdir}/pkcs11/PKCS11_API.so
+     enable-md2 no-idea no-rc5 enable-camellia shared enable-tlsext ${sslarch} --pk11-libname=%{_libdir}/pkcs11/PKCS11_API.so
 
 #    zlib no-idea no-mdc2 no-rc5 no-ec no-ecdh no-ecdsa shared ${sslarch}
 
