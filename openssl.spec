@@ -14,7 +14,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -106,6 +106,7 @@ Provides:	openssl-static-devel = %{version}-%{release}
 # temporary opsolete, will be a conflict later. a compat package
 # with openssl-0.9.7 static-devel libs will be provided soon
 Obsoletes:	%{conflict1}-static-devel
+Obsoletes:	%{conflict2}-static-devel
 Provides:	%{name}-static-devel = %{version}-%{release}
 
 %description -n	%{libname}-static-devel
