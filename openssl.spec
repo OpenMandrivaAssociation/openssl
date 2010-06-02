@@ -13,8 +13,8 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	%{maj}
-Release:	%mkrel 4
+Version:	%{maj}a
+Release:	%mkrel 1
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -65,6 +65,7 @@ RSA and SSL.
 %package -n	openssl-engines
 Summary:	Engines for openssl
 Group:		System/Libraries
+Provides:	openssl-engines = %{version}-%{release}
 
 %description -n	openssl-engines
 This package provides engines for openssl.
@@ -73,6 +74,7 @@ This package provides engines for openssl.
 Summary:	Secure Sockets Layer communications libs
 Group:		System/Libraries
 Requires:	openssl-engines = %{version}-%{release}
+Provides:	%{libname} = %{version}-%{release}
 Conflicts:	openssh < 3.5p1-4mdk
 
 %description -n	%{libname}
