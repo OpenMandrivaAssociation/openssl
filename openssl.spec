@@ -1,5 +1,8 @@
 %define maj 1.0.0
 %define libname %mklibname openssl %{maj}
+%define develname %mklibname openssl -d
+%define staticname %mklibname openssl -s -d
+
 %define conflict1 %mklibname openssl 0.9.7
 %define conflict2 %mklibname openssl 0.9.8
 
@@ -14,7 +17,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}a
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -81,7 +84,7 @@ Conflicts:	openssh < 3.5p1-4mdk
 The libraries files are needed for various cryptographic algorithms
 and protocols, including DES, RC4, RSA and SSL.
 
-%package -n	%{libname}-devel
+%package -n	%{develname}
 Summary:	Secure Sockets Layer communications libs & headers & utils
 Group:		Development/Other
 Requires:	%{libname} = %{version}-%{release}
@@ -92,26 +95,28 @@ Obsoletes:	openssl-devel
 # with openssl-0.9.7 devel libs will be provided soon
 Obsoletes:	%{conflict1}-devel
 Obsoletes:	%{conflict2}-devel
+Obsoletes:	%{mklibname openssl 1.0.0}-devel
 Provides:	%{name}-devel = %{version}-%{release}
 
-%description -n	%{libname}-devel
+%description -n	%{develname}
 The libraries and include files needed to compile apps with support
 for various cryptographic algorithms and protocols, including DES, RC4, RSA
 and SSL.
 
-%package -n	%{libname}-static-devel
+%package -n	%{staticname}
 Summary:	Secure Sockets Layer communications static libs
 Group:		Development/Other
-Requires:	%{libname}-devel = %{version}-%{release}
+Requires:	%{develname} = %{version}-%{release}
 Provides:	libopenssl-static-devel
 Provides:	openssl-static-devel = %{version}-%{release}
 # temporary opsolete, will be a conflict later. a compat package
 # with openssl-0.9.7 static-devel libs will be provided soon
 Obsoletes:	%{conflict1}-static-devel
 Obsoletes:	%{conflict2}-static-devel
+Obsoletes:	%{mklibname openssl 1.0.0}-static-devel
 Provides:	%{name}-static-devel = %{version}-%{release}
 
-%description -n	%{libname}-static-devel
+%description -n	%{staticname}
 The static libraries needed to compile apps with support for various
 cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 
@@ -335,7 +340,7 @@ rm -fr %{buildroot}
 %attr(0755,root,root) %dir %{_libdir}/openssl-%{version}/engines
 %attr(0755,root,root) %{_libdir}/openssl-%{version}/engines/*.so
 
-%files -n %{libname}-devel
+%files -n %{develname}
 %defattr(-,root,root)
 %doc CHANGES doc/* devel-doc-info/README*
 %attr(0755,root,root) %dir %{_includedir}/openssl
@@ -347,6 +352,6 @@ rm -fr %{buildroot}
 %attr(0644,root,root) %{_mandir}/man3/*
 %attr(0644,root,root) %{_libdir}/pkgconfig/*
 
-%files -n %{libname}-static-devel
+%files -n %{staticname}
 %defattr(-,root,root)
 %attr(0644,root,root) %{_libdir}/lib*.a
