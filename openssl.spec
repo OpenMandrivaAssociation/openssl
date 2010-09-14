@@ -17,7 +17,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}a
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
