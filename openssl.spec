@@ -1,4 +1,5 @@
 %define maj 1.0.0
+%define engines_name %mklibname openssl-engines %{maj}
 %define libname %mklibname openssl %{maj}
 %define develname %mklibname openssl -d
 %define staticname %mklibname openssl -s -d
@@ -17,7 +18,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}a
-Release:	%mkrel 4
+Release:	%mkrel 5
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -66,18 +67,19 @@ The openssl certificate management tool and the shared libraries that provide
 various encryption and decription algorithms and protocols, including DES, RC4,
 RSA and SSL.
 
-%package -n	openssl-engines
+%package -n	%{engines_name}
 Summary:	Engines for openssl
 Group:		System/Libraries
+Obsoletes:	openssl-engines < 1.0.0a-1.4
 Provides:	openssl-engines = %{version}-%{release}
 
-%description -n	openssl-engines
+%description -n	%{engines_name}
 This package provides engines for openssl.
 
 %package -n	%{libname}
 Summary:	Secure Sockets Layer communications libs
 Group:		System/Libraries
-Requires:	openssl-engines = %{version}-%{release}
+Requires:	%{engines_name} >= %{version}-%{release}
 Provides:	%{libname} = %{version}-%{release}
 Conflicts:	openssh < 3.5p1-4mdk
 
@@ -337,7 +339,7 @@ rm -fr %{buildroot}
 %doc FAQ INSTALL LICENSE NEWS PROBLEMS README*
 %attr(0755,root,root) %{_libdir}/lib*.so.*
 
-%files -n openssl-engines
+%files -n %{engines_name}
 %defattr(-,root,root)
 %attr(0755,root,root) %dir %{_libdir}/openssl-%{version}/engines
 %attr(0755,root,root) %{_libdir}/openssl-%{version}/engines/*.so
