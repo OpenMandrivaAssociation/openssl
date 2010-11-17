@@ -199,10 +199,10 @@ make all build-shared
 # Generate hashes for the included certs.
 make rehash build-shared
 
+%check
 # Verify that what was compiled actually works.
 export LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
-%check
 make -C test apps tests
 
 gcc -o openssl-thread-test \
@@ -214,7 +214,7 @@ gcc -o openssl-thread-test \
     %{?_with_krb5:`krb5-config --libs`} \
     -lpthread -lz -ldl
 
-LD_LIBRARY_PATH=. ./openssl-thread-test --threads %{thread_test_threads}
+./openssl-thread-test --threads %{thread_test_threads}
 
 %install
 rm -fr %{buildroot}
