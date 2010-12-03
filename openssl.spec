@@ -17,7 +17,7 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	%{maj}b
+Version:	%{maj}c
 Release:	%mkrel 1
 License:	BSD-like
 Group:		System/Libraries
@@ -44,7 +44,6 @@ Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 Patch15:        openssl-0.9.8e-crt.patch
 # http://blogs.sun.com/janp/
 Patch16:	pkcs11_engine-1.0.0.diff
-Patch17:	openssl-1.0.0a-CVE-2010-3864-1.diff
 # MIPS and ARM support
 Patch300:	openssl-1.0.0-mips.patch
 Patch301:	openssl-1.0.0-arm.patch
@@ -138,7 +137,6 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch13 -p1 -b .version-add-engines
 %patch15 -p1 -b .crt
 %patch16 -p1 -b .pkcs11_engine
-%patch17 -p0 -b .CVE-2010-3864-1
 
 %patch300 -p1 -b .mips
 %patch301 -p1 -b .arm
