@@ -18,7 +18,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}d
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -52,9 +52,6 @@ Requires:	%{libname} = %{version}-%{release}
 Requires:	perl-base
 Requires:	rootcerts
 %{?_with_krb5:BuildRequires: krb5-devel}
-%if %mdkversion >= 1020
-BuildRequires:	multiarch-utils >= 1.0.3
-%endif
 BuildRequires:	chrpath
 BuildRequires:	zlib-devel
 # (tv) for test suite:
@@ -273,9 +270,7 @@ EOF
 
 chmod 755 %{buildroot}%{_libdir}/pkgconfig
 
-%if %mdkversion >= 1020
 %multiarch_includes %{buildroot}%{_includedir}/openssl/opensslconf.h
-%endif
 
 # strip cannot touch these unless 755
 chmod 755 %{buildroot}%{_libdir}/openssl-%{version}/engines/*.so*
@@ -347,9 +342,7 @@ rm -fr %{buildroot}
 %defattr(-,root,root)
 %doc CHANGES doc/* devel-doc-info/README*
 %attr(0755,root,root) %dir %{_includedir}/openssl
-%if %mdkversion >= 1020
-%multiarch %{multiarch_includedir}/openssl/opensslconf.h
-%endif
+%{multiarch_includedir}/openssl/opensslconf.h
 %attr(0644,root,root) %{_includedir}/openssl/*
 %attr(0755,root,root) %{_libdir}/lib*.so
 %attr(0644,root,root) %{_mandir}/man3/*
