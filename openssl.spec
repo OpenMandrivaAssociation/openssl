@@ -173,6 +173,9 @@ sslarch="linux-generic32 -DB_ENDIAN -DNO_ASM"
 %ifarch s390x
 sslarch="linux-generic64 -DB_ENDIAN -DNO_ASM"
 %endif
+%ifarch %{arm}
+sslarch=linux-generic32
+%endif
 
 # ia64, x86_64, ppc, ppc64 are OK by default
 # Configure the build tree.  Override OpenSSL defaults with known-good defaults
