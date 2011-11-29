@@ -10,9 +10,6 @@
 # Number of threads to spawn when testing some threading fixes.
 #define thread_test_threads %{?threads:%{threads}}%{!?threads:1}
 
-# French policy is to not use ciphers stronger than 128 bits
-%define french_policy 0
-
 %define with_krb5 %{?_with_krb5:1}%{!?_with_krb5:0}
 
 Summary:	Secure Sockets Layer communications libs & utils
@@ -28,8 +25,6 @@ Source2:	Makefile.certificate
 Source3:	make-dummy-cert
 Source4:	openssl-thread-test.c
 Source5:	README.pkcs11
-# (gb) 0.9.6b-5mdk: Limit available SSL ciphers to 128 bits
-Patch0:		openssl-0.9.6b-mdkconfig.patch
 # (gb) 0.9.7b-4mdk: Handle RPM_OPT_FLAGS in Configure
 Patch2:		openssl-optflags.diff
 # (oe) support Brazilian Government OTHERNAME X509v3 field (#14158)
@@ -121,9 +116,6 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %prep
 
 %setup -q -n %{name}-%{version}
-%if %{french_policy}
-%patch0 -p1 -b .frenchpolicy
-%endif
 %patch2 -p1 -b .optflags
 %patch6 -p0 -b .icpbrasil
 %patch7 -p1 -b .defaults
