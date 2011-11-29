@@ -43,7 +43,7 @@ Patch16:	pkcs11_engine-1.0.0.diff
 Patch300:	openssl-1.0.0-mips.patch
 Patch301:	openssl-1.0.0-arm.patch
 Patch302:	openssl-1.0.0-enginesdir.patch
-Requires:	%{libname} = %{version}-%{release}
+Requires:	%{libname} >= %{version}-%{release}
 Requires:	perl-base
 Requires:	rootcerts
 %{?_with_krb5:BuildRequires: krb5-devel}
