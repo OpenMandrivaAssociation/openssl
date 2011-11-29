@@ -56,7 +56,6 @@ BuildRequires:	chrpath
 BuildRequires:	zlib-devel
 # (tv) for test suite:
 BuildRequires:	bc
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 The openssl certificate management tool and the shared libraries that provide
@@ -301,14 +300,6 @@ perl -pi -e "s|^CATOP=.*|CATOP=%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfd
 perl -pi -e "s|^\\\$CATOP\=\".*|\\\$CATOP\=\"%{_sysconfdir}/pki/tls\";|g" %{buildroot}%{_sysconfdir}/pki/tls/misc/CA.pl
 perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pki/tls/openssl.cnf
 
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
-
 %clean
 rm -fr %{buildroot}
 
@@ -332,17 +323,14 @@ rm -fr %{buildroot}
 %attr(0644,root,root) %{_mandir}/man[157]/*
 
 %files -n %{libname}
-%defattr(-,root,root)
 %doc FAQ INSTALL LICENSE NEWS PROBLEMS README*
 %attr(0755,root,root) %{_libdir}/lib*.so.*
 
 %files -n %{engines_name}
-%defattr(-,root,root)
 %attr(0755,root,root) %dir %{_libdir}/openssl-%{version}/engines
 %attr(0755,root,root) %{_libdir}/openssl-%{version}/engines/*.so
 
 %files -n %{develname}
-%defattr(-,root,root)
 %doc CHANGES doc/* devel-doc-info/README*
 %attr(0755,root,root) %dir %{_includedir}/openssl
 %{multiarch_includedir}/openssl/opensslconf.h
@@ -352,5 +340,4 @@ rm -fr %{buildroot}
 %attr(0644,root,root) %{_libdir}/pkgconfig/*
 
 %files -n %{staticname}
-%defattr(-,root,root)
 %attr(0644,root,root) %{_libdir}/lib*.a
