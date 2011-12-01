@@ -15,7 +15,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	%{maj}e
-Release:	%mkrel 2
+Release:	3
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -43,7 +43,7 @@ Patch16:	pkcs11_engine-1.0.0.diff
 Patch300:	openssl-1.0.0-mips.patch
 Patch301:	openssl-1.0.0-arm.patch
 Patch302:	openssl-1.0.0-enginesdir.patch
-Requires:	%{libname} >= %{version}-%{release}
+Requires:	%{engines_name} = %{version}-%{release}
 Requires:	perl-base
 Requires:	rootcerts
 %{?_with_krb5:BuildRequires: krb5-devel}
@@ -69,7 +69,6 @@ This package provides engines for openssl.
 %package -n	%{libname}
 Summary:	Secure Sockets Layer communications libs
 Group:		System/Libraries
-Requires:	%{engines_name} >= %{version}-%{release}
 Provides:	%{libname} = %{version}-%{release}
 Conflicts:	openssh < 3.5p1-4mdk
 
@@ -292,11 +291,7 @@ perl -pi -e "s|^CATOP=.*|CATOP=%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfd
 perl -pi -e "s|^\\\$CATOP\=\".*|\\\$CATOP\=\"%{_sysconfdir}/pki/tls\";|g" %{buildroot}%{_sysconfdir}/pki/tls/misc/CA.pl
 perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pki/tls/openssl.cnf
 
-%clean
-rm -fr %{buildroot}
-
 %files 
-%defattr(-,root,root)
 %doc FAQ INSTALL LICENSE NEWS PROBLEMS main-doc-info/README*
 %doc README README.ASN1 README.ENGINE README.pkcs11
 %dir %{_sysconfdir}/pki
