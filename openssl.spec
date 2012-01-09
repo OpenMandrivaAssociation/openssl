@@ -4,7 +4,6 @@
 %define develname %mklibname openssl -d
 %define staticname %mklibname openssl -s -d
 
-%define conflict1 %mklibname openssl 0.9.7
 %define conflict2 %mklibname openssl 0.9.8
 
 # Number of threads to spawn when testing some threading fixes.
@@ -14,8 +13,8 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	%{maj}e
-Release:	3
+Version:	%{maj}f
+Release:	1
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -70,7 +69,6 @@ This package provides engines for openssl.
 Summary:	Secure Sockets Layer communications libs
 Group:		System/Libraries
 Provides:	%{libname} = %{version}-%{release}
-Conflicts:	openssh < 3.5p1-4mdk
 
 %description -n	%{libname}
 The libraries files are needed for various cryptographic algorithms
@@ -83,9 +81,6 @@ Requires:	%{libname} = %{version}-%{release}
 Provides:	libopenssl-devel
 Provides:	openssl-devel = %{version}-%{release}
 Obsoletes:	openssl-devel
-# temporary opsolete, will be a conflict later. a compat package
-# with openssl-0.9.7 devel libs will be provided soon
-Obsoletes:	%{conflict1}-devel
 Obsoletes:	%{conflict2}-devel
 Obsoletes:	%{mklibname openssl 1.0.0}-devel
 Provides:	%{name}-devel = %{version}-%{release}
@@ -101,9 +96,6 @@ Group:		Development/Other
 Requires:	%{develname} = %{version}-%{release}
 Provides:	libopenssl-static-devel
 Provides:	openssl-static-devel = %{version}-%{release}
-# temporary opsolete, will be a conflict later. a compat package
-# with openssl-0.9.7 static-devel libs will be provided soon
-Obsoletes:	%{conflict1}-static-devel
 Obsoletes:	%{conflict2}-static-devel
 Obsoletes:	%{mklibname openssl 1.0.0}-static-devel
 Provides:	%{name}-static-devel = %{version}-%{release}
@@ -175,9 +167,8 @@ sslarch=linux-generic32
     --openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
     --enginesdir=%{_libdir}/openssl-%{version}/engines \
     --prefix=%{_prefix} --libdir=%{_lib}/ %{?_with_krb5:--with-krb5-flavor=MIT -I%{_prefix}/kerberos/include -L%{_prefix}/kerberos/%{_lib}} \
-     no-idea no-rc5 enable-camellia shared enable-tlsext ${sslarch} --pk11-libname=%{_libdir}/pkcs11/PKCS11_API.so
-
-#    zlib no-idea no-mdc2 no-rc5 no-ec no-ecdh no-ecdsa shared ${sslarch}
+    --pk11-libname=%{_libdir}/pkcs11/PKCS11_API.so \
+    zlib no-idea no-rc5 enable-camellia enable-seed enable-tlsext enable-rfc3779 enable-cms shared ${sslarch} \
 
 # Add -Wa,--noexecstack here so that libcrypto's assembler modules will be
 # marked as not requiring an executable stack.
@@ -238,11 +229,11 @@ ln -snf openssl %{buildroot}%{_bindir}/ssleay
 # The man pages rand.3 and passwd.1 conflict with other packages
 # Rename them to ssl-* and also make a symlink from openssl-* to ssl-*
 mv %{buildroot}%{_mandir}/man1/passwd.1 %{buildroot}%{_mandir}/man1/ssl-passwd.1
-ln -sf ssl-passwd.1.bz2 %{buildroot}%{_mandir}/man1/openssl-passwd.1.bz2
+ln -sf ssl-passwd.1%{_extension} %{buildroot}%{_mandir}/man1/openssl-passwd.1%{_extension}
 
 for i in rand err; do
     mv %{buildroot}%{_mandir}/man3/$i.3 %{buildroot}%{_mandir}/man3/ssl-$i.3
-    ln -snf ssl-$i.3.bz2 %{buildroot}%{_mandir}/man3/openssl-$i.3.bz2
+    ln -snf ssl-$i.3%{_extension} %{buildroot}%{_mandir}/man3/openssl-$i.3%{_extension}
 done
 
 rm -rf {main,devel}-doc-info
