@@ -13,7 +13,7 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	%{maj}h
+Version:	1.0.1
 Release:	1
 License:	BSD-like
 Group:		System/Libraries
@@ -23,7 +23,6 @@ Source1:	ftp://ftp.openssl.org/source/%{name}-%{version}.tar.gz.asc
 Source2:	Makefile.certificate
 Source3:	make-dummy-cert
 Source4:	openssl-thread-test.c
-Source5:	README.pkcs11
 # (gb) 0.9.7b-4mdk: Handle RPM_OPT_FLAGS in Configure
 Patch2:		openssl-optflags.diff
 # (oe) support Brazilian Government OTHERNAME X509v3 field (#14158)
@@ -36,17 +35,16 @@ Patch12:	openssl-0.9.6-x509.patch
 Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 # http://qa.mandriva.com/show_bug.cgi?id=32621
 Patch15:        openssl-0.9.8e-crt.patch
-# http://blogs.sun.com/janp/
-Patch16:	pkcs11_engine-1.0.0.diff
 # MIPS and ARM support
 Patch300:	openssl-1.0.0-mips.patch
 Patch301:	openssl-1.0.0-arm.patch
 Patch302:	openssl-1.0.0-enginesdir.patch
+Patch303:	openssl-0.9.8a-no-rpath.patch
+Patch304:	openssl-1.0.1-test-use-localhost.diff
 Requires:	%{engines_name} = %{version}-%{release}
 Requires:	perl-base
 Requires:	rootcerts
 %{?_with_krb5:BuildRequires: krb5-devel}
-BuildRequires:	chrpath
 BuildRequires:	zlib-devel
 # (tv) for test suite:
 BuildRequires:	bc
@@ -107,7 +105,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %prep
 
 %setup -q -n %{name}-%{version}
-%patch2 -p1 -b .optflags
+%patch2 -p0 -b .optflags
 %patch6 -p0 -b .icpbrasil
 %patch7 -p1 -b .defaults
 %{?_with_krb5:%patch8 -p1 -b .krb5}
@@ -115,11 +113,12 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch12 -p1 -b .x509
 %patch13 -p1 -b .version-add-engines
 %patch15 -p1 -b .crt
-%patch16 -p1 -b .pkcs11_engine
 
-%patch300 -p1 -b .mips
-%patch301 -p1 -b .arm
+%patch300 -p0 -b .mips
+%patch301 -p0 -b .arm
 %patch302 -p1 -b .engines
+%patch303 -p1 -b .no-rpath
+%patch304 -p0 -b .test-use-localhost
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
@@ -129,7 +128,6 @@ perl util/perlpath.pl %{_bindir}/perl
 cp %{SOURCE2} Makefile.certificate
 cp %{SOURCE3} make-dummy-cert
 cp %{SOURCE4} openssl-thread-test.c
-cp %{SOURCE5} README.pkcs11
 
 %build 
 %serverbuild
@@ -167,8 +165,7 @@ sslarch=linux-generic32
     --openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
     --enginesdir=%{_libdir}/openssl-%{version}/engines \
     --prefix=%{_prefix} --libdir=%{_lib}/ %{?_with_krb5:--with-krb5-flavor=MIT -I%{_prefix}/kerberos/include -L%{_prefix}/kerberos/%{_lib}} \
-    --pk11-libname=%{_libdir}/pkcs11/PKCS11_API.so \
-    zlib no-idea no-rc5 enable-camellia enable-seed enable-tlsext enable-rfc3779 enable-cms shared ${sslarch} \
+    zlib no-idea no-rc5 enable-camellia enable-seed enable-tlsext enable-rfc3779 enable-cms sctp shared ${sslarch}
 
 # Add -Wa,--noexecstack here so that libcrypto's assembler modules will be
 # marked as not requiring an executable stack.
@@ -197,7 +194,6 @@ gcc -o openssl-thread-test \
 ./openssl-thread-test --threads %{thread_test_threads}
 
 %install
-rm -fr %{buildroot}
 
 %makeinstall \
     INSTALL_PREFIX=%{buildroot} \
@@ -264,9 +260,6 @@ chmod 755 %{buildroot}%{_bindir}/*
 # nuke a mistake
 rm -f %{buildroot}%{_mandir}/man3/.3
 
-# nuke rpath
-chrpath -d %{buildroot}%{_bindir}/openssl
-
 # Fix libdir.
 pushd %{buildroot}%{_libdir}/pkgconfig
     for i in *.pc ; do
@@ -284,7 +277,7 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 
 %files 
 %doc FAQ INSTALL LICENSE NEWS PROBLEMS main-doc-info/README*
-%doc README README.ASN1 README.ENGINE README.pkcs11
+%doc README README.ASN1 README.ENGINE
 %dir %{_sysconfdir}/pki
 %dir %{_sysconfdir}/pki/CA
 %dir %{_sysconfdir}/pki/CA/private
