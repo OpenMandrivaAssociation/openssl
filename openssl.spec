@@ -48,6 +48,7 @@ Requires:	rootcerts
 BuildRequires:	zlib-devel
 # (tv) for test suite:
 BuildRequires:	bc
+BuildRequires:	sctp-devel
 
 %description
 The openssl certificate management tool and the shared libraries that provide
