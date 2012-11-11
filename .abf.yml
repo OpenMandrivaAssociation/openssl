@@ -1,0 +1,6 @@
+sources:
+  "make-dummy-cert:"	eadf6b80954eba85823d3fc178fbe2da5f01ee57
+  "Makefile.certificate:"	acbf2f8dd73b9f18f0f0eee044546fb93fa48b69
+  "openssl-1.0.1c.tar.gz:"	91b684de947cb021ac61b8c51027cc4b63d894ce
+  "openssl-1.0.1c.tar.gz.asc:"	23de22bb1a5d30e8fc769427376830a261a1e18c
+  "openssl-thread-test.c:"	ce4064feca3fb0e28e4b0a98957f68f4915e4d99
