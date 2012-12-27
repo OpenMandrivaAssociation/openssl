@@ -122,8 +122,6 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch303 -p1 -b .no-rpath
 %patch304 -p0 -b .test-use-localhost
 
-%patch400 -p0
-
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
 # fix perl path
