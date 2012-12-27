@@ -125,7 +125,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
 # fix perl path
-perl util/perlpath.pl %{_bindir}/perl
+#perl util/perlpath.pl %{_bindir}/perl
 
 cp %{SOURCE2} Makefile.certificate
 cp %{SOURCE3} make-dummy-cert
