@@ -35,6 +35,7 @@ Patch12:	openssl-0.9.6-x509.patch
 Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 # http://qa.mandriva.com/show_bug.cgi?id=32621
 Patch15:        openssl-0.9.8e-crt.patch
+Patch16:	openssl-1.0.1c-fix-perlpath.pl
 # MIPS and ARM support
 Patch300:	openssl-1.0.0-mips.patch
 Patch301:	openssl-1.0.0-arm.patch
@@ -115,6 +116,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch12 -p1 -b .x509
 %patch13 -p1 -b .version-add-engines
 %patch15 -p1 -b .crt
+%patch16 -p1 -b .perlfind~
 
 %patch300 -p0 -b .mips
 %patch301 -p0 -b .arm
@@ -125,7 +127,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
 # fix perl path
-#perl util/perlpath.pl %{_bindir}/perl
+perl util/perlpath.pl %{_bindir}/perl
 
 cp %{SOURCE2} Makefile.certificate
 cp %{SOURCE3} make-dummy-cert
