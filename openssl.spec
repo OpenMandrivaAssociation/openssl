@@ -1,6 +1,6 @@
-%define maj 1.0.0
-%define engines_name %mklibname openssl-engines %{maj}
-%define libname %mklibname openssl %{maj}
+%define major	1.0.0
+%define engines_name %mklibname openssl-engines %{major}
+%define libname %mklibname openssl %{major}
 %define develname %mklibname openssl -d
 %define staticname %mklibname openssl -s -d
 
@@ -14,7 +14,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	1.0.1c
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -206,6 +206,12 @@ gcc -o openssl-thread-test \
     MANDIR=%{_mandir} \
     build-shared
 
+mkdir %{buildroot}/%{_lib}
+mv %{buildroot}%{_libdir}/libcrypto.so.%{major} %{buildroot}/%{_lib}
+ln -srf %{buildroot}/%{_lib}/libcrypto.so.%{major} %{buildroot}%{_libdir}/libcrypto.so
+mv %{buildroot}%{_libdir}/libssl.so.%{major} %{buildroot}/%{_lib}
+ln -srf %{buildroot}/%{_lib}/libssl.so.%{major} %{buildroot}%{_libdir}/libssl.so
+
 # the makefiles is too borked...
 install -d %{buildroot}%{_libdir}/openssl-%{version}
 mv %{buildroot}%{_libdir}/engines %{buildroot}%{_libdir}/openssl-%{version}/engines
@@ -260,7 +266,6 @@ chmod 755 %{buildroot}%{_libdir}/pkgconfig
 
 # strip cannot touch these unless 755
 chmod 755 %{buildroot}%{_libdir}/openssl-%{version}/engines/*.so*
-chmod 755 %{buildroot}%{_libdir}/*.so*
 chmod 755 %{buildroot}%{_bindir}/*
 
 # nuke a mistake
@@ -301,7 +306,7 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 
 %files -n %{libname}
 %doc FAQ INSTALL LICENSE NEWS PROBLEMS README*
-%attr(0755,root,root) %{_libdir}/lib*.so.*
+%attr(0755,root,root) /%{_lib}/lib*.so.*
 
 %files -n %{engines_name}
 %attr(0755,root,root) %dir %{_libdir}/openssl-%{version}/engines
@@ -319,8 +324,10 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 %files -n %{staticname}
 %attr(0644,root,root) %{_libdir}/lib*.a
 
-
 %changelog
+* Thu Jan 17 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.0.1c-2
+- move libraries under /%%{_lib} as /bin/rpm links against it
+
 * Fri May 11 2012 Oden Eriksson <oeriksson@mandriva.com> 1.0.1c-1
 + Revision: 798177
 - 1.0.1c
