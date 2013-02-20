@@ -289,7 +289,7 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 %files
 %doc FAQ INSTALL LICENSE NEWS PROBLEMS main-doc-info/README*
 %doc README README.ASN1 README.ENGINE
-%dir %{_datadir}/%{name}-%{version}
+%dir %{_libdir}/%{name}-%{version}
 %dir %{_sysconfdir}/pki
 %dir %{_sysconfdir}/pki/CA
 %dir %{_sysconfdir}/pki/CA/private
