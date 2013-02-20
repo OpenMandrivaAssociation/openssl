@@ -1,4 +1,4 @@
-%define major	1.0.0
+%define major 1.0.0
 %define engines_name %mklibname openssl-engines %{major}
 %define libname %mklibname openssl %{major}
 %define develname %mklibname openssl -d
@@ -13,8 +13,8 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	1.0.1c
-Release:	2
+Version:	1.0.1e
+Release:	1
 License:	BSD-like
 Group:		System/Libraries
 URL:		http://www.openssl.org/
@@ -34,7 +34,7 @@ Patch10:	openssl-0.9.7-beta6-ia64.patch
 Patch12:	openssl-0.9.6-x509.patch
 Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 # http://qa.mandriva.com/show_bug.cgi?id=32621
-Patch15:        openssl-0.9.8e-crt.patch
+Patch15:	openssl-0.9.8e-crt.patch
 Patch16:	openssl-1.0.1c-fix-perlpath.pl
 # MIPS and ARM support
 Patch300:	openssl-1.0.0-mips.patch
@@ -46,7 +46,7 @@ Requires:	%{engines_name} = %{version}-%{release}
 Requires:	perl-base
 Requires:	rootcerts
 Provides:	/usr/bin/openssl
-%{?_with_krb5:BuildRequires: krb5-devel}
+%{?_with_krb5:BuildRequires:	krb5-devel}
 BuildRequires:	zlib-devel
 # (tv) for test suite:
 BuildRequires:	bc
@@ -57,7 +57,7 @@ The openssl certificate management tool and the shared libraries that provide
 various encryption and decription algorithms and protocols, including DES, RC4,
 RSA and SSL.
 
-%package -n	%{engines_name}
+%package -n %{engines_name}
 Summary:	Engines for openssl
 Group:		System/Libraries
 Obsoletes:	openssl-engines < 1.0.0a-5
@@ -66,7 +66,7 @@ Provides:	openssl-engines = %{version}-%{release}
 %description -n	%{engines_name}
 This package provides engines for openssl.
 
-%package -n	%{libname}
+%package -n %{libname}
 Summary:	Secure Sockets Layer communications libs
 Group:		System/Libraries
 Provides:	%{libname} = %{version}-%{release}
@@ -75,13 +75,13 @@ Provides:	%{libname} = %{version}-%{release}
 The libraries files are needed for various cryptographic algorithms
 and protocols, including DES, RC4, RSA and SSL.
 
-%package -n	%{develname}
+%package -n %{develname}
 Summary:	Secure Sockets Layer communications libs & headers & utils
 Group:		Development/Other
 Requires:	%{libname} = %{version}-%{release}
-Provides:	libopenssl-devel
+Provides:	libopenssl-devel = %{version}-%{release}
 Provides:	openssl-devel = %{version}-%{release}
-Obsoletes:	openssl-devel
+Obsoletes:	openssl-devel < %{version}-%{release}
 Obsoletes:	%{conflict2}-devel
 Obsoletes:	%{mklibname openssl 1.0.0}-devel
 Provides:	%{name}-devel = %{version}-%{release}
@@ -91,7 +91,7 @@ The libraries and include files needed to compile apps with support
 for various cryptographic algorithms and protocols, including DES, RC4, RSA
 and SSL.
 
-%package -n	%{staticname}
+%package -n %{staticname}
 Summary:	Secure Sockets Layer communications static libs
 Group:		Development/Other
 Requires:	%{develname} = %{version}-%{release}
@@ -133,7 +133,7 @@ cp %{SOURCE2} Makefile.certificate
 cp %{SOURCE3} make-dummy-cert
 cp %{SOURCE4} openssl-thread-test.c
 
-%build 
+%build
 %serverbuild
 
 # Figure out which flags we want to use.
@@ -286,9 +286,10 @@ perl -pi -e "s|^CATOP=.*|CATOP=%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfd
 perl -pi -e "s|^\\\$CATOP\=\".*|\\\$CATOP\=\"%{_sysconfdir}/pki/tls\";|g" %{buildroot}%{_sysconfdir}/pki/tls/misc/CA.pl
 perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pki/tls/openssl.cnf
 
-%files 
+%files
 %doc FAQ INSTALL LICENSE NEWS PROBLEMS main-doc-info/README*
 %doc README README.ASN1 README.ENGINE
+%dir %{_datadir}/%{name}-%{version}
 %dir %{_sysconfdir}/pki
 %dir %{_sysconfdir}/pki/CA
 %dir %{_sysconfdir}/pki/CA/private
@@ -305,7 +306,6 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 %attr(0644,root,root) %{_mandir}/man[157]/*
 
 %files -n %{libname}
-%doc FAQ INSTALL LICENSE NEWS PROBLEMS README*
 %attr(0755,root,root) /%{_lib}/lib*.so.*
 
 %files -n %{engines_name}
@@ -314,6 +314,7 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 
 %files -n %{develname}
 %doc CHANGES doc/* devel-doc-info/README*
+%doc FAQ INSTALL LICENSE NEWS PROBLEMS README*
 %attr(0755,root,root) %dir %{_includedir}/openssl
 %{multiarch_includedir}/openssl/opensslconf.h
 %attr(0644,root,root) %{_includedir}/openssl/*
