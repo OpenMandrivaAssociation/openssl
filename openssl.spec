@@ -306,7 +306,7 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 %attr(0644,root,root) %{_mandir}/man[157]/*
 
 %files -n %{libname}
-%attr(0755,root,root) /%{_lib}/lib*.so.*
+%attr(0755,root,root) /%{_lib}/lib*.so.%{major}*
 
 %files -n %{engines_name}
 %attr(0755,root,root) %dir %{_libdir}/openssl-%{version}/engines
