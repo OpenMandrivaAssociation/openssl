@@ -112,7 +112,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch6 -p0 -b .icpbrasil
 %patch7 -p1 -b .defaults
 %{?_with_krb5:%patch8 -p1 -b .krb5}
-%patch10 -p0 -b .ia64
+#patch10 -p0 -b .ia64
 %patch12 -p1 -b .x509
 %patch13 -p1 -b .version-add-engines
 %patch15 -p1 -b .crt
