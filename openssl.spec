@@ -42,6 +42,7 @@ Patch301:	openssl-1.0.0-arm.patch
 Patch302:	openssl-1.0.0-enginesdir.patch
 Patch303:	openssl-0.9.8a-no-rpath.patch
 Patch304:	openssl-1.0.1-test-use-localhost.diff
+Patch305:	openssl-aarch64.patch
 Requires:	%{engines_name} = %{version}-%{release}
 Requires:	perl-base
 Requires:	rootcerts
@@ -123,6 +124,7 @@ cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 %patch302 -p1 -b .engines
 %patch303 -p1 -b .no-rpath
 %patch304 -p0 -b .test-use-localhost
+%patch305 -p1 -b .aarch64
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
@@ -159,6 +161,9 @@ sslarch="linux-generic64 -DB_ENDIAN -DNO_ASM"
 %endif
 %ifarch %{arm}
 sslarch=linux-generic32
+%endif
+%ifarch aarch64
+sslarch=linux-aarch64
 %endif
 
 
