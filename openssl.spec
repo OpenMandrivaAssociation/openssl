@@ -163,7 +163,7 @@ sslarch="linux-generic64 -DB_ENDIAN -DNO_ASM"
 sslarch=linux-generic32
 %endif
 %ifarch aarch64
-sslarch=linux-aarch64
+sslarch=linux-generic32
 %endif
 
 
