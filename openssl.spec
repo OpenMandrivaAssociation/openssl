@@ -136,6 +136,7 @@ cp %{SOURCE3} make-dummy-cert
 cp %{SOURCE4} openssl-thread-test.c
 
 %build
+export CC=%{__cc}
 %serverbuild
 
 # Figure out which flags we want to use.
