@@ -51,6 +51,7 @@ Provides:	/usr/bin/openssl
 BuildRequires:	zlib-devel
 # (tv) for test suite:
 BuildRequires:	bc
+BuildRequires:	makedepend
 BuildRequires:	sctp-devel
 
 %description
