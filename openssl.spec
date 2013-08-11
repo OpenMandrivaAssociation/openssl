@@ -46,7 +46,6 @@ BuildRequires:	makedepend
 BuildRequires:	sctp-devel
 BuildRequires:	pkgconfig(zlib)
 Requires:	%{engines_name} = %{version}-%{release}
-Requires:	perl-base
 Requires:	rootcerts
 Provides:	/usr/bin/openssl
 
@@ -103,8 +102,17 @@ Provides:	%{name}-static-devel = %{version}-%{release}
 The static libraries needed to compile apps with support for various
 cryptographic algorithms and protocols, including DES, RC4, RSA and SSL.
 
-%prep
+%package	perl
+Summary:	Perl scripts provided with OpenSSL
+Group:		System/Libraries
+Requires:	%{name} = %{version}-%{release}
+Conflicts:	%{name} < 1.0.1e-3
 
+%description perl
+The openssl-perl package provides Perl scripts for converting certificates and
+keys from other formats to the formats used by the OpenSSL toolkit.
+
+%prep
 %setup -q
 %patch2 -p0 -b .optflags
 %patch6 -p0 -b .icpbrasil
@@ -304,9 +312,18 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/pki/tls/openssl.cnf
 %attr(0755,root,root) %{_sysconfdir}/pki/tls/certs/make-dummy-cert
 %attr(0644,root,root) %{_sysconfdir}/pki/tls/certs/Makefile
-%attr(0755,root,root) %{_sysconfdir}/pki/tls/misc/*
-%{_bindir}/*
+%attr(0755,root,root) %{_sysconfdir}/pki/tls/misc/CA
+%attr(0755,root,root) %{_sysconfdir}/pki/tls/misc/c_*
+%{_bindir}/openssl
+%{_bindir}/ssleay
 %{_mandir}/man[157]/*
+%exclude %{_mandir}/man1/CA.pl*
+
+%files perl
+%{_bindir}/c_rehash
+%{_mandir}/man1/CA.pl*
+%{_sysconfdir}/pki/tls/misc/CA.pl
+%{_sysconfdir}/pki/tls/misc/tsget
 
 %files -n %{libcrypto}
 /%{_lib}/libcrypto.so.%{major}*
