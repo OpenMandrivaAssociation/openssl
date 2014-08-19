@@ -10,7 +10,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	1.0.1i
-Release:	0.1
+Release:	0.2
 License:	BSD-like
 Group:		System/Libraries
 Url:		http://www.openssl.org/
