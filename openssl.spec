@@ -9,7 +9,7 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	1.0.1l
+Version:	1.0.2
 Release:	1
 License:	BSD-like
 Group:		System/Libraries
@@ -29,8 +29,6 @@ Patch8:		openssl-0.9.8a-link-krb5.patch
 Patch10:	openssl-0.9.7-beta6-ia64.patch
 Patch12:	openssl-0.9.6-x509.patch
 Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
-# http://qa.mandriva.com/show_bug.cgi?id=32621
-Patch15:	openssl-0.9.8e-crt.patch
 Patch16:	openssl-1.0.1c-fix-perlpath.pl
 # MIPS and ARM support
 Patch300:	openssl-1.0.0-mips.patch
@@ -114,21 +112,20 @@ keys from other formats to the formats used by the OpenSSL toolkit.
 
 %prep
 %setup -q
-%patch2 -p0 -b .optflags
-%patch6 -p0 -b .icpbrasil
+%patch2 -p1 -b .optflags
+%patch6 -p1 -b .icpbrasil
 %patch7 -p1 -b .defaults
 %{?_with_krb5:%patch8 -p1 -b .krb5}
 #patch10 -p0 -b .ia64
 %patch12 -p1 -b .x509
 %patch13 -p1 -b .version-add-engines
-%patch15 -p1 -b .crt
 %patch16 -p1 -b .perlfind~
 
 %patch300 -p0 -b .mips
 %patch301 -p0 -b .arm
 %patch302 -p1 -b .engines
 %patch303 -p1 -b .no-rpath
-%patch304 -p0 -b .test-use-localhost
+%patch304 -p1 -b .test-use-localhost
 %patch305 -p1 -b .aarch64
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile

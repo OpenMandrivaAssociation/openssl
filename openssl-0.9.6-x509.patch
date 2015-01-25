@@ -1,29 +1,27 @@
-Do not treat duplicate certs as an error.
-
---- openssl-0.9.6/crypto/x509/by_file.c	Wed Sep 27 15:09:05 2000
-+++ openssl-0.9.6/crypto/x509/by_file.c	Wed Sep 27 14:21:20 2000
-@@ -163,8 +163,12 @@
- 					}
- 				}
- 			i=X509_STORE_add_cert(ctx->store_ctx,x);
--			if (!i) goto err;
--			count++;
-+			/* ignore any problems with current certificate 
-+			    and continue with the next one */
-+			if (i)
-+			    count++;
-+			else
-+			    ERR_clear_error();
- 			X509_free(x);
- 			x=NULL;
- 			}
-@@ -179,7 +183,8 @@
- 			goto err;
- 			}
- 		i=X509_STORE_add_cert(ctx->store_ctx,x);
--		if (!i) goto err;
-+		if (!i)
-+		  ERR_clear_error();
- 		ret=i;
- 		}
- 	else
+--- openssl-1.0.2/crypto/x509/by_file.c.x509	2015-01-25 11:27:44.827662311 +0100
++++ openssl-1.0.2/crypto/x509/by_file.c	2015-01-25 13:46:01.748713008 +0100
+@@ -152,9 +152,12 @@ int X509_load_cert_file(X509_LOOKUP *ctx
+                 }
+             }
+             i = X509_STORE_add_cert(ctx->store_ctx, x);
+-            if (!i)
+-                goto err;
+-            count++;
++	    /* ignore any problems with current certificate and
++	     * continue with the next one */
++            if(i)
++                count++;
++            else
++                ERR_clear_error();
+             X509_free(x);
+             x = NULL;
+         }
+@@ -167,7 +170,7 @@ int X509_load_cert_file(X509_LOOKUP *ctx
+         }
+         i = X509_STORE_add_cert(ctx->store_ctx, x);
+         if (!i)
+-            goto err;
++            ERR_clear_error();
+         ret = i;
+     } else {
+         X509err(X509_F_X509_LOAD_CERT_FILE, X509_R_BAD_X509_FILETYPE);
