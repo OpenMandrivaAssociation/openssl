@@ -20,15 +20,15 @@ Source2:	Makefile.certificate
 Source3:	make-dummy-cert
 Source4:	openssl-thread-test.c
 # (gb) 0.9.7b-4mdk: Handle RPM_OPT_FLAGS in Configure
-Patch2:		openssl-optflags.diff
+Patch2:		openssl-1.0.1m-optflags.patch
 # (oe) support Brazilian Government OTHERNAME X509v3 field (#14158)
 # http://www.iti.gov.br/resolucoes/RESOLU__O_13_DE_26_04_2002.PDF
 Patch6:		openssl-0.9.8-beta6-icpbrasil.diff
 Patch7:		openssl-1.0.0-defaults.patch
 Patch8:		openssl-0.9.8a-link-krb5.patch
 Patch10:	openssl-0.9.7-beta6-ia64.patch
-Patch12:	openssl-0.9.6-x509.patch
-Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
+Patch12:	openssl-1.0.1m-x509.patch
+Patch13:	openssl-1.0.1m-version-add-engines.patch
 # http://qa.mandriva.com/show_bug.cgi?id=32621
 Patch15:	openssl-0.9.8e-crt.patch
 Patch16:	openssl-1.0.1c-fix-perlpath.pl
@@ -37,7 +37,7 @@ Patch300:	openssl-1.0.0-mips.patch
 Patch301:	openssl-1.0.0-arm.patch
 Patch302:	openssl-1.0.0-enginesdir.patch
 Patch303:	openssl-0.9.8a-no-rpath.patch
-Patch304:	openssl-1.0.1-test-use-localhost.diff
+Patch304:	openssl-1.0.1m-test-use-localhost.patch
 Patch305:	openssl-aarch64.patch
 # (tv) for test suite:
 BuildRequires:	bc
@@ -114,22 +114,22 @@ keys from other formats to the formats used by the OpenSSL toolkit.
 
 %prep
 %setup -q
-%patch2 -p0 -b .optflags
+%patch2 -p1 -b .optflags
 %patch6 -p0 -b .icpbrasil
 %patch7 -p1 -b .defaults
 %{?_with_krb5:%patch8 -p1 -b .krb5}
 #patch10 -p0 -b .ia64
 %patch12 -p1 -b .x509
-%patch13 -p1 -b .version-add-engines
+#patch13 -p1 -b .version-add-engines
 %patch15 -p1 -b .crt
 %patch16 -p1 -b .perlfind~
 
-%patch300 -p0 -b .mips
-%patch301 -p0 -b .arm
+#patch300 -p0 -b .mips
+#patch301 -p0 -b .arm
 %patch302 -p1 -b .engines
 %patch303 -p1 -b .no-rpath
-%patch304 -p0 -b .test-use-localhost
-%patch305 -p1 -b .aarch64
+%patch304 -p1 -b .test-use-localhost
+#patch305 -p1 -b .aarch64
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 

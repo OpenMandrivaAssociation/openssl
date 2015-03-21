@@ -1,0 +1,20 @@
+--- openssl-1.0.1m/ssl/ssltest.c.orig	2015-03-20 23:51:40.828197959 +0000
++++ openssl-1.0.1m/ssl/ssltest.c	2015-03-20 23:53:30.538203183 +0000
+@@ -1058,16 +1058,7 @@
+ 
+ #ifndef OPENSSL_NO_KRB5
+     if (c_ssl && c_ssl->kssl_ctx) {
+-        char localhost[MAXHOSTNAMELEN + 2];
+-
+-        if (gethostname(localhost, sizeof localhost - 1) == 0) {
+-            localhost[sizeof localhost - 1] = '\0';
+-            if (strlen(localhost) == sizeof localhost - 1) {
+-                BIO_printf(bio_err, "localhost name too long\n");
+-                goto end;
+-            }
+-            kssl_ctx_setstring(c_ssl->kssl_ctx, KSSL_SERVER, localhost);
+-        }
++            kssl_ctx_setstring(c_ssl->kssl_ctx, KSSL_SERVER, "localhost");
+     }
+ #endif                          /* OPENSSL_NO_KRB5 */
+ 
