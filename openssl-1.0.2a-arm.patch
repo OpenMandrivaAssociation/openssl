@@ -1,0 +1,13 @@
+diff -Naur -x '*~' -x '*.rej' -x '*.orig' openssl-1.0.1c-mips/Configure openssl-1.0.1c-arm/Configure
+--- openssl-1.0.1c-mips/Configure	2012-06-07 10:42:07.821566284 +0200
++++ openssl-1.0.1c-arm/Configure	2012-06-07 10:44:34.147195395 +0200
+@@ -374,6 +374,9 @@
+ # doesn't work just yet, because of couple of bugs in glibc
+ # sysdeps/s390/dl-procinfo.c affecting ldconfig and ld.so.1...
+ "linux32-s390x",	"gcc:-m31 -Wa,-mzarch -DB_ENDIAN -O3 -Wall::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_INT DES_UNROLL:".eval{my $asm=$s390x_asm;$asm=~s/bn\-s390x\.o/bn_asm.o/;$asm}.":31:dlfcn:linux-shared:-fPIC:-m31:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::/highgprs",
++#### Arm Linux setups
++"linux-arm",   "gcc:\$(RPM_OPT_FLAGS) -DL_ENDIAN -O3 -g -Wall::-D_REENTRANT::-ldl:BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL DES_RISC2:${armv4_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"linux-armel",   "gcc:\$(RPM_OPT_FLAGS) -DL_ENDIAN -O3 -g -Wall::-D_REENTRANT::-ldl:BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL DES_RISC2:${armv4_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+ #### Mips Linux setups
+ "linux-mips",   "gcc:-mabi=32 \$(RPM_OPT_FLAGS) -DB_ENDIAN -O3 -g -Wall::-D_REENTRANT::-ldl:BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL DES_RISC2:${no_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+ "linux-mipsel",   "gcc:-mabi=32 \$(RPM_OPT_FLAGS) -DL_ENDIAN -O3 -g -Wall::-D_REENTRANT::-ldl:BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL DES_RISC2:${no_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",

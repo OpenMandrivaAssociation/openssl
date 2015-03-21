@@ -9,7 +9,7 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	1.0.2
+Version:	1.0.2a
 Release:	1
 License:	BSD-like
 Group:		System/Libraries
@@ -20,7 +20,7 @@ Source2:	Makefile.certificate
 Source3:	make-dummy-cert
 Source4:	openssl-thread-test.c
 # (gb) 0.9.7b-4mdk: Handle RPM_OPT_FLAGS in Configure
-Patch2:		openssl-optflags.diff
+Patch2:		openssl-1.0.2a-optflags.patch
 # (oe) support Brazilian Government OTHERNAME X509v3 field (#14158)
 # http://www.iti.gov.br/resolucoes/RESOLU__O_13_DE_26_04_2002.PDF
 Patch6:		openssl-0.9.8-beta6-icpbrasil.diff
@@ -30,13 +30,13 @@ Patch10:	openssl-0.9.7-beta6-ia64.patch
 Patch12:	openssl-0.9.6-x509.patch
 Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 Patch16:	openssl-1.0.1c-fix-perlpath.pl
+Patch17:	openssl-1.0.2a-malloc_typo.patch
 # MIPS and ARM support
-Patch300:	openssl-1.0.0-mips.patch
-Patch301:	openssl-1.0.0-arm.patch
+Patch300:	openssl-1.0.2a-mips.patch
+Patch301:	openssl-1.0.2a-arm.patch
 Patch302:	openssl-1.0.0-enginesdir.patch
 Patch303:	openssl-0.9.8a-no-rpath.patch
 Patch304:	openssl-1.0.1-test-use-localhost.diff
-Patch305:	openssl-aarch64.patch
 # (tv) for test suite:
 BuildRequires:	bc
 BuildRequires:	makedepend
@@ -120,13 +120,13 @@ keys from other formats to the formats used by the OpenSSL toolkit.
 %patch12 -p1 -b .x509
 %patch13 -p1 -b .version-add-engines
 %patch16 -p1 -b .perlfind~
+%patch17 -p1 -b .malloc_typo
 
-%patch300 -p0 -b .mips
-%patch301 -p0 -b .arm
+%patch300 -p1 -b .mips
+%patch301 -p1 -b .arm
 %patch302 -p1 -b .engines
 %patch303 -p1 -b .no-rpath
 %patch304 -p1 -b .test-use-localhost
-%patch305 -p1 -b .aarch64
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
