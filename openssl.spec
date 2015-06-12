@@ -9,7 +9,7 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	1.0.1m
+Version:	1.0.1o
 Release:	0.1
 License:	BSD-like
 Group:		System/Libraries
@@ -32,7 +32,6 @@ Patch13:	openssl-1.0.1m-version-add-engines.patch
 # http://qa.mandriva.com/show_bug.cgi?id=32621
 Patch15:	openssl-0.9.8e-crt.patch
 Patch16:	openssl-1.0.1c-fix-perlpath.pl
-Patch17:	openssl-1.0.1m-malloc_typo.patch
 # MIPS and ARM support
 Patch300:	openssl-1.0.0-mips.patch
 Patch301:	openssl-1.0.0-arm.patch
@@ -124,7 +123,6 @@ keys from other formats to the formats used by the OpenSSL toolkit.
 #patch13 -p1 -b .version-add-engines
 %patch15 -p1 -b .crt
 %patch16 -p1 -b .perlfind~
-%patch17 -p1 -b .malloc_typo
 
 #patch300 -p0 -b .mips
 #patch301 -p0 -b .arm
