@@ -9,7 +9,7 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	1.0.2a
+Version:	1.0.2d
 Release:	1
 License:	BSD-like
 Group:		System/Libraries
@@ -20,7 +20,7 @@ Source2:	Makefile.certificate
 Source3:	make-dummy-cert
 Source4:	openssl-thread-test.c
 # (gb) 0.9.7b-4mdk: Handle RPM_OPT_FLAGS in Configure
-Patch2:		openssl-1.0.2a-optflags.patch
+Patch2:		openssl-1.0.2b-optflags.patch
 # (oe) support Brazilian Government OTHERNAME X509v3 field (#14158)
 # http://www.iti.gov.br/resolucoes/RESOLU__O_13_DE_26_04_2002.PDF
 Patch6:		openssl-0.9.8-beta6-icpbrasil.diff
@@ -30,7 +30,6 @@ Patch10:	openssl-0.9.7-beta6-ia64.patch
 Patch12:	openssl-0.9.6-x509.patch
 Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 Patch16:	openssl-1.0.1c-fix-perlpath.pl
-Patch17:	openssl-1.0.2a-malloc_typo.patch
 # MIPS and ARM support
 Patch300:	openssl-1.0.2a-mips.patch
 Patch301:	openssl-1.0.2a-arm.patch
