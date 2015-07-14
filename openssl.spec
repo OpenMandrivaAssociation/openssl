@@ -119,7 +119,6 @@ keys from other formats to the formats used by the OpenSSL toolkit.
 %patch12 -p1 -b .x509
 %patch13 -p1 -b .version-add-engines
 %patch16 -p1 -b .perlfind~
-%patch17 -p1 -b .malloc_typo
 
 %patch300 -p1 -b .mips
 %patch301 -p1 -b .arm
