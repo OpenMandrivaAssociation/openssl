@@ -1,3 +1,5 @@
+%define _no_lto 1
+
 %define major 1.0.0
 %define engines_name %mklibname openssl-engines %{major}
 %define libcrypto %mklibname crypto %{major}
