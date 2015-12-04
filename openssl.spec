@@ -182,7 +182,7 @@ sslarch=linux-generic32
 
 # Add -Wa,--noexecstack here so that libcrypto's assembler modules will be
 # marked as not requiring an executable stack.
-RPM_OPT_FLAGS="%{optflags} -Wa,--noexecstack"
+#RPM_OPT_FLAGS="%{optflags} -Wa,--noexecstack"
 
 make depend
 make all build-shared
