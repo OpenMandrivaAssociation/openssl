@@ -9,13 +9,13 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	1.0.1r
+Version:	1.0.1s
 Release:	0.1
 License:	BSD-like
 Group:		System/Libraries
 Url:		http://www.openssl.org/
-Source0:	ftp://ftp.openssl.org/source/%{name}-%{version}.tar.gz
-Source1:	ftp://ftp.openssl.org/source/%{name}-%{version}.tar.gz.asc
+Source0:	http://ftp.openssl.org/source/%{name}-%{version}.tar.gz
+Source1:	http://ftp.openssl.org/source/%{name}-%{version}.tar.gz.asc
 Source2:	Makefile.certificate
 Source3:	make-dummy-cert
 Source4:	openssl-thread-test.c
