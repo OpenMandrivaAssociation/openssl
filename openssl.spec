@@ -10,7 +10,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	1.0.1r
-Release:	0.1
+Release:	0.2
 License:	BSD-like
 Group:		System/Libraries
 Url:		http://www.openssl.org/
@@ -182,7 +182,7 @@ sslarch=linux-generic32
 	--prefix=%{_prefix} \
 	--libdir=%{_lib}/ \
 	%{?_with_krb5:--with-krb5-flavor=MIT -I%{_prefix}/kerberos/include -L%{_prefix}/kerberos/%{_lib}} \
-	zlib no-idea no-rc5 enable-camellia enable-seed enable-tlsext enable-rfc3779 enable-cms sctp shared ${sslarch}
+	zlib no-idea no-rc5 enable-camellia enable-seed enable-tlsext enable-rfc3779 enable-cms enable-ssl2 sctp shared ${sslarch}
 
 # Add -Wa,--noexecstack here so that libcrypto's assembler modules will be
 # marked as not requiring an executable stack.
