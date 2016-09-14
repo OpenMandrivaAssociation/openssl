@@ -1,5 +1,11 @@
 UTF8 := $(shell locale -c LC_CTYPE -k | grep -q charmap.*UTF-8 && echo -utf8)
-SERIAL=0
+DAYS=365
+KEYLEN=2048
+TYPE=rsa:$(KEYLEN)
+EXTRA_FLAGS=
+ifdef SERIAL
+	EXTRA_FLAGS+=-set_serial $(SERIAL)
+endif
 
 .PHONY: usage
 .SUFFIXES: .key .csr .crt .pem
@@ -20,7 +26,9 @@ usage:
 	@echo "To create a CSR for use with Apache, run \"make certreq\"."
 	@echo "To create a test certificate for use with Apache, run \"make testcert\"."
 	@echo
-	@echo "To create a test certificate with serial number other than zero, add SERIAL=num"
+	@echo "To create a test certificate with serial number other than random, add SERIAL=num"
+	@echo "You can also specify key length with KEYLEN=n and expiration in days with DAYS=n"
+	@echo "Any additional options can be passed to openssl req via EXTRA_FLAGS"
 	@echo
 	@echo Examples:
 	@echo "  make server.key"
@@ -31,14 +39,14 @@ usage:
 	@echo "  make certreq"
 	@echo "  make testcert"
 	@echo "  make server.crt SERIAL=1"
-	@echo "  make stunnel.pem SERIAL=2"
-	@echo "  make testcert SERIAL=3"
+	@echo "  make stunnel.pem EXTRA_FLAGS=-sha384"
+	@echo "  make testcert DAYS=600"
 
 %.pem:
 	umask 77 ; \
 	PEM1=`/bin/mktemp /tmp/openssl.XXXXXX` ; \
 	PEM2=`/bin/mktemp /tmp/openssl.XXXXXX` ; \
-	/usr/bin/openssl req $(UTF8) -newkey rsa:1024 -keyout $$PEM1 -nodes -x509 -days 365 -out $$PEM2 -set_serial $(SERIAL) ; \
+	/usr/bin/openssl req $(UTF8) -newkey $(TYPE) -keyout $$PEM1 -nodes -x509 -days $(DAYS) -out $$PEM2 $(EXTRA_FLAGS) ; \
 	cat $$PEM1 >  $@ ; \
 	echo ""    >> $@ ; \
 	cat $$PEM2 >> $@ ; \
@@ -46,7 +54,7 @@ usage:
 
 %.key:
 	umask 77 ; \
-	/usr/bin/openssl genrsa -des3 1024 > $@
+	/usr/bin/openssl genrsa -aes128 $(KEYLEN) > $@
 
 %.csr: %.key
 	umask 77 ; \
@@ -54,7 +62,7 @@ usage:
 
 %.crt: %.key
 	umask 77 ; \
-	/usr/bin/openssl req $(UTF8) -new -key $^ -x509 -days 365 -out $@ -set_serial $(SERIAL)
+	/usr/bin/openssl req $(UTF8) -new -key $^ -x509 -days $(DAYS) -out $@ $(EXTRA_FLAGS)
 
 TLSROOT=/etc/pki/tls
 KEY=$(TLSROOT)/private/localhost.key
@@ -71,4 +79,4 @@ $(CSR): $(KEY)
 
 $(CRT): $(KEY)
 	umask 77 ; \
-	/usr/bin/openssl req $(UTF8) -new -key $(KEY) -x509 -days 365 -out $(CRT) -set_serial $(SERIAL)
+	/usr/bin/openssl req $(UTF8) -new -key $(KEY) -x509 -days $(DAYS) -out $(CRT) $(EXTRA_FLAGS)
