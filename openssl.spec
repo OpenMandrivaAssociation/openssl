@@ -74,6 +74,7 @@ Patch41: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/open
 # Backported fixes including security fixes
 ### OpenMandriva specific patches
 Patch100: openssl-0.9.8-beta6-icpbrasil.diff
+Patch101: openssl-1.1.0-eventfd2.patch
 
 License: OpenSSL
 Group: System/Libraries
