@@ -1,6 +1,5 @@
-diff -up openssl-1.1.0-pre6/crypto/conf/conf_api.c.secure-getenv openssl-1.1.0-pre6/crypto/conf/conf_api.c
---- openssl-1.1.0-pre6/crypto/conf/conf_api.c.secure-getenv	2016-08-04 16:00:45.000000000 +0200
-+++ openssl-1.1.0-pre6/crypto/conf/conf_api.c	2016-08-05 16:53:07.143550291 +0200
+--- openssl-1.1.0a/crypto/conf/conf_api.c.0036~	2016-09-22 12:14:51.000000000 +0200
++++ openssl-1.1.0a/crypto/conf/conf_api.c	2016-09-22 16:39:58.243665219 +0200
 @@ -9,6 +9,8 @@
  
  /* Part of the code in here was originally in conf.c, which is now removed */
@@ -28,9 +27,8 @@ diff -up openssl-1.1.0-pre6/crypto/conf/conf_api.c.secure-getenv openssl-1.1.0-p
  }
  
  static unsigned long conf_value_hash(const CONF_VALUE *v)
-diff -up openssl-1.1.0-pre6/crypto/conf/conf_mod.c.secure-getenv openssl-1.1.0-pre6/crypto/conf/conf_mod.c
---- openssl-1.1.0-pre6/crypto/conf/conf_mod.c.secure-getenv	2016-08-04 16:00:45.000000000 +0200
-+++ openssl-1.1.0-pre6/crypto/conf/conf_mod.c	2016-08-05 16:54:39.693666129 +0200
+--- openssl-1.1.0a/crypto/conf/conf_mod.c.0036~	2016-09-22 12:14:51.000000000 +0200
++++ openssl-1.1.0a/crypto/conf/conf_mod.c	2016-09-22 16:39:58.243665219 +0200
 @@ -7,6 +7,8 @@
   * https://www.openssl.org/source/license.html
   */
@@ -49,9 +47,8 @@ diff -up openssl-1.1.0-pre6/crypto/conf/conf_mod.c.secure-getenv openssl-1.1.0-p
      if (file)
          return OPENSSL_strdup(file);
  
-diff -up openssl-1.1.0-pre6/crypto/engine/eng_list.c.secure-getenv openssl-1.1.0-pre6/crypto/engine/eng_list.c
---- openssl-1.1.0-pre6/crypto/engine/eng_list.c.secure-getenv	2016-08-04 16:00:45.000000000 +0200
-+++ openssl-1.1.0-pre6/crypto/engine/eng_list.c	2016-08-05 16:53:07.144550313 +0200
+--- openssl-1.1.0a/crypto/engine/eng_list.c.0036~	2016-09-22 12:14:52.000000000 +0200
++++ openssl-1.1.0a/crypto/engine/eng_list.c	2016-09-22 16:39:58.243665219 +0200
 @@ -13,6 +13,8 @@
   * SUN MICROSYSTEMS, INC., and contributed to the OpenSSL project.
   */
@@ -70,9 +67,8 @@ diff -up openssl-1.1.0-pre6/crypto/engine/eng_list.c.secure-getenv openssl-1.1.0
              load_dir = ENGINESDIR;
          iterator = ENGINE_by_id("dynamic");
          if (!iterator || !ENGINE_ctrl_cmd_string(iterator, "ID", id, 0) ||
-diff -up openssl-1.1.0-pre6/crypto/rand/randfile.c.secure-getenv openssl-1.1.0-pre6/crypto/rand/randfile.c
---- openssl-1.1.0-pre6/crypto/rand/randfile.c.secure-getenv	2016-08-05 16:53:07.144550313 +0200
-+++ openssl-1.1.0-pre6/crypto/rand/randfile.c	2016-08-05 17:00:01.748028788 +0200
+--- openssl-1.1.0a/crypto/rand/randfile.c.0036~	2016-09-22 12:14:52.000000000 +0200
++++ openssl-1.1.0a/crypto/rand/randfile.c	2016-09-22 16:40:45.003938946 +0200
 @@ -7,6 +7,8 @@
   * https://www.openssl.org/source/license.html
   */
@@ -82,25 +78,26 @@ diff -up openssl-1.1.0-pre6/crypto/rand/randfile.c.secure-getenv openssl-1.1.0-p
  #include "internal/cryptlib.h"
  
  #include <errno.h>
-@@ -316,12 +318,10 @@ const char *RAND_file_name(char *buf, si
+@@ -316,14 +318,10 @@ const char *RAND_file_name(char *buf, si
          }
      }
  #else
--    if (OPENSSL_issetugid() == 0) {
--        s = getenv("RANDFILE");
--    } else {
+-    if (OPENSSL_issetugid() != 0) {
 +    s = secure_getenv("RANDFILE");
-+    if (s == NULL) {
++    if (s == NULL || *s == '\0') {
          use_randfile = 0;
--        if (OPENSSL_issetugid() == 0)
+-    } else {
+-        s = getenv("RANDFILE");
+-        if (s == NULL || *s == '\0') {
+-            use_randfile = 0;
 -            s = getenv("HOME");
+-        }
 +        s = secure_getenv("HOME");
      }
  #endif
  #ifdef DEFAULT_HOME
-diff -up openssl-1.1.0-pre6/crypto/x509/by_dir.c.secure-getenv openssl-1.1.0-pre6/crypto/x509/by_dir.c
---- openssl-1.1.0-pre6/crypto/x509/by_dir.c.secure-getenv	2016-08-04 16:00:46.000000000 +0200
-+++ openssl-1.1.0-pre6/crypto/x509/by_dir.c	2016-08-05 17:00:50.787149898 +0200
+--- openssl-1.1.0a/crypto/x509/by_dir.c.0036~	2016-09-22 12:14:52.000000000 +0200
++++ openssl-1.1.0a/crypto/x509/by_dir.c	2016-09-22 16:39:58.243665219 +0200
 @@ -7,6 +7,8 @@
   * https://www.openssl.org/source/license.html
   */
@@ -119,9 +116,8 @@ diff -up openssl-1.1.0-pre6/crypto/x509/by_dir.c.secure-getenv openssl-1.1.0-pre
              if (dir)
                  ret = add_cert_dir(ld, dir, X509_FILETYPE_PEM);
              else
-diff -up openssl-1.1.0-pre6/crypto/x509/by_file.c.secure-getenv openssl-1.1.0-pre6/crypto/x509/by_file.c
---- openssl-1.1.0-pre6/crypto/x509/by_file.c.secure-getenv	2016-08-04 16:00:46.000000000 +0200
-+++ openssl-1.1.0-pre6/crypto/x509/by_file.c	2016-08-05 17:01:18.127774947 +0200
+--- openssl-1.1.0a/crypto/x509/by_file.c.0036~	2016-09-22 12:14:52.000000000 +0200
++++ openssl-1.1.0a/crypto/x509/by_file.c	2016-09-22 16:39:58.243665219 +0200
 @@ -7,6 +7,8 @@
   * https://www.openssl.org/source/license.html
   */
