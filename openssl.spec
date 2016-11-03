@@ -30,7 +30,7 @@
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
 Version: 1.1.0b
-Release: 1
+Release: 2
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
 # The original openssl upstream tarball cannot be shipped in the .src.rpm.
@@ -79,12 +79,20 @@ Patch101: openssl-1.1.0-eventfd2.patch
 License: OpenSSL
 Group: System/Libraries
 URL: http://www.openssl.org/
-BuildRequires: coreutils, krb5-devel, perl, sed, zlib-devel, /usr/bin/cmp
+BuildRequires: coreutils
+BuildRequires: krb5-devel
+BuildRequires: perl
+BuildRequires: sed
+BuildRequires: zlib-devel
+BuildRequires: /usr/bin/cmp
 BuildRequires: lksctp-tools-devel
 BuildRequires: /usr/bin/rename
 BuildRequires: /usr/bin/pod2man
-BuildRequires: perl(Test::Harness), perl(Test::More), perl(Math::BigInt)
-Requires: coreutils, make
+BuildRequires: perl(Test::Harness)
+BuildRequires: perl(Test::More)
+BuildRequires: perl(Math::BigInt)
+Requires: coreutils
+Requires: make
 
 %description
 The OpenSSL toolkit provides support for secure communications between
@@ -134,6 +142,14 @@ OpenSSL is a toolkit for supporting cryptography. The openssl-perl
 package provides Perl scripts for converting certificates and keys
 from other formats to the formats used by the OpenSSL toolkit.
 
+%package doc
+Summary: OpenSSL documentation
+Group: Books/Other
+Requires: %{name} = %{EVRD}
+
+%description doc
+OpenSSL documentation.
+
 %prep
 %setup -q
 cp %{SOURCE12} crypto/ec/
@@ -151,7 +167,7 @@ sslarch=%{_os}-%{_target_cpu}
 %ifarch %ix86
 sslarch=linux-elf
 if ! echo %{_target} | grep -q i686 ; then
-	sslflags="no-asm 386"
+    sslflags="no-asm 386"
 fi
 %endif
 %ifarch x86_64
@@ -265,9 +281,9 @@ make DESTDIR=%{buildroot} install
 rename so.%{soversion} so.%{version} %{buildroot}%{_libdir}/*.so.%{soversion}
 mkdir %{buildroot}/%{_lib}
 for lib in %{buildroot}%{_libdir}/*.so.%{version} ; do
-	chmod 755 ${lib}
-	ln -s -f `basename ${lib}` %{buildroot}%{_libdir}/`basename ${lib} .%{version}`
-	ln -s -f `basename ${lib}` %{buildroot}%{_libdir}/`basename ${lib} .%{version}`.%{soversion}
+    chmod 755 ${lib}
+    ln -s -f `basename ${lib}` %{buildroot}%{_libdir}/`basename ${lib} .%{version}`
+    ln -s -f `basename ${lib}` %{buildroot}%{_libdir}/`basename ${lib} .%{version}`.%{soversion}
 done
 
 # Install a makefile for generating keys and self-signed certs, and a script
@@ -283,25 +299,25 @@ mv %{buildroot}%{_sysconfdir}/pki/tls/misc/tsget %{buildroot}%{_bindir}
 
 # Make sure we actually include the headers we built against.
 for header in %{buildroot}%{_includedir}/openssl/* ; do
-	if [ -f ${header} -a -f include/openssl/$(basename ${header}) ] ; then
-		install -m644 include/openssl/`basename ${header}` ${header}
-	fi
+    if [ -f ${header} -a -f include/openssl/$(basename ${header}) ] ; then
+	install -m644 include/openssl/`basename ${header}` ${header}
+    fi
 done
 
 # Rename man pages so that they don't conflict with other system man pages.
 pushd %{buildroot}%{_mandir}
 ln -s -f config.5 man5/openssl.cnf.5
 for manpage in man*/* ; do
-	if [ -L ${manpage} ]; then
-		TARGET=`ls -l ${manpage} | awk '{ print $NF }'`
-		ln -snf ${TARGET}ssl ${manpage}ssl
-		rm -f ${manpage}
-	else
-		mv ${manpage} ${manpage}ssl
-	fi
+    if [ -L ${manpage} ]; then
+	TARGET=`ls -l ${manpage} | awk '{ print $NF }'`
+	ln -snf ${TARGET}ssl ${manpage}ssl
+	rm -f ${manpage}
+    else
+	mv ${manpage} ${manpage}ssl
+    fi
 done
 for conflict in passwd rand ; do
-	rename ${conflict} ssl${conflict} man*/${conflict}*
+    rename ${conflict} ssl${conflict} man*/${conflict}*
 done
 popd
 
@@ -354,7 +370,6 @@ export LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 %defattr(-,root,root)
 %{!?_licensedir:%global license %%doc}
 %license LICENSE
-%doc FAQ NEWS README README.FIPS
 %{_bindir}/make-dummy-cert
 %{_bindir}/renew-dummy-cert
 %{_sysconfdir}/pki/tls/certs/Makefile
@@ -371,10 +386,9 @@ export LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 %files -n %{engines_name}
 %dir %{_libdir}/engines-%{soversion}
 %{_libdir}/engines-%{soversion}/*.so
-
 %files -n %{devname}
 %defattr(-,root,root)
-%doc CHANGES doc/dir-locals.example.el doc/openssl-c-indent.el
+
 %{_includedir}/openssl
 %attr(0755,root,root) %{_libdir}/*.so
 %attr(0644,root,root) %{_mandir}/man3*/*
@@ -395,3 +409,7 @@ export LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 %dir %{_sysconfdir}/pki/CA/certs
 %dir %{_sysconfdir}/pki/CA/crl
 %dir %{_sysconfdir}/pki/CA/newcerts
+
+%files doc
+%doc CHANGES doc/dir-locals.example.el doc/openssl-c-indent.el
+%doc FAQ NEWS README README.FIPS
