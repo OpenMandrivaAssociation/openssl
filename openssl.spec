@@ -12,7 +12,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	1.0.2j
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		System/Libraries
 Url:		http://www.openssl.org/
@@ -109,6 +109,14 @@ Conflicts:	%{name} < 1.0.1e-3
 %description perl
 The openssl-perl package provides Perl scripts for converting certificates and
 keys from other formats to the formats used by the OpenSSL toolkit.
+
+%package doc
+Summary: OpenSSL documentation
+Group: Books/Other
+Requires: %{name} = %{EVRD}
+
+%description doc
+OpenSSL documentation.
 
 %prep
 %setup -q
@@ -294,8 +302,6 @@ perl -pi -e "s|^\\\$CATOP\=\".*|\\\$CATOP\=\"%{_sysconfdir}/pki/tls\";|g" %{buil
 perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pki/tls/openssl.cnf
 
 %files
-%doc FAQ INSTALL LICENSE NEWS PROBLEMS main-doc-info/README*
-%doc README README.ASN1 README.ENGINE
 %dir %{_libdir}/%{name}-%{version}
 %dir %{_sysconfdir}/pki
 %dir %{_sysconfdir}/pki/CA
@@ -332,8 +338,6 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 %{_libdir}/openssl-%{version}/engines/*.so
 
 %files -n %{devname}
-%doc CHANGES doc/* devel-doc-info/README*
-%doc FAQ INSTALL LICENSE NEWS PROBLEMS README*
 %dir %{_includedir}/openssl
 %{multiarch_includedir}/openssl/opensslconf.h
 %{_includedir}/openssl/*
@@ -344,3 +348,7 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 %files -n %{staticname}
 %{_libdir}/lib*.a
 
+%files doc
+%doc CHANGES doc/* devel-doc-info/README*
+%doc README*
+%doc FAQ INSTALL LICENSE NEWS PROBLEMS main-doc-info/README*
