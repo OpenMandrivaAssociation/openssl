@@ -1,16 +1,7 @@
---- openssl-1.1.0a/Configurations/10-main.conf.0001~	2016-09-22 12:14:51.000000000 +0200
-+++ openssl-1.1.0a/Configurations/10-main.conf	2016-09-22 15:43:52.465320907 +0200
-@@ -655,6 +655,7 @@ sub vms_info {
-         cflags           => add("-m64 -DL_ENDIAN"),
-         perlasm_scheme   => "linux64le",
-         shared_ldflag    => "-m64",
-+        multilib         => "64",
-     },
- 
-     "linux-armv4" => {
---- openssl-1.1.0a/Configurations/unix-Makefile.tmpl.0001~	2016-09-22 12:14:51.000000000 +0200
-+++ openssl-1.1.0a/Configurations/unix-Makefile.tmpl	2016-09-22 15:43:52.465320907 +0200
-@@ -640,7 +640,7 @@ install_man_docs:
+diff -up openssl-1.1.0c/Configurations/unix-Makefile.tmpl.build openssl-1.1.0c/Configurations/unix-Makefile.tmpl
+--- openssl-1.1.0c/Configurations/unix-Makefile.tmpl.build	2016-11-10 15:03:43.000000000 +0100
++++ openssl-1.1.0c/Configurations/unix-Makefile.tmpl	2016-11-11 13:26:36.094400833 +0100
+@@ -630,7 +630,7 @@ install_man_docs:
  	@\
  	OUTSUFFIX='.$${SEC}$(MANSUFFIX)'; \
  	OUTTOP="$(DESTDIR)$(MANDIR)"; \
@@ -19,8 +10,70 @@
  	$(PROCESS_PODS)
  
  uninstall_man_docs:
---- openssl-1.1.0a/test/ecdhtest.c.0001~	2016-09-22 12:14:54.000000000 +0200
-+++ openssl-1.1.0a/test/ecdhtest.c	2016-09-22 15:43:52.466320907 +0200
+diff -up openssl-1.1.0c/Configurations/10-main.conf.build openssl-1.1.0c/Configurations/10-main.conf
+--- openssl-1.1.0c/Configurations/10-main.conf.build	2016-11-10 15:03:43.000000000 +0100
++++ openssl-1.1.0c/Configurations/10-main.conf	2016-11-11 13:29:26.502289226 +0100
+@@ -656,6 +656,7 @@ sub vms_info {
+         cflags           => add("-m64 -DL_ENDIAN"),
+         perlasm_scheme   => "linux64le",
+         shared_ldflag    => add("-m64"),
++        multilib         => "64",
+     },
+ 
+     "linux-armv4" => {
+@@ -696,6 +697,7 @@ sub vms_info {
+     "linux-aarch64" => {
+         inherit_from     => [ "linux-generic64", asm("aarch64_asm") ],
+         perlasm_scheme   => "linux64",
++        multilib         => "64",
+     },
+     "linux-arm64ilp32" => {  # https://wiki.linaro.org/Platform/arm64-ilp32
+         inherit_from     => [ "linux-generic32", asm("aarch64_asm") ],
+diff -up openssl-1.1.0c/crypto/ec/ec_lib.c.build openssl-1.1.0c/crypto/ec/ec_lib.c
+--- openssl-1.1.0c/crypto/ec/ec_lib.c.build	2016-11-10 15:03:44.000000000 +0100
++++ openssl-1.1.0c/crypto/ec/ec_lib.c	2016-11-11 13:26:36.097400901 +0100
+@@ -74,9 +74,6 @@ void EC_pre_comp_free(EC_GROUP *group)
+         break;
+ #endif
+ #ifndef OPENSSL_NO_EC_NISTP_64_GCC_128
+-    case PCT_nistp224:
+-        EC_nistp224_pre_comp_free(group->pre_comp.nistp224);
+-        break;
+     case PCT_nistp256:
+         EC_nistp256_pre_comp_free(group->pre_comp.nistp256);
+         break;
+@@ -152,9 +149,6 @@ int EC_GROUP_copy(EC_GROUP *dest, const
+         break;
+ #endif
+ #ifndef OPENSSL_NO_EC_NISTP_64_GCC_128
+-    case PCT_nistp224:
+-        dest->pre_comp.nistp224 = EC_nistp224_pre_comp_dup(src->pre_comp.nistp224);
+-        break;
+     case PCT_nistp256:
+         dest->pre_comp.nistp256 = EC_nistp256_pre_comp_dup(src->pre_comp.nistp256);
+         break;
+diff -up openssl-1.1.0c/test/ecdhtest_cavs.h.build openssl-1.1.0c/test/ecdhtest_cavs.h
+--- openssl-1.1.0c/test/ecdhtest_cavs.h.build	2016-11-11 13:26:36.079400491 +0100
++++ openssl-1.1.0c/test/ecdhtest_cavs.h	2016-11-11 13:26:36.097400901 +0100
+@@ -29,6 +29,7 @@ typedef struct {
+ 
+ static const ecdh_cavs_kat_t ecdh_cavs_kats[] = {
+     /* curves over prime fields go here */
++#if 0
+     { NID_X9_62_prime192v1,
+     "42ea6dd9969dd2a61fea1aac7f8e98edcc896c6e55857cc0",
+     "dfbe5d7c61fac88b11811bde328e8a0d12bf01a9d204b523",
+@@ -379,6 +380,7 @@ static const ecdh_cavs_kat_t ecdh_cavs_k
+     "a6b29632db94da2125dc1cf80e03702687b2acc1122022fa2174765a",
+     "61723edd73e10daed73775278f1958ba56f1fc9d085ebc2b64c84fe5",
+     "71954e2261e8510be1a060733671d2e9d0a2d012eb4e09556d697d2a" },
++#endif
+     { NID_X9_62_prime256v1,
+     "700c48f77f56584c5cc632ca65640db91b6bacce3a4df6b42ce7cc838833d287",
+     "db71e509e3fd9b060ddb20ba5c51dcc5948d46fbf640dfe0441782cab85fa4ac",
+diff -up openssl-1.1.0c/test/ecdhtest.c.build openssl-1.1.0c/test/ecdhtest.c
+--- openssl-1.1.0c/test/ecdhtest.c.build	2016-11-10 15:03:47.000000000 +0100
++++ openssl-1.1.0c/test/ecdhtest.c	2016-11-11 13:26:36.097400901 +0100
 @@ -252,6 +252,7 @@ typedef struct {
  
  static const ecdh_kat_t ecdh_kats[] = {
@@ -53,26 +106,9 @@
  };
  
  /* Given private value and NID, create EC_KEY structure */
---- openssl-1.1.0a/test/ecdhtest_cavs.h.0001~	2016-09-22 12:14:54.000000000 +0200
-+++ openssl-1.1.0a/test/ecdhtest_cavs.h	2016-09-22 15:43:52.466320907 +0200
-@@ -29,6 +29,7 @@ typedef struct {
- 
- static const ecdh_cavs_kat_t ecdh_cavs_kats[] = {
-     /* curves over prime fields go here */
-+#if 0
-     { NID_X9_62_prime192v1,
-     "42ea6dd9969dd2a61fea1aac7f8e98edcc896c6e55857cc0",
-     "dfbe5d7c61fac88b11811bde328e8a0d12bf01a9d204b523",
-@@ -379,6 +380,7 @@ static const ecdh_cavs_kat_t ecdh_cavs_k
-     "a6b29632db94da2125dc1cf80e03702687b2acc1122022fa2174765a",
-     "61723edd73e10daed73775278f1958ba56f1fc9d085ebc2b64c84fe5",
-     "71954e2261e8510be1a060733671d2e9d0a2d012eb4e09556d697d2a" },
-+#endif
-     { NID_X9_62_prime256v1,
-     "700c48f77f56584c5cc632ca65640db91b6bacce3a4df6b42ce7cc838833d287",
-     "db71e509e3fd9b060ddb20ba5c51dcc5948d46fbf640dfe0441782cab85fa4ac",
---- openssl-1.1.0a/test/ecdsatest.c.0001~	2016-09-22 12:14:54.000000000 +0200
-+++ openssl-1.1.0a/test/ecdsatest.c	2016-09-22 15:43:52.466320907 +0200
+diff -up openssl-1.1.0c/test/ecdsatest.c.build openssl-1.1.0c/test/ecdsatest.c
+--- openssl-1.1.0c/test/ecdsatest.c.build	2016-11-10 15:03:47.000000000 +0100
++++ openssl-1.1.0c/test/ecdsatest.c	2016-11-11 13:26:36.097400901 +0100
 @@ -216,6 +216,7 @@ int x9_62_tests(BIO *out)
      if (!change_rand())
          goto x962_err;

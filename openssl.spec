@@ -29,52 +29,51 @@
 
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
-Version: 1.1.0b
-Release: 2
+Version: 1.1.0c
+Release: 1
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
 # The original openssl upstream tarball cannot be shipped in the .src.rpm.
 Source0: https://www.openssl.org/source/openssl-%{version}.tar.gz
-Source1: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/hobble-openssl
-Source2: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/Makefile.certificate
-Source6: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/make-dummy-cert
-Source7: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/renew-dummy-cert
-Source8: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-thread-test.c
-Source9: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/opensslconf-new.h
-Source10: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/opensslconf-new-warning.h
-Source11: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/README.FIPS
-Source12: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/ec_curve.c
-Source13: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/ectest.c
+Source1: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/hobble-openssl
+Source2: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/Makefile.certificate
+Source6: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/make-dummy-cert
+Source7: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/renew-dummy-cert
+Source9: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/opensslconf-new.h
+Source10: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/opensslconf-new-warning.h
+Source11: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/README.FIPS
+Source12: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/ec_curve.c
+Source13: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/ectest.c
 # Build changes
-Patch1: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-build.patch
-Patch2: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-defaults.patch
-Patch3: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-no-html.patch
-Patch5: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-no-rpath.patch
+Patch1: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-build.patch
+Patch2: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-defaults.patch
+Patch3: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-no-html.patch
 # Bug fixes
-Patch21: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-issuer-hash.patch
-Patch22: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-algo-doc.patch
-Patch23: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-manfix.patch
+Patch21: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-issuer-hash.patch
+Patch22: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-algo-doc.patch
+Patch23: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-manfix.patch
 # Functionality changes
-Patch31: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-ca-dir.patch
-Patch32: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-version-add-engines.patch
-Patch33: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-apps-dgst.patch
-Patch34: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-starttls-xmpp.patch
-Patch35: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-chil-fixes.patch
-Patch36: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-secure-getenv.patch
-Patch37: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-ec-curves.patch
-Patch38: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-no-md5-verify.patch
-Patch39: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-cc-reqs.patch
-Patch40: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-disable-ssl3.patch
-Patch41: http://copr-dist-git.fedorainfracloud.org/cgit/tmraz/OpenSSL-1.1.0/openssl.git/plain/openssl-1.1.0-fips.patch
+Patch31: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-ca-dir.patch
+Patch32: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-version-add-engines.patch
+Patch33: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-apps-dgst.patch
+Patch34: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-starttls-xmpp.patch
+Patch35: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-chil-fixes.patch
+Patch36: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-secure-getenv.patch
+Patch37: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-ec-curves.patch
+Patch38: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-no-md5-verify.patch
+Patch39: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-cc-reqs.patch
+Patch40: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-disable-ssl3.patch
+Patch41: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-fips.patch
 #Patch47: openssl-1.0.2a-readme-warning.patch FIPS
 #Patch70: openssl-1.0.2a-fips-ec.patch
 #Patch72: openssl-1.0.2a-fips-ctor.patch
 #Patch76: openssl-1.0.2f-new-fips-reqs.patch
-#Patch92: openssl-1.0.2a-system-cipherlist.patch
+Patch92: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-system-cipherlist.patch
 # Backported fixes including security fixes
 ### OpenMandriva specific patches
 Patch100: openssl-0.9.8-beta6-icpbrasil.diff
 Patch101: openssl-1.1.0-eventfd2.patch
+#Patch102: openssl-1.1.0c-fips-linkerscript.patch
 
 License: OpenSSL
 Group: System/Libraries
@@ -229,6 +228,7 @@ RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY"
 # RPM_OPT_FLAGS, so we can skip specifiying them here.
 ./Configure \
 	--prefix=%{_prefix} --libdir=%{_lib} \
+	--system-ciphers-file=%{_sysconfdir}/crypto-policies/back-ends/openssl.config \
 	--openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
 	zlib enable-camellia enable-seed enable-rfc3779 enable-sctp \
 	enable-cms enable-md2 enable-rc5 enable-ssl3 enable-ssl3-method \
@@ -236,9 +236,7 @@ RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY"
 	shared  ${sslarch} $RPM_OPT_FLAGS
 
 #	 %{?!nofips:fips}
-
-#	--system-ciphers-file=%{_sysconfdir}/crypto-policies/back-ends/openssl.config \
-
+util/mkdef.pl crypto update
 %make all
 
 # Overwrite FIPS README

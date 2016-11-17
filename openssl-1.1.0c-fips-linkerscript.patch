@@ -1,0 +1,41 @@
+--- openssl-1.1.0c/util/libcrypto.num.omv~	2016-11-17 12:42:21.181137214 +0100
++++ openssl-1.1.0c/util/libcrypto.num	2016-11-17 13:06:19.746171547 +0100
+@@ -4208,3 +4208,38 @@ OCSP_RESPID_set_by_key
+ OCSP_RESPID_match                       4159	1_1_0a	EXIST::FUNCTION:OCSP
+ DSO_pathbyaddr                          4170	1_1_0c	EXIST::FUNCTION:
+ DSO_dsobyaddr                           4171	1_1_0c	EXIST::FUNCTION:
++ERR_load_FIPS_strings			5000	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_free				5001	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_generate			5002	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_get_app_data			5003	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_get_blocklength		5004	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_get_strength			5005	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_health_check			5006	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_init				5007	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_instantiate			5008	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_method			5009	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_new				5010	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_reseed			5011	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_set_app_data			5012	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_set_callbacks			5013	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_set_check_interval		5014	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_set_rand_callbacks		5015	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_set_reseed_interval		5016	1_1_0c	EXIST::FUNCTION:
++FIPS_drbg_uninstantiate			5017	1_1_0c	EXIST::FUNCTION:
++FIPS_dsa_builtin_paramgen2		5018	1_1_0c	EXIST::FUNCTION:
++FIPS_dsa_paramgen_check_g		5019	1_1_0c	EXIST::FUNCTION:
++FIPS_get_default_drbg			5020	1_1_0c	EXIST::FUNCTION:
++FIPS_rand_bytes				5021	1_1_0c	EXIST::FUNCTION:
++FIPS_rand_get_method			5022	1_1_0c	EXIST::FUNCTION:
++FIPS_rand_reset				5023	1_1_0c	EXIST::FUNCTION:
++FIPS_rand_seed				5024	1_1_0c	EXIST::FUNCTION:
++FIPS_rand_set_bits			5025	1_1_0c	EXIST::FUNCTION:
++FIPS_rand_set_method			5026	1_1_0c	EXIST::FUNCTION:
++FIPS_rand_status			5027	1_1_0c	EXIST::FUNCTION:
++FIPS_rand_strength			5028	1_1_0c	EXIST::FUNCTION:
++FIPS_selftest				5029	1_1_0c	EXIST::FUNCTION:
++FIPS_selftest_check			5030	1_1_0c	EXIST::FUNCTION:
++FIPS_selftest_drbg_all			5031	1_1_0c	EXIST::FUNCTION:
++FIPS_selftest_failed			5032	1_1_0c	EXIST::FUNCTION:
++RAND_init_fips				5033	1_1_0c	EXIST::FUNCTION:
++RAND_set_fips_drbg_type			5034	1_1_0c	EXIST::FUNCTION:

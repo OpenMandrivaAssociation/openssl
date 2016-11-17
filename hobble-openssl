@@ -31,11 +31,6 @@ for c in `find crypto/ec -name "ec2*.c" -o -name "ec_curve.c" -o -name "ecp_nist
 	> $c
 done
 
-for c in `find crypto/ec -name "ec2*.c" -o -name "ec_curve.c" -o -name "ecp_nistp22?.c"`; do
-	echo Destroying $c
-	> $c
-done
-
 for c in `find test -name "ectest.c"`; do
 	echo Destroying $c
 	> $c
