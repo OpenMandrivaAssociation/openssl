@@ -9,7 +9,7 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	1.0.1u
+Version:	1.0.2j
 Release:	0.1
 License:	BSD-like
 Group:		System/Libraries
@@ -20,25 +20,22 @@ Source2:	Makefile.certificate
 Source3:	make-dummy-cert
 Source4:	openssl-thread-test.c
 # (gb) 0.9.7b-4mdk: Handle RPM_OPT_FLAGS in Configure
-Patch2:		openssl-1.0.1q-optflags.patch
+Patch2:		openssl-1.0.2e-optflags.patch
 # (oe) support Brazilian Government OTHERNAME X509v3 field (#14158)
 # http://www.iti.gov.br/resolucoes/RESOLU__O_13_DE_26_04_2002.PDF
 Patch6:		openssl-0.9.8-beta6-icpbrasil.diff
 Patch7:		openssl-1.0.0-defaults.patch
 Patch8:		openssl-0.9.8a-link-krb5.patch
 Patch10:	openssl-0.9.7-beta6-ia64.patch
-Patch12:	openssl-1.0.1m-x509.patch
-Patch13:	openssl-1.0.1m-version-add-engines.patch
-# http://qa.mandriva.com/show_bug.cgi?id=32621
-Patch15:	openssl-0.9.8e-crt.patch
+Patch12:	openssl-0.9.6-x509.patch
+Patch13:	openssl-0.9.7-beta5-version-add-engines.patch
 Patch16:	openssl-1.0.1c-fix-perlpath.pl
 # MIPS and ARM support
-Patch300:	openssl-1.0.0-mips.patch
-Patch301:	openssl-1.0.0-arm.patch
+Patch300:	openssl-1.0.2a-mips.patch
+Patch301:	openssl-1.0.2a-arm.patch
 Patch302:	openssl-1.0.0-enginesdir.patch
 Patch303:	openssl-0.9.8a-no-rpath.patch
-Patch304:	openssl-1.0.1m-test-use-localhost.patch
-Patch305:	openssl-aarch64.patch
+Patch304:	openssl-1.0.1-test-use-localhost.diff
 # (tv) for test suite:
 BuildRequires:	bc
 BuildRequires:	makedepend
@@ -112,24 +109,30 @@ Conflicts:	%{name} < 1.0.1e-3
 The openssl-perl package provides Perl scripts for converting certificates and
 keys from other formats to the formats used by the OpenSSL toolkit.
 
+%package doc
+Summary: OpenSSL documentation
+Group: Books/Other
+Requires: %{name} = %{EVRD}
+
+%description doc
+OpenSSL documentation.
+
 %prep
 %setup -q
 %patch2 -p1 -b .optflags
-%patch6 -p0 -b .icpbrasil
+%patch6 -p1 -b .icpbrasil
 %patch7 -p1 -b .defaults
 %{?_with_krb5:%patch8 -p1 -b .krb5}
 #patch10 -p0 -b .ia64
 %patch12 -p1 -b .x509
-#patch13 -p1 -b .version-add-engines
-%patch15 -p1 -b .crt
+%patch13 -p1 -b .version-add-engines
 %patch16 -p1 -b .perlfind~
 
-#patch300 -p0 -b .mips
-#patch301 -p0 -b .arm
+%patch300 -p1 -b .mips
+%patch301 -p1 -b .arm
 %patch302 -p1 -b .engines
 %patch303 -p1 -b .no-rpath
 %patch304 -p1 -b .test-use-localhost
-#patch305 -p1 -b .aarch64
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
@@ -298,8 +301,6 @@ perl -pi -e "s|^\\\$CATOP\=\".*|\\\$CATOP\=\"%{_sysconfdir}/pki/tls\";|g" %{buil
 perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pki/tls/openssl.cnf
 
 %files
-%doc FAQ INSTALL LICENSE NEWS PROBLEMS main-doc-info/README*
-%doc README README.ASN1 README.ENGINE
 %dir %{_libdir}/%{name}-%{version}
 %dir %{_sysconfdir}/pki
 %dir %{_sysconfdir}/pki/CA
@@ -336,8 +337,6 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 %{_libdir}/openssl-%{version}/engines/*.so
 
 %files -n %{devname}
-%doc CHANGES doc/* devel-doc-info/README*
-%doc FAQ INSTALL LICENSE NEWS PROBLEMS README*
 %dir %{_includedir}/openssl
 %{multiarch_includedir}/openssl/opensslconf.h
 %{_includedir}/openssl/*
@@ -348,3 +347,7 @@ perl -pi -e "s|\./demoCA|%{_sysconfdir}/pki/tls|g" %{buildroot}%{_sysconfdir}/pk
 %files -n %{staticname}
 %{_libdir}/lib*.a
 
+%files doc
+%doc CHANGES doc/* devel-doc-info/README*
+%doc README*
+%doc FAQ INSTALL LICENSE NEWS PROBLEMS main-doc-info/README*

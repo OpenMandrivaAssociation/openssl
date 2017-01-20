@@ -1,2 +1,3 @@
 sources:
-  openssl-1.0.1u.tar.gz: 93e542696598517862115fbe76a93ab66369661d
+  openssl-1.0.2j.tar.gz: bdfbdb416942f666865fa48fe13c2d0e588df54f
+  openssl-1.0.2j.tar.gz.asc: 111eb6befb4561c14137b1b36db0ba8988c0ee87

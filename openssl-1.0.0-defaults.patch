@@ -1,16 +1,14 @@
---- openssl-1.0.0i.orig/apps/openssl.cnf	2011-12-06 04:01:00.000000000 +0400
-+++ openssl-1.0.0i/apps/openssl.cnf	2012-04-20 00:19:13.048062134 +0400
-@@ -103,7 +103,8 @@
- 
+--- openssl-1.0.2/apps/openssl.cnf.defaults	2015-01-22 15:58:06.000000000 +0100
++++ openssl-1.0.2/apps/openssl.cnf	2015-01-25 11:27:18.561475929 +0100
+@@ -104,6 +104,7 @@ emailAddress		= optional
  ####################################################################
  [ req ]
--default_bits		= 1024
-+default_bits		= 2048
+ default_bits		= 2048
 +default_md		= sha1
  default_keyfile 	= privkey.pem
  distinguished_name	= req_distinguished_name
  attributes		= req_attributes
-@@ -126,17 +127,18 @@
+@@ -126,17 +127,18 @@ string_mask = utf8only
  
  [ req_distinguished_name ]
  countryName			= Country Name (2 letter code)
