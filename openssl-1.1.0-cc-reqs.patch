@@ -1,7 +1,6 @@
-diff -up openssl-1.1.0-pre5/crypto/rsa/rsa_gen.c.cc-reqs openssl-1.1.0-pre5/crypto/rsa/rsa_gen.c
---- openssl-1.1.0-pre5/crypto/rsa/rsa_gen.c.cc-reqs	2016-04-19 16:57:54.000000000 +0200
-+++ openssl-1.1.0-pre5/crypto/rsa/rsa_gen.c	2016-07-20 17:01:49.929695542 +0200
-@@ -123,6 +123,12 @@ static int rsa_builtin_keygen(RSA *rsa,
+--- openssl-1.1.0d/crypto/rsa/rsa_gen.c.0039~	2017-01-26 14:10:23.000000000 +0100
++++ openssl-1.1.0d/crypto/rsa/rsa_gen.c	2017-01-27 00:30:46.232117990 +0100
+@@ -75,6 +75,12 @@ static int rsa_builtin_keygen(RSA *rsa,
      if (!rsa->iqmp && ((rsa->iqmp = BN_secure_new()) == NULL))
          goto err;
  
@@ -11,10 +10,10 @@ diff -up openssl-1.1.0-pre5/crypto/rsa/rsa_gen.c.cc-reqs openssl-1.1.0-pre5/cryp
 +    if (bitsp > 100 && !BN_lshift(r3, r3, bitsp - 100))
 +        goto err;
 +
-     BN_copy(rsa->e, e_value);
+     if (BN_copy(rsa->e, e_value) == NULL)
+         goto err;
  
-     /* generate p and q */
-@@ -150,7 +156,9 @@ static int rsa_builtin_keygen(RSA *rsa,
+@@ -103,7 +109,9 @@ static int rsa_builtin_keygen(RSA *rsa,
          do {
              if (!BN_generate_prime_ex(rsa->q, bitsq, 0, NULL, NULL, cb))
                  goto err;

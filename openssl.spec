@@ -29,7 +29,7 @@
 
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
-Version: 1.1.0c
+Version: 1.1.0d
 Release: 1
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
@@ -59,7 +59,6 @@ Patch33: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0
 Patch34: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-starttls-xmpp.patch
 Patch35: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-chil-fixes.patch
 Patch36: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-secure-getenv.patch
-Patch37: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-ec-curves.patch
 Patch38: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-no-md5-verify.patch
 Patch39: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-cc-reqs.patch
 Patch40: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-disable-ssl3.patch
