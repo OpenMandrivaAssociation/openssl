@@ -27,6 +27,9 @@
 
 %global _performance_build 1
 
+# Disables krb5 support to avoid circular dependency
+%bcond_without bootstrap
+
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
 Version: 1.1.0d
@@ -78,7 +81,9 @@ License: OpenSSL
 Group: System/Libraries
 URL: http://www.openssl.org/
 BuildRequires: coreutils
+%if ! %{with bootstrap}
 BuildRequires: krb5-devel
+%endif
 BuildRequires: perl
 BuildRequires: sed
 BuildRequires: zlib-devel
