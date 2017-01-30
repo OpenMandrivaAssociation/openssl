@@ -76,6 +76,7 @@ Patch92: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0
 Patch100: openssl-0.9.8-beta6-icpbrasil.diff
 Patch101: openssl-1.1.0-eventfd2.patch
 #Patch102: openssl-1.1.0c-fips-linkerscript.patch
+Patch103: openssl-1.1.0d-clang-asm-buildfix.patch
 
 License: OpenSSL
 Group: System/Libraries
@@ -225,6 +226,11 @@ sslflags=enable-ec_nistp_64_gcc_128
 # Also add -DPURIFY to make using valgrind with openssl easier as we do not
 # want to depend on the uninitialized memory as a source of entropy anyway.
 RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY"
+
+%ifarch %{arm}
+# For Thumb2-isms in ecp_nistz256-armv4
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -no-integrated-as"
+%endif
 
 # ia64, x86_64, ppc are OK by default
 # Configure the build tree.  Override OpenSSL defaults with known-good defaults

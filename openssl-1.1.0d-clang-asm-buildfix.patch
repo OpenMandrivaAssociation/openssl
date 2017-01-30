@@ -1,0 +1,14 @@
+--- openssl-1.1.0d/crypto/modes/asm/ghash-armv4.pl.omv~	2017-01-30 03:09:32.084553292 +0100
++++ openssl-1.1.0d/crypto/modes/asm/ghash-armv4.pl	2017-01-30 03:11:07.837997287 +0100
+@@ -152,11 +152,6 @@ $code=<<___;
+ .code	32
+ #endif
+ 
+-#ifdef  __clang__
+-#define ldrplb  ldrbpl
+-#define ldrneb  ldrbne
+-#endif
+-
+ .type	rem_4bit,%object
+ .align	5
+ rem_4bit:
