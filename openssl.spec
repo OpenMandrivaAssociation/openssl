@@ -230,7 +230,7 @@ RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY"
 # For Thumb2-isms in ecp_nistz256-armv4
 sed -i -e 's,-march=armv7-a,-march=armv7-a -fno-integrated-as,g' config
 %ifarch %{arm}
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY -fno-integrated-as"
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY -fno-integrated-as -fuse-ld=bfd"
 %endif
 
 # ia64, x86_64, ppc are OK by default
