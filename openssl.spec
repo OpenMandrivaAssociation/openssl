@@ -84,12 +84,12 @@ URL: http://www.openssl.org/
 BuildRequires: coreutils
 %if ! %{with bootstrap}
 BuildRequires: krb5-devel
+BuildRequires: lksctp-tools-devel
 %endif
 BuildRequires: perl
 BuildRequires: sed
 BuildRequires: zlib-devel
 BuildRequires: /usr/bin/cmp
-BuildRequires: lksctp-tools-devel
 BuildRequires: /usr/bin/rename
 BuildRequires: /usr/bin/pod2man
 BuildRequires: perl(Test::Harness)
