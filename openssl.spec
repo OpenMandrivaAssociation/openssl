@@ -162,7 +162,9 @@ cp %{SOURCE13} test/
 %apply_patches
 
 sed -i -e 's|-O3 -fomit-frame-pointer|%{optflags}|g' Configurations/10-main.conf
+%ifnarch %{arm}
 sed -i -e 's,"gcc,"%{__cc},g' Configurations/10-main.conf
+%endif
 
 %build
 # Figure out which flags we want to use.
@@ -230,7 +232,7 @@ RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY"
 # For Thumb2-isms in ecp_nistz256-armv4
 sed -i -e 's,-march=armv7-a,-march=armv7-a -fno-integrated-as,g' config
 %ifarch %{arm}
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY -fno-integrated-as -fuse-ld=bfd"
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY"
 %endif
 
 # ia64, x86_64, ppc are OK by default
