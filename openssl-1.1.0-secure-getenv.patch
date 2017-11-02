@@ -1,6 +1,5 @@
-diff -up openssl-1.1.0b/crypto/conf/conf_api.c.secure-getenv openssl-1.1.0b/crypto/conf/conf_api.c
---- openssl-1.1.0b/crypto/conf/conf_api.c.secure-getenv	2016-09-26 11:46:05.000000000 +0200
-+++ openssl-1.1.0b/crypto/conf/conf_api.c	2016-09-26 15:19:19.420705501 +0200
+--- openssl-1.1.0g/crypto/conf/conf_api.c.0036~	2017-11-02 15:29:02.000000000 +0100
++++ openssl-1.1.0g/crypto/conf/conf_api.c	2017-11-02 22:27:05.995697369 +0100
 @@ -9,6 +9,8 @@
  
  /* Part of the code in here was originally in conf.c, which is now removed */
@@ -28,9 +27,8 @@ diff -up openssl-1.1.0b/crypto/conf/conf_api.c.secure-getenv openssl-1.1.0b/cryp
  }
  
  static unsigned long conf_value_hash(const CONF_VALUE *v)
-diff -up openssl-1.1.0b/crypto/conf/conf_mod.c.secure-getenv openssl-1.1.0b/crypto/conf/conf_mod.c
---- openssl-1.1.0b/crypto/conf/conf_mod.c.secure-getenv	2016-09-26 11:46:05.000000000 +0200
-+++ openssl-1.1.0b/crypto/conf/conf_mod.c	2016-09-26 15:19:19.421705524 +0200
+--- openssl-1.1.0g/crypto/conf/conf_mod.c.0036~	2017-11-02 15:29:02.000000000 +0100
++++ openssl-1.1.0g/crypto/conf/conf_mod.c	2017-11-02 22:27:05.995697369 +0100
 @@ -7,6 +7,8 @@
   * https://www.openssl.org/source/license.html
   */
@@ -49,9 +47,8 @@ diff -up openssl-1.1.0b/crypto/conf/conf_mod.c.secure-getenv openssl-1.1.0b/cryp
      if (file)
          return OPENSSL_strdup(file);
  
-diff -up openssl-1.1.0b/crypto/engine/eng_list.c.secure-getenv openssl-1.1.0b/crypto/engine/eng_list.c
---- openssl-1.1.0b/crypto/engine/eng_list.c.secure-getenv	2016-09-26 11:46:05.000000000 +0200
-+++ openssl-1.1.0b/crypto/engine/eng_list.c	2016-09-26 15:19:19.421705524 +0200
+--- openssl-1.1.0g/crypto/engine/eng_list.c.0036~	2017-11-02 15:29:03.000000000 +0100
++++ openssl-1.1.0g/crypto/engine/eng_list.c	2017-11-02 22:27:05.995697369 +0100
 @@ -13,6 +13,8 @@
   * SUN MICROSYSTEMS, INC., and contributed to the OpenSSL project.
   */
@@ -70,9 +67,8 @@ diff -up openssl-1.1.0b/crypto/engine/eng_list.c.secure-getenv openssl-1.1.0b/cr
              load_dir = ENGINESDIR;
          iterator = ENGINE_by_id("dynamic");
          if (!iterator || !ENGINE_ctrl_cmd_string(iterator, "ID", id, 0) ||
-diff -up openssl-1.1.0b/crypto/rand/randfile.c.secure-getenv openssl-1.1.0b/crypto/rand/randfile.c
---- openssl-1.1.0b/crypto/rand/randfile.c.secure-getenv	2016-09-26 11:46:05.000000000 +0200
-+++ openssl-1.1.0b/crypto/rand/randfile.c	2016-09-26 15:22:17.427882518 +0200
+--- openssl-1.1.0g/crypto/rand/randfile.c.0036~	2017-11-02 15:29:03.000000000 +0100
++++ openssl-1.1.0g/crypto/rand/randfile.c	2017-11-02 22:27:05.995697369 +0100
 @@ -7,6 +7,8 @@
   * https://www.openssl.org/source/license.html
   */
@@ -82,7 +78,7 @@ diff -up openssl-1.1.0b/crypto/rand/randfile.c.secure-getenv openssl-1.1.0b/cryp
  #include "internal/cryptlib.h"
  
  #include <errno.h>
-@@ -319,10 +321,10 @@ const char *RAND_file_name(char *buf, si
+@@ -317,10 +319,10 @@ const char *RAND_file_name(char *buf, si
      if (OPENSSL_issetugid() != 0) {
          use_randfile = 0;
      } else {
@@ -95,9 +91,8 @@ diff -up openssl-1.1.0b/crypto/rand/randfile.c.secure-getenv openssl-1.1.0b/cryp
          }
      }
  #endif
-diff -up openssl-1.1.0b/crypto/x509/by_dir.c.secure-getenv openssl-1.1.0b/crypto/x509/by_dir.c
---- openssl-1.1.0b/crypto/x509/by_dir.c.secure-getenv	2016-09-26 11:46:06.000000000 +0200
-+++ openssl-1.1.0b/crypto/x509/by_dir.c	2016-09-26 15:19:19.421705524 +0200
+--- openssl-1.1.0g/crypto/x509/by_dir.c.0036~	2017-11-02 15:29:04.000000000 +0100
++++ openssl-1.1.0g/crypto/x509/by_dir.c	2017-11-02 22:27:05.995697369 +0100
 @@ -7,6 +7,8 @@
   * https://www.openssl.org/source/license.html
   */
@@ -107,7 +102,7 @@ diff -up openssl-1.1.0b/crypto/x509/by_dir.c.secure-getenv openssl-1.1.0b/crypto
  #include <stdio.h>
  #include <time.h>
  #include <errno.h>
-@@ -80,7 +82,7 @@ static int dir_ctrl(X509_LOOKUP *ctx, in
+@@ -78,7 +80,7 @@ static int dir_ctrl(X509_LOOKUP *ctx, in
      switch (cmd) {
      case X509_L_ADD_DIR:
          if (argl == X509_FILETYPE_DEFAULT) {
@@ -116,9 +111,8 @@ diff -up openssl-1.1.0b/crypto/x509/by_dir.c.secure-getenv openssl-1.1.0b/crypto
              if (dir)
                  ret = add_cert_dir(ld, dir, X509_FILETYPE_PEM);
              else
-diff -up openssl-1.1.0b/crypto/x509/by_file.c.secure-getenv openssl-1.1.0b/crypto/x509/by_file.c
---- openssl-1.1.0b/crypto/x509/by_file.c.secure-getenv	2016-09-26 11:46:06.000000000 +0200
-+++ openssl-1.1.0b/crypto/x509/by_file.c	2016-09-26 15:19:19.421705524 +0200
+--- openssl-1.1.0g/crypto/x509/by_file.c.0036~	2017-11-02 15:29:04.000000000 +0100
++++ openssl-1.1.0g/crypto/x509/by_file.c	2017-11-02 22:27:39.362063952 +0100
 @@ -7,6 +7,8 @@
   * https://www.openssl.org/source/license.html
   */
@@ -132,8 +126,8 @@ diff -up openssl-1.1.0b/crypto/x509/by_file.c.secure-getenv openssl-1.1.0b/crypt
      switch (cmd) {
      case X509_L_FILE_LOAD:
          if (argl == X509_FILETYPE_DEFAULT) {
--            file = (char *)getenv(X509_get_default_cert_file_env());
-+            file = (char *)secure_getenv(X509_get_default_cert_file_env());
+-            file = getenv(X509_get_default_cert_file_env());
++            file = secure_getenv(X509_get_default_cert_file_env());
              if (file)
                  ok = (X509_load_cert_crl_file(ctx, file,
                                                X509_FILETYPE_PEM) != 0);

@@ -1,7 +1,6 @@
-diff -up openssl-1.1.0-pre5/doc/apps/ec.pod.manfix openssl-1.1.0-pre5/doc/apps/ec.pod
---- openssl-1.1.0-pre5/doc/apps/ec.pod.manfix	2016-04-19 16:57:55.000000000 +0200
-+++ openssl-1.1.0-pre5/doc/apps/ec.pod	2016-07-20 15:13:07.874678467 +0200
-@@ -100,10 +100,6 @@ prints out the public, private key compo
+--- openssl-1.1.0g/doc/apps/ec.pod.0023~	2017-11-02 15:29:04.000000000 +0100
++++ openssl-1.1.0g/doc/apps/ec.pod	2017-11-02 22:26:10.436646386 +0100
+@@ -101,10 +101,6 @@ prints out the public, private key compo
  
  this option prevents output of the encoded version of the key.
  
@@ -12,10 +11,9 @@ diff -up openssl-1.1.0-pre5/doc/apps/ec.pod.manfix openssl-1.1.0-pre5/doc/apps/e
  =item B<-pubin>
  
  by default a private key is read from the input file: with this option a
-diff -up openssl-1.1.0-pre5/doc/apps/openssl.pod.manfix openssl-1.1.0-pre5/doc/apps/openssl.pod
---- openssl-1.1.0-pre5/doc/apps/openssl.pod.manfix	2016-04-19 16:57:55.000000000 +0200
-+++ openssl-1.1.0-pre5/doc/apps/openssl.pod	2016-07-20 15:14:57.596163046 +0200
-@@ -163,7 +163,7 @@ Create or examine a netscape certificate
+--- openssl-1.1.0g/doc/apps/openssl.pod.0023~	2017-11-02 15:29:04.000000000 +0100
++++ openssl-1.1.0g/doc/apps/openssl.pod	2017-11-02 22:26:51.788423384 +0100
+@@ -170,7 +170,7 @@ Create or examine a Netscape certificate
  
  Online Certificate Status Protocol utility.
  
@@ -24,7 +22,7 @@ diff -up openssl-1.1.0-pre5/doc/apps/openssl.pod.manfix openssl-1.1.0-pre5/doc/a
  
  Generation of hashed passwords.
  
-@@ -187,7 +187,7 @@ Public key algorithm parameter managemen
+@@ -198,7 +198,7 @@ Public key algorithm parameter managemen
  
  Public key algorithm cryptographic operation utility.
  
@@ -33,15 +31,16 @@ diff -up openssl-1.1.0-pre5/doc/apps/openssl.pod.manfix openssl-1.1.0-pre5/doc/a
  
  Generate pseudo-random bytes.
  
-@@ -401,9 +401,9 @@ L<crl(1)>, L<crl2pkcs7(1)>, L<dgst(1)>,
- L<dhparam(1)>, L<dsa(1)>, L<dsaparam(1)>,
- L<enc(1)>, L<engine(1)>, L<gendsa(1)>, L<genpkey(1)>,
- L<genrsa(1)>, L<nseq(1)>, L<openssl(1)>,
+@@ -432,10 +432,10 @@ L<dhparam(1)>, L<dsa(1)>, L<dsaparam(1)>
+ L<ec(1)>, L<ecparam(1)>,
+ L<enc(1)>, L<engine(1)>, L<errstr(1)>, L<gendsa(1)>, L<genpkey(1)>,
+ L<genrsa(1)>, L<nseq(1)>, L<ocsp(1)>,
 -L<passwd(1)>,
 +L<sslpasswd(1)>,
  L<pkcs12(1)>, L<pkcs7(1)>, L<pkcs8(1)>,
--L<rand(1)>, L<req(1)>, L<rsa(1)>,
-+L<sslrand(1)>, L<req(1)>, L<rsa(1)>,
+ L<pkey(1)>, L<pkeyparam(1)>, L<pkeyutl(1)>,
+-L<rand(1)>, L<rehash(1)>, L<req(1)>, L<rsa(1)>,
++L<sslrand(1)>, L<rehash(1)>, L<req(1)>, L<rsa(1)>,
  L<rsautl(1)>, L<s_client(1)>,
- L<s_server(1)>, L<s_time(1)>,
- L<smime(1)>, L<spkac(1)>,
+ L<s_server(1)>, L<s_time(1)>, L<sess_id(1)>,
+ L<smime(1)>, L<speed(1)>, L<spkac(1)>,

@@ -32,7 +32,7 @@
 
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
-Version: 1.1.0f
+Version: 1.1.0g
 Release: 1
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
@@ -74,7 +74,6 @@ Patch92: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0
 # Backported fixes including security fixes
 ### OpenMandriva specific patches
 Patch100: openssl-0.9.8-beta6-icpbrasil.diff
-Patch101: openssl-1.1.0-eventfd2.patch
 #Patch102: openssl-1.1.0c-fips-linkerscript.patch
 Patch103: openssl-1.1.0d-clang-asm-buildfix.patch
 
