@@ -11,7 +11,7 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	1.0.2k
+Version:	1.0.2m
 Release:	1
 License:	BSD-like
 Group:		System/Libraries
@@ -121,7 +121,7 @@ OpenSSL documentation.
 %prep
 %setup -q
 %patch2 -p1 -b .optflags
-%patch6 -p1 -b .icpbrasil
+#patch6 -p1 -b .icpbrasil
 %patch7 -p1 -b .defaults
 %{?_with_krb5:%patch8 -p1 -b .krb5}
 #patch10 -p0 -b .ia64
