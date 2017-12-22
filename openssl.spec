@@ -1,5 +1,3 @@
-%define _no_lto 1
-
 %define major 1.0.0
 %define engines_name %mklibname openssl-engines %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -11,7 +9,7 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	1.0.2m
+Version:	1.0.2n
 Release:	1
 License:	BSD-like
 Group:		System/Libraries
