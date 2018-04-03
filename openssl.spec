@@ -9,7 +9,7 @@
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
-Version:	1.0.2n
+Version:	1.0.2o
 Release:	1
 License:	BSD-like
 Group:		System/Libraries

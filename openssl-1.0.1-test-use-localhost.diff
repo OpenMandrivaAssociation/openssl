@@ -6,9 +6,9 @@
      if (c_ssl && c_ssl->kssl_ctx) {
 -        char localhost[MAXHOSTNAMELEN + 2];
 -
--        if (gethostname(localhost, sizeof localhost - 1) == 0) {
--            localhost[sizeof localhost - 1] = '\0';
--            if (strlen(localhost) == sizeof localhost - 1) {
+-        if (gethostname(localhost, sizeof(localhost) - 1) == 0) {
+-            localhost[sizeof(localhost) - 1] = '\0';
+-            if (strlen(localhost) == sizeof(localhost) - 1) {
 -                BIO_printf(bio_err, "localhost name too long\n");
 -                goto end;
 -            }
