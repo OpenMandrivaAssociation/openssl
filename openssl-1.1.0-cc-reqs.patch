@@ -24,4 +24,4 @@ diff -up openssl-1.1.0f/crypto/rsa/rsa_gen.c.cc-reqs openssl-1.1.0f/crypto/rsa/r
 +        } while (BN_ucmp(r2, r3) <= 0);
          if (!BN_sub(r2, rsa->q, BN_value_one()))
              goto err;
-         if (!BN_gcd(r1, r2, rsa->e, ctx))
+         ERR_set_mark();

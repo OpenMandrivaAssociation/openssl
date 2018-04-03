@@ -14,8 +14,8 @@ diff -up openssl-1.1.0-pre5/apps/version.c.version-add-engines openssl-1.1.0-pre
              dirty = version = 1;
              break;
          case OPT_A:
--            cflags = version = date = platform = dir = engdir = 1;
-+            cflags = version = date = platform = dir = engdir = engines = 1;
+-            options = cflags = version = date = platform = dir = engdir = 1;
++            options = cflags = version = date = platform = dir = engdir = engines = 1;
              break;
          }
      }

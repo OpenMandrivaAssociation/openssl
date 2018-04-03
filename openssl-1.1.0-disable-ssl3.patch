@@ -25,9 +25,9 @@ diff -up openssl-1.1.0/test/ssl_test.c.disable-ssl3 openssl-1.1.0/test/ssl_test.
 +            SSL_CTX_clear_options(server2_ctx, SSL_OP_NO_SSLv3);
          }
          client_ctx = SSL_CTX_new(TLS_client_method());
- 
+         TEST_check(SSL_CTX_set_max_proto_version(client_ctx, TLS_MAX_VERSION));
 @@ -266,11 +267,15 @@ static int execute_test(SSL_TEST_FIXTURE
-             resume_client_ctx = SSL_CTX_new(TLS_client_method());
+                                                      TLS_MAX_VERSION));
              TEST_check(resume_server_ctx != NULL);
              TEST_check(resume_client_ctx != NULL);
 +            SSL_CTX_clear_options(resume_server_ctx, SSL_OP_NO_SSLv3);
