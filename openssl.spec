@@ -25,15 +25,16 @@
 # also be handled in opensslconf-new.h.
 %define multilib_arches %{ix86} ia64 %{mips} ppc %{power64} s390 s390x sparcv9 sparc64 x86_64
 
-%global _performance_build 1
+%global optflags %{optflags} -Ofast
 
 # Disables krb5 support to avoid circular dependency
-%bcond_without bootstrap
+# (tpg) 2018-04-18 why do we need krb5 here ?
+%bcond_with bootstrap
 
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
 Version: 1.1.0h
-Release: 1
+Release: 2
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
 # The original openssl upstream tarball cannot be shipped in the .src.rpm.
@@ -161,11 +162,9 @@ cp %{SOURCE13} test/
 %apply_patches
 
 sed -i -e 's|-O3 -fomit-frame-pointer|%{optflags}|g' Configurations/10-main.conf
-%ifnarch %{arm}
-#sed -i -e 's,"gcc,"%{__cc},g' Configurations/10-main.conf
-%endif
 
 %build
+%serverbuild
 # Figure out which flags we want to use.
 # default
 sslarch=%{_os}-%{_target_cpu}
@@ -226,12 +225,12 @@ sslflags=enable-ec_nistp_64_gcc_128
 # marked as not requiring an executable stack.
 # Also add -DPURIFY to make using valgrind with openssl easier as we do not
 # want to depend on the uninitialized memory as a source of entropy anyway.
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY"
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY $RPM_LD_FLAGS"
 
 # For Thumb2-isms in ecp_nistz256-armv4
 sed -i -e 's,-march=armv7-a,-march=armv7-a -fno-integrated-as,g' config
 %ifarch %{arm}
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY"
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY $RPM_LD_FLAGS"
 %endif
 
 # ia64, x86_64, ppc are OK by default
@@ -256,7 +255,7 @@ cp -f %{SOURCE11} .
 
 # Clean up the .pc files
 for i in libcrypto.pc libssl.pc openssl.pc ; do
-  sed -i '/^Libs.private:/{s/-L[^ ]* //;s/-Wl[^ ]* //}' $i
+    sed -i '/^Libs.private:/{s/-L[^ ]* //;s/-Wl[^ ]* //}' $i
 done
 
 %check
@@ -380,7 +379,6 @@ export LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 %{_libdir}/.libssl*.hmac
 
 %files
-%defattr(-,root,root)
 %{!?_licensedir:%global license %%doc}
 %license LICENSE
 %{_bindir}/make-dummy-cert
@@ -399,20 +397,17 @@ export LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 %files -n %{engines_name}
 %dir %{_libdir}/engines-%{soversion}
 %{_libdir}/engines-%{soversion}/*.so
-%files -n %{devname}
-%defattr(-,root,root)
 
+%files -n %{devname}
 %{_includedir}/openssl
 %attr(0755,root,root) %{_libdir}/*.so
 %attr(0644,root,root) %{_mandir}/man3*/*
 %attr(0644,root,root) %{_libdir}/pkgconfig/*.pc
 
 %files -n %{staticname}
-%defattr(-,root,root)
 %attr(0644,root,root) %{_libdir}/*.a
 
 %files perl
-%defattr(-,root,root)
 %attr(0755,root,root) %{_bindir}/c_rehash
 %attr(0755,root,root) %{_bindir}/*.pl
 %attr(0755,root,root) %{_bindir}/tsget
