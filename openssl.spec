@@ -25,7 +25,7 @@
 # also be handled in opensslconf-new.h.
 %define multilib_arches %{ix86} ia64 %{mips} ppc %{power64} s390 s390x sparcv9 sparc64 x86_64
 
-%global optflags %{optflags} -Ofast
+%global optflags %{optflags} -O3
 
 # Disables krb5 support to avoid circular dependency
 # (tpg) 2018-04-18 why do we need krb5 here ?
@@ -225,12 +225,11 @@ sslflags=enable-ec_nistp_64_gcc_128
 # marked as not requiring an executable stack.
 # Also add -DPURIFY to make using valgrind with openssl easier as we do not
 # want to depend on the uninitialized memory as a source of entropy anyway.
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY $RPM_LD_FLAGS"
+RPM_OPT_FLAGS="%{optflags} -Wa,--noexecstack -DPURIFY %{ldflags}"
 
+%ifarch %{arm}
 # For Thumb2-isms in ecp_nistz256-armv4
 sed -i -e 's,-march=armv7-a,-march=armv7-a -fno-integrated-as,g' config
-%ifarch %{arm}
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -DPURIFY $RPM_LD_FLAGS"
 %endif
 
 # ia64, x86_64, ppc are OK by default
