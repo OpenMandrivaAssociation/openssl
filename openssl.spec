@@ -5,12 +5,14 @@
 %define devname %mklibname openssl -d
 %define staticname %mklibname openssl -s -d
 
-%define with_krb5 %{?_with_krb5:1}%{!?_with_krb5:0}
+%global optflags %{optflags} -Ofast
+
+%define with_krb5 0
 
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	1.0.2o
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		System/Libraries
 Url:		http://www.openssl.org/
