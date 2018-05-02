@@ -96,7 +96,7 @@ BuildRequires: perl(Test::Harness)
 BuildRequires: perl(Test::More) => 0.96
 BuildRequires: perl(Math::BigInt)
 BuildRequires: perl(Module::Load::Conditional)
-BuildRequires: perl(Timer::HiRes)
+BuildRequires: perl(Time::HiRes)
 Requires: coreutils
 Requires: make
 
