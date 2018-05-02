@@ -95,6 +95,7 @@ BuildRequires: /usr/bin/pod2man
 BuildRequires: perl(Test::Harness)
 BuildRequires: perl(Test::More) => 0.96
 BuildRequires: perl(Math::BigInt)
+BuildRequires: perl(Module::Load::Conditional)
 Requires: coreutils
 Requires: make
 
