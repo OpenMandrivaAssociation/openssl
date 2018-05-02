@@ -93,7 +93,7 @@ BuildRequires: /usr/bin/cmp
 BuildRequires: /usr/bin/rename
 BuildRequires: /usr/bin/pod2man
 BuildRequires: perl(Test::Harness)
-BuildRequires: perl(Test::More)
+BuildRequires: perl(Test::More) => 0.96
 BuildRequires: perl(Math::BigInt)
 Requires: coreutils
 Requires: make
