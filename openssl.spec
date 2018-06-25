@@ -38,6 +38,8 @@ Patch301:	openssl-1.0.2a-arm.patch
 Patch302:	openssl-1.0.0-enginesdir.patch
 Patch303:	openssl-0.9.8a-no-rpath.patch
 Patch304:	openssl-1.0.1-test-use-localhost.diff
+# steam fix
+# https://support.baldursgate.com/issues/37831
 Patch305:	version-script.patch
 # (tv) for test suite:
 BuildRequires:	bc
