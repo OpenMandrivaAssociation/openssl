@@ -12,7 +12,7 @@
 Summary:	Secure Sockets Layer communications libs & utils
 Name:		openssl
 Version:	1.0.2o
-Release:	2
+Release:	3
 License:	BSD-like
 Group:		System/Libraries
 Url:		http://www.openssl.org/
@@ -38,6 +38,7 @@ Patch301:	openssl-1.0.2a-arm.patch
 Patch302:	openssl-1.0.0-enginesdir.patch
 Patch303:	openssl-0.9.8a-no-rpath.patch
 Patch304:	openssl-1.0.1-test-use-localhost.diff
+Patch305:	version-script.patch
 # (tv) for test suite:
 BuildRequires:	bc
 BuildRequires:	makedepend
@@ -134,6 +135,7 @@ OpenSSL documentation.
 %patch302 -p1 -b .engines
 %patch303 -p1 -b .no-rpath
 %patch304 -p1 -b .test-use-localhost
+%patch305 -p1 -b .steam_compat
 
 perl -pi -e "s,^(OPENSSL_LIBNAME=).+$,\1%{_lib}," Makefile.org engines/Makefile
 
