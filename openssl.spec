@@ -111,7 +111,7 @@ Summary: Engines for openssl
 Group: System/Libraries
 Provides: openssl-engines = %{version}-%{release}
 
-%description -n	%{engines_name}
+%description -n %{engines_name}
 This package provides engines for openssl.
 
 %package -n %{devname}
@@ -178,6 +178,9 @@ fi
 %endif
 %ifarch %{x86_64}
 sslflags=enable-ec_nistp_64_gcc_128
+%ifarch znver1
+sslarch=linux-x86_64
+%endif
 %endif
 %ifarch sparcv9
 sslarch=linux-sparcv9
@@ -247,7 +250,7 @@ sed -i -e 's,-march=armv7-a,-march=armv7-a -fno-integrated-as,g' config
 	no-mdc2 no-ec2m no-gost no-srp \
 	shared  ${sslarch} $RPM_OPT_FLAGS
 
-#	 %{?!nofips:fips}
+# {?!nofips:fips}
 util/mkdef.pl crypto update
 %make all
 
