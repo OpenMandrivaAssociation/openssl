@@ -23,7 +23,7 @@
 
 # Arches on which we need to prevent arch conflicts on opensslconf.h, must
 # also be handled in opensslconf-new.h.
-%define multilib_arches %{ix86} ia64 %{mips} ppc %{power64} s390 s390x sparcv9 sparc64 x86_64
+%define multilib_arches %{ix86} ia64 %{mips} ppc %{power64} s390 s390x sparcv9 sparc64 %{x86_64}
 
 %global optflags %{optflags} -O3
 
@@ -176,7 +176,7 @@ if ! echo %{_target} | grep -q i686 ; then
     sslflags="no-asm 386"
 fi
 %endif
-%ifarch x86_64
+%ifarch %{x86_64}
 sslflags=enable-ec_nistp_64_gcc_128
 %endif
 %ifarch sparcv9
