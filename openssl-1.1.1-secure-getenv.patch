@@ -1,0 +1,173 @@
+diff -up openssl-1.1.1-pre8/crypto/conf/conf_api.c.secure-getenv openssl-1.1.1-pre8/crypto/conf/conf_api.c
+--- openssl-1.1.1-pre8/crypto/conf/conf_api.c.secure-getenv	2018-06-20 16:48:10.000000000 +0200
++++ openssl-1.1.1-pre8/crypto/conf/conf_api.c	2018-07-16 18:01:11.708359766 +0200
+@@ -9,6 +9,8 @@
+ 
+ /* Part of the code in here was originally in conf.c, which is now removed */
+ 
++/* for secure_getenv */
++#define _GNU_SOURCE
+ #include "e_os.h"
+ #include <stdlib.h>
+ #include <string.h>
+@@ -82,7 +84,7 @@ char *_CONF_get_string(const CONF *conf,
+             if (v != NULL)
+                 return v->value;
+             if (strcmp(section, "ENV") == 0) {
+-                p = getenv(name);
++                p = secure_getenv(name);
+                 if (p != NULL)
+                     return p;
+             }
+diff -up openssl-1.1.1-pre8/crypto/conf/conf_mod.c.secure-getenv openssl-1.1.1-pre8/crypto/conf/conf_mod.c
+--- openssl-1.1.1-pre8/crypto/conf/conf_mod.c.secure-getenv	2018-06-20 16:48:10.000000000 +0200
++++ openssl-1.1.1-pre8/crypto/conf/conf_mod.c	2018-07-16 18:02:37.308383955 +0200
+@@ -7,6 +7,8 @@
+  * https://www.openssl.org/source/license.html
+  */
+ 
++/* for secure_getenv */
++#define _GNU_SOURCE
+ #include "internal/cryptlib.h"
+ #include <stdio.h>
+ #include <ctype.h>
+@@ -481,7 +483,7 @@ char *CONF_get1_default_config_file(void
+     int len;
+ 
+     if (!OPENSSL_issetugid()) {
+-        file = getenv("OPENSSL_CONF");
++        file = secure_getenv("OPENSSL_CONF");
+         if (file)
+             return OPENSSL_strdup(file);
+     }
+diff -up openssl-1.1.1-pre8/crypto/ct/ct_log.c.secure-getenv openssl-1.1.1-pre8/crypto/ct/ct_log.c
+--- openssl-1.1.1-pre8/crypto/ct/ct_log.c.secure-getenv	2018-06-20 16:48:10.000000000 +0200
++++ openssl-1.1.1-pre8/crypto/ct/ct_log.c	2018-07-16 18:01:11.708359766 +0200
+@@ -7,6 +7,8 @@
+  * https://www.openssl.org/source/license.html
+  */
+ 
++/* for secure_getenv */
++#define _GNU_SOURCE
+ #include <stdlib.h>
+ #include <string.h>
+ 
+@@ -137,7 +139,7 @@ static int ctlog_new_from_conf(CTLOG **c
+ 
+ int CTLOG_STORE_load_default_file(CTLOG_STORE *store)
+ {
+-    const char *fpath = getenv(CTLOG_FILE_EVP);
++    const char *fpath = secure_getenv(CTLOG_FILE_EVP);
+ 
+     if (fpath == NULL)
+       fpath = CTLOG_FILE;
+diff -up openssl-1.1.1-pre8/crypto/engine/eng_list.c.secure-getenv openssl-1.1.1-pre8/crypto/engine/eng_list.c
+--- openssl-1.1.1-pre8/crypto/engine/eng_list.c.secure-getenv	2018-06-20 16:48:10.000000000 +0200
++++ openssl-1.1.1-pre8/crypto/engine/eng_list.c	2018-07-16 18:03:03.190996004 +0200
+@@ -8,6 +8,8 @@
+  * https://www.openssl.org/source/license.html
+  */
+ 
++/* for secure_getenv */
++#define _GNU_SOURCE
+ #include "eng_int.h"
+ 
+ /*
+@@ -318,7 +320,7 @@ ENGINE *ENGINE_by_id(const char *id)
+      */
+     if (strcmp(id, "dynamic")) {
+         if (OPENSSL_issetugid()
+-                || (load_dir = getenv("OPENSSL_ENGINES")) == NULL)
++                || (load_dir = secure_getenv("OPENSSL_ENGINES")) == NULL)
+             load_dir = ENGINESDIR;
+         iterator = ENGINE_by_id("dynamic");
+         if (!iterator || !ENGINE_ctrl_cmd_string(iterator, "ID", id, 0) ||
+diff -up openssl-1.1.1-pre8/crypto/mem.c.secure-getenv openssl-1.1.1-pre8/crypto/mem.c
+--- openssl-1.1.1-pre8/crypto/mem.c.secure-getenv	2018-06-20 16:48:11.000000000 +0200
++++ openssl-1.1.1-pre8/crypto/mem.c	2018-07-16 18:01:11.709359790 +0200
+@@ -7,6 +7,8 @@
+  * https://www.openssl.org/source/license.html
+  */
+ 
++/* for secure_getenv */
++#define _GNU_SOURCE
+ #include "e_os.h"
+ #include "internal/cryptlib.h"
+ #include "internal/cryptlib_int.h"
+@@ -180,11 +182,11 @@ static int shouldfail(void)
+ 
+ void ossl_malloc_setup_failures(void)
+ {
+-    const char *cp = getenv("OPENSSL_MALLOC_FAILURES");
++    const char *cp = secure_getenv("OPENSSL_MALLOC_FAILURES");
+ 
+     if (cp != NULL && (md_failstring = strdup(cp)) != NULL)
+         parseit();
+-    if ((cp = getenv("OPENSSL_MALLOC_FD")) != NULL)
++    if ((cp = secure_getenv("OPENSSL_MALLOC_FD")) != NULL)
+         md_tracefd = atoi(cp);
+ }
+ #endif
+diff -up openssl-1.1.1-pre8/crypto/rand/randfile.c.secure-getenv openssl-1.1.1-pre8/crypto/rand/randfile.c
+--- openssl-1.1.1-pre8/crypto/rand/randfile.c.secure-getenv	2018-06-20 16:48:11.000000000 +0200
++++ openssl-1.1.1-pre8/crypto/rand/randfile.c	2018-07-16 18:01:11.709359790 +0200
+@@ -7,6 +7,8 @@
+  * https://www.openssl.org/source/license.html
+  */
+ 
++/* for secure_getenv */
++#define _GNU_SOURCE
+ #include "internal/cryptlib.h"
+ 
+ #include <errno.h>
+@@ -264,7 +266,7 @@ const char *RAND_file_name(char *buf, si
+ #else
+     if (OPENSSL_issetugid() != 0) {
+         use_randfile = 0;
+-    } else if ((s = getenv("RANDFILE")) == NULL || *s == '\0') {
++    } else if ((s = secure_getenv("RANDFILE")) == NULL || *s == '\0') {
+         use_randfile = 0;
+         s = getenv("HOME");
+     }
+diff -up openssl-1.1.1-pre8/crypto/x509/by_dir.c.secure-getenv openssl-1.1.1-pre8/crypto/x509/by_dir.c
+--- openssl-1.1.1-pre8/crypto/x509/by_dir.c.secure-getenv	2018-06-20 16:48:11.000000000 +0200
++++ openssl-1.1.1-pre8/crypto/x509/by_dir.c	2018-07-16 18:03:43.355945786 +0200
+@@ -7,6 +7,8 @@
+  * https://www.openssl.org/source/license.html
+  */
+ 
++/* for secure_getenv */
++#define _GNU_SOURCE
+ #include "e_os.h"
+ #include "internal/cryptlib.h"
+ #include <stdio.h>
+@@ -73,7 +75,7 @@ static int dir_ctrl(X509_LOOKUP *ctx, in
+     switch (cmd) {
+     case X509_L_ADD_DIR:
+         if (argl == X509_FILETYPE_DEFAULT) {
+-            const char *dir = getenv(X509_get_default_cert_dir_env());
++            const char *dir = secure_getenv(X509_get_default_cert_dir_env());
+ 
+             if (dir)
+                 ret = add_cert_dir(ld, dir, X509_FILETYPE_PEM);
+diff -up openssl-1.1.1-pre8/crypto/x509/by_file.c.secure-getenv openssl-1.1.1-pre8/crypto/x509/by_file.c
+--- openssl-1.1.1-pre8/crypto/x509/by_file.c.secure-getenv	2018-06-20 16:48:11.000000000 +0200
++++ openssl-1.1.1-pre8/crypto/x509/by_file.c	2018-07-16 18:01:11.709359790 +0200
+@@ -7,6 +7,8 @@
+  * https://www.openssl.org/source/license.html
+  */
+ 
++/* for secure_getenv */
++#define _GNU_SOURCE
+ #include <stdio.h>
+ #include <time.h>
+ #include <errno.h>
+@@ -46,7 +48,7 @@ static int by_file_ctrl(X509_LOOKUP *ctx
+     switch (cmd) {
+     case X509_L_FILE_LOAD:
+         if (argl == X509_FILETYPE_DEFAULT) {
+-            file = getenv(X509_get_default_cert_file_env());
++            file = secure_getenv(X509_get_default_cert_file_env());
+             if (file)
+                 ok = (X509_load_cert_crl_file(ctx, file,
+                                               X509_FILETYPE_PEM) != 0);

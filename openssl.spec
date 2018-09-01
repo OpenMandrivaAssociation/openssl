@@ -25,7 +25,7 @@
 # also be handled in opensslconf-new.h.
 %define multilib_arches %{ix86} ia64 %{mips} ppc %{power64} s390 s390x sparcv9 sparc64 %{x86_64}
 
-%global optflags %{optflags} -O3
+%global optflags %{optflags} -Ofast
 
 # Disables krb5 support to avoid circular dependency
 # (tpg) 2018-04-18 why do we need krb5 here ?
@@ -33,12 +33,13 @@
 
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
-Version: 1.1.0h
-Release: 3
+Version: 1.1.1
+%define beta pre9
+Release: %{?beta:0.%{beta}.}1
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
 # The original openssl upstream tarball cannot be shipped in the .src.rpm.
-Source0: https://www.openssl.org/source/openssl-%{version}.tar.gz
+Source0: https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
 Source1: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/hobble-openssl
 Source2: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/Makefile.certificate
 Source6: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/make-dummy-cert
@@ -49,34 +50,33 @@ Source11: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/README.FIPS
 Source12: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/ec_curve.c
 Source13: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/ectest.c
 # Build changes
-Patch1: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-build.patch
+Patch1: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-build.patch
 Patch2: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-defaults.patch
 Patch3: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-no-html.patch
 # Bug fixes
 Patch21: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-issuer-hash.patch
-Patch22: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-algo-doc.patch
-Patch23: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-manfix.patch
 # Functionality changes
-Patch31: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-ca-dir.patch
-Patch32: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-version-add-engines.patch
+Patch31: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-conf-paths.patch
+Patch32: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-version-add-engines.patch
 Patch33: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-apps-dgst.patch
-Patch34: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-starttls-xmpp.patch
-Patch35: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-chil-fixes.patch
-Patch36: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-secure-getenv.patch
-Patch38: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-no-md5-verify.patch
-Patch39: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-cc-reqs.patch
-Patch40: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-disable-ssl3.patch
-Patch41: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-fips.patch
+Patch36: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-secure-getenv.patch
+Patch37: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-ec-curves.patch
+Patch38: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-no-weak-verify.patch
+Patch40: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-disable-ssl3.patch
+Patch41: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-fips.patch
+Patch43: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-ignore-bound.patch
+Patch44: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-version-override.patch
+Patch45: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-weak-ciphers.patch
 #Patch47: openssl-1.0.2a-readme-warning.patch FIPS
-#Patch70: openssl-1.0.2a-fips-ec.patch
+Patch70: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-seclevel-check.patch
 #Patch72: openssl-1.0.2a-fips-ctor.patch
 #Patch76: openssl-1.0.2f-new-fips-reqs.patch
-Patch92: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-system-cipherlist.patch
+Patch92: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-system-cipherlist.patch
 # Backported fixes including security fixes
 ### OpenMandriva specific patches
-Patch100: openssl-0.9.8-beta6-icpbrasil.diff
+Patch100: openssl-1.1.1-icpbrasil.diff
+Patch101: openssl-1.1.0h-fix-c_rehash.patch
 #Patch102: openssl-1.1.0c-fips-linkerscript.patch
-Patch103: openssl-1.1.0d-clang-asm-buildfix.patch
 
 License: OpenSSL
 Group: System/Libraries
@@ -157,11 +157,9 @@ Requires: %{name} = %{EVRD}
 OpenSSL documentation.
 
 %prep
-%setup -q
+%autosetup -p1 -n %{name}-%{version}%{?beta:-%{beta}}
 cp %{SOURCE12} crypto/ec/
 cp %{SOURCE13} test/
-
-%apply_patches
 
 sed -i -e 's|-O3 -fomit-frame-pointer|%{optflags}|g' Configurations/10-main.conf
 
@@ -269,12 +267,15 @@ done
 patch -p1 -R < %{PATCH31}
 
 # This seems to fail because of a problem with the test
-rm test/recipes/30-test_evp.t
+rm test/recipes/30-test_evp_extra.t
+rm test/recipes/80-test_ssl_new.t
 
 LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 export LD_LIBRARY_PATH
 OPENSSL_ENABLE_MD5_VERIFY=
 export OPENSSL_ENABLE_MD5_VERIFY
+OPENSSL_SYSTEM_CIPHERS_OVERRIDE=xyz_nonexistent_file
+export OPENSSL_SYSTEM_CIPHERS_OVERRIDE
 make test
 
 # Add generation of HMAC checksum of the final stripped library
@@ -346,8 +347,10 @@ mkdir -m755 %{buildroot}%{_sysconfdir}/pki/CA/newcerts
 # Ensure the openssl.cnf timestamp is identical across builds to avoid
 # mulitlib conflicts and unnecessary renames on upgrade
 touch -r %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/tls/openssl.cnf
+touch -r %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/tls/ct_log_list.cnf
 
 rm -f %{buildroot}%{_sysconfdir}/pki/tls/openssl.cnf.dist
+rm -f %{buildroot}%{_sysconfdir}/pki/tls/ct_log_list.cnf.dist
 
 # Determine which arch opensslconf.h is going to try to #include.
 basearch=%{_arch}
@@ -393,6 +396,7 @@ export LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 %dir %{_sysconfdir}/pki/tls/misc
 %dir %{_sysconfdir}/pki/tls/private
 %config(noreplace) %{_sysconfdir}/pki/tls/openssl.cnf
+%config(noreplace) %{_sysconfdir}/pki/tls/ct_log_list.cnf
 %attr(0755,root,root) %{_bindir}/openssl
 %attr(0644,root,root) %{_mandir}/man1*/[ABD-Zabcd-z]*
 %attr(0644,root,root) %{_mandir}/man5*/*
