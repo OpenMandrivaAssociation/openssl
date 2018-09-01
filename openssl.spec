@@ -75,7 +75,6 @@ Patch92: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1
 # Backported fixes including security fixes
 ### OpenMandriva specific patches
 Patch100: openssl-1.1.1-icpbrasil.diff
-Patch101: openssl-1.1.0h-fix-c_rehash.patch
 #Patch102: openssl-1.1.0c-fips-linkerscript.patch
 
 License: OpenSSL
