@@ -1,7 +1,7 @@
-diff -up openssl-1.1.1-pre9/apps/speed.c.fips openssl-1.1.1-pre9/apps/speed.c
---- openssl-1.1.1-pre9/apps/speed.c.fips	2018-08-22 12:17:53.399654580 +0200
-+++ openssl-1.1.1-pre9/apps/speed.c	2018-08-22 12:17:53.418655045 +0200
-@@ -1558,7 +1558,8 @@ int speed_main(int argc, char **argv)
+diff -up openssl-1.1.1/apps/speed.c.12~ openssl-1.1.1/apps/speed.c
+--- openssl-1.1.1/apps/speed.c.12~	2018-09-11 21:44:00.043688620 +0200
++++ openssl-1.1.1/apps/speed.c	2018-09-11 21:44:00.047688572 +0200
+@@ -1629,7 +1629,8 @@ int speed_main(int argc, char **argv)
              continue;
          if (strcmp(*argv, "rsa") == 0) {
              for (loop = 0; loop < OSSL_NELEM(rsa_doit); loop++)
@@ -11,7 +11,7 @@ diff -up openssl-1.1.1-pre9/apps/speed.c.fips openssl-1.1.1-pre9/apps/speed.c
              continue;
          }
          if (found(*argv, rsa_choices, &i)) {
-@@ -1568,7 +1569,9 @@ int speed_main(int argc, char **argv)
+@@ -1639,7 +1640,9 @@ int speed_main(int argc, char **argv)
  #endif
  #ifndef OPENSSL_NO_DSA
          if (strcmp(*argv, "dsa") == 0) {
@@ -22,7 +22,7 @@ diff -up openssl-1.1.1-pre9/apps/speed.c.fips openssl-1.1.1-pre9/apps/speed.c
                  dsa_doit[R_DSA_2048] = 1;
              continue;
          }
-@@ -1691,15 +1694,21 @@ int speed_main(int argc, char **argv)
+@@ -1771,15 +1774,21 @@ int speed_main(int argc, char **argv)
      /* No parameters; turn on everything. */
      if ((argc == 0) && !doit[D_EVP]) {
          for (i = 0; i < ALGOR_NUM; i++)
@@ -47,7 +47,7 @@ diff -up openssl-1.1.1-pre9/apps/speed.c.fips openssl-1.1.1-pre9/apps/speed.c
  #endif
  #ifndef OPENSSL_NO_EC
          for (loop = 0; loop < OSSL_NELEM(ecdsa_doit); loop++)
-@@ -1753,30 +1762,46 @@ int speed_main(int argc, char **argv)
+@@ -1835,30 +1844,46 @@ int speed_main(int argc, char **argv)
      AES_set_encrypt_key(key24, 192, &aes_ks2);
      AES_set_encrypt_key(key32, 256, &aes_ks3);
  #ifndef OPENSSL_NO_CAMELLIA
@@ -104,7 +104,7 @@ diff -up openssl-1.1.1-pre9/apps/speed.c.fips openssl-1.1.1-pre9/apps/speed.c
  #endif
  #ifndef SIGALRM
  # ifndef OPENSSL_NO_DES
-@@ -2067,6 +2092,7 @@ int speed_main(int argc, char **argv)
+@@ -2152,6 +2177,7 @@ int speed_main(int argc, char **argv)
  
          for (i = 0; i < loopargs_len; i++) {
              loopargs[i].hctx = HMAC_CTX_new();
@@ -112,10 +112,10 @@ diff -up openssl-1.1.1-pre9/apps/speed.c.fips openssl-1.1.1-pre9/apps/speed.c
              if (loopargs[i].hctx == NULL) {
                  BIO_printf(bio_err, "HMAC malloc failure, exiting...");
                  exit(1);
-diff -up openssl-1.1.1-pre9/Configure.fips openssl-1.1.1-pre9/Configure
---- openssl-1.1.1-pre9/Configure.fips	2018-08-22 12:17:53.412654898 +0200
-+++ openssl-1.1.1-pre9/Configure	2018-08-22 12:17:53.418655045 +0200
-@@ -310,7 +310,7 @@ $config{sdirs} = [
+diff -up openssl-1.1.1/Configure.12~ openssl-1.1.1/Configure
+--- openssl-1.1.1/Configure.12~	2018-09-11 14:48:19.000000000 +0200
++++ openssl-1.1.1/Configure	2018-09-11 21:44:00.047688572 +0200
+@@ -306,7 +306,7 @@ $config{sdirs} = [
      "md2", "md4", "md5", "sha", "mdc2", "hmac", "ripemd", "whrlpool", "poly1305", "blake2", "siphash", "sm3",
      "des", "aes", "rc2", "rc4", "rc5", "idea", "aria", "bf", "cast", "camellia", "seed", "sm4", "chacha", "modes",
      "bn", "ec", "rsa", "dsa", "dh", "sm2", "dso", "engine",
@@ -124,9 +124,9 @@ diff -up openssl-1.1.1-pre9/Configure.fips openssl-1.1.1-pre9/Configure
      "evp", "asn1", "pem", "x509", "x509v3", "conf", "txt_db", "pkcs7", "pkcs12", "comp", "ocsp", "ui",
      "cms", "ts", "srp", "cmac", "ct", "async", "kdf", "store"
      ];
-diff -up openssl-1.1.1-pre9/crypto/dh/dh_err.c.fips openssl-1.1.1-pre9/crypto/dh/dh_err.c
---- openssl-1.1.1-pre9/crypto/dh/dh_err.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/dh/dh_err.c	2018-08-22 12:17:53.419655070 +0200
+diff -up openssl-1.1.1/crypto/dh/dh_err.c.12~ openssl-1.1.1/crypto/dh/dh_err.c
+--- openssl-1.1.1/crypto/dh/dh_err.c.12~	2018-09-11 14:48:20.000000000 +0200
++++ openssl-1.1.1/crypto/dh/dh_err.c	2018-09-11 21:44:00.047688572 +0200
 @@ -25,6 +25,9 @@ static const ERR_STRING_DATA DH_str_func
      {ERR_PACK(ERR_LIB_DH, DH_F_DH_CMS_SET_PEERKEY, 0), "dh_cms_set_peerkey"},
      {ERR_PACK(ERR_LIB_DH, DH_F_DH_CMS_SET_SHARED_INFO, 0),
@@ -152,9 +152,9 @@ diff -up openssl-1.1.1-pre9/crypto/dh/dh_err.c.fips openssl-1.1.1-pre9/crypto/dh
      {ERR_PACK(ERR_LIB_DH, 0, DH_R_PARAMETER_ENCODING_ERROR),
      "parameter encoding error"},
      {ERR_PACK(ERR_LIB_DH, 0, DH_R_PEER_KEY_ERROR), "peer key error"},
-diff -up openssl-1.1.1-pre9/crypto/dh/dh_gen.c.fips openssl-1.1.1-pre9/crypto/dh/dh_gen.c
---- openssl-1.1.1-pre9/crypto/dh/dh_gen.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/dh/dh_gen.c	2018-08-22 12:17:53.419655070 +0200
+diff -up openssl-1.1.1/crypto/dh/dh_gen.c.12~ openssl-1.1.1/crypto/dh/dh_gen.c
+--- openssl-1.1.1/crypto/dh/dh_gen.c.12~	2018-09-11 14:48:20.000000000 +0200
++++ openssl-1.1.1/crypto/dh/dh_gen.c	2018-09-11 21:44:00.047688572 +0200
 @@ -16,6 +16,9 @@
  #include "internal/cryptlib.h"
  #include <openssl/bn.h>
@@ -198,9 +198,9 @@ diff -up openssl-1.1.1-pre9/crypto/dh/dh_gen.c.fips openssl-1.1.1-pre9/crypto/dh
      ctx = BN_CTX_new();
      if (ctx == NULL)
          goto err;
-diff -up openssl-1.1.1-pre9/crypto/dh/dh_key.c.fips openssl-1.1.1-pre9/crypto/dh/dh_key.c
---- openssl-1.1.1-pre9/crypto/dh/dh_key.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/dh/dh_key.c	2018-08-22 12:17:53.419655070 +0200
+diff -up openssl-1.1.1/crypto/dh/dh_key.c.12~ openssl-1.1.1/crypto/dh/dh_key.c
+--- openssl-1.1.1/crypto/dh/dh_key.c.12~	2018-09-11 14:48:20.000000000 +0200
++++ openssl-1.1.1/crypto/dh/dh_key.c	2018-09-11 21:44:00.047688572 +0200
 @@ -11,6 +11,9 @@
  #include "internal/cryptlib.h"
  #include "dh_locl.h"
@@ -284,9 +284,9 @@ diff -up openssl-1.1.1-pre9/crypto/dh/dh_key.c.fips openssl-1.1.1-pre9/crypto/dh
      dh->flags |= DH_FLAG_CACHE_MONT_P;
      return 1;
  }
-diff -up openssl-1.1.1-pre9/crypto/dsa/dsa_err.c.fips openssl-1.1.1-pre9/crypto/dsa/dsa_err.c
---- openssl-1.1.1-pre9/crypto/dsa/dsa_err.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/dsa/dsa_err.c	2018-08-22 12:17:53.419655070 +0200
+diff -up openssl-1.1.1/crypto/dsa/dsa_err.c.12~ openssl-1.1.1/crypto/dsa/dsa_err.c
+--- openssl-1.1.1/crypto/dsa/dsa_err.c.12~	2018-09-11 14:48:20.000000000 +0200
++++ openssl-1.1.1/crypto/dsa/dsa_err.c	2018-09-11 21:44:00.047688572 +0200
 @@ -16,12 +16,15 @@
  static const ERR_STRING_DATA DSA_str_functs[] = {
      {ERR_PACK(ERR_LIB_DSA, DSA_F_DSAPARAMS_PRINT, 0), "DSAparams_print"},
@@ -316,9 +316,9 @@ diff -up openssl-1.1.1-pre9/crypto/dsa/dsa_err.c.fips openssl-1.1.1-pre9/crypto/
      {ERR_PACK(ERR_LIB_DSA, 0, DSA_R_PARAMETER_ENCODING_ERROR),
      "parameter encoding error"},
      {ERR_PACK(ERR_LIB_DSA, 0, DSA_R_Q_NOT_PRIME), "q not prime"},
-diff -up openssl-1.1.1-pre9/crypto/dsa/dsa_gen.c.fips openssl-1.1.1-pre9/crypto/dsa/dsa_gen.c
---- openssl-1.1.1-pre9/crypto/dsa/dsa_gen.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/dsa/dsa_gen.c	2018-08-22 12:17:53.419655070 +0200
+diff -up openssl-1.1.1/crypto/dsa/dsa_gen.c.12~ openssl-1.1.1/crypto/dsa/dsa_gen.c
+--- openssl-1.1.1/crypto/dsa/dsa_gen.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/dsa/dsa_gen.c	2018-09-11 21:44:00.048688560 +0200
 @@ -22,12 +22,22 @@
  #include <openssl/rand.h>
  #include <openssl/sha.h>
@@ -480,9 +480,9 @@ diff -up openssl-1.1.1-pre9/crypto/dsa/dsa_gen.c.fips openssl-1.1.1-pre9/crypto/
 +}
 +
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/dsa/dsa_key.c.fips openssl-1.1.1-pre9/crypto/dsa/dsa_key.c
---- openssl-1.1.1-pre9/crypto/dsa/dsa_key.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/dsa/dsa_key.c	2018-08-22 12:17:53.419655070 +0200
+diff -up openssl-1.1.1/crypto/dsa/dsa_key.c.12~ openssl-1.1.1/crypto/dsa/dsa_key.c
+--- openssl-1.1.1/crypto/dsa/dsa_key.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/dsa/dsa_key.c	2018-09-11 21:44:00.048688560 +0200
 @@ -13,10 +13,49 @@
  #include <openssl/bn.h>
  #include "dsa_locl.h"
@@ -562,9 +562,9 @@ diff -up openssl-1.1.1-pre9/crypto/dsa/dsa_key.c.fips openssl-1.1.1-pre9/crypto/
      ok = 1;
  
   err:
-diff -up openssl-1.1.1-pre9/crypto/dsa/dsa_ossl.c.fips openssl-1.1.1-pre9/crypto/dsa/dsa_ossl.c
---- openssl-1.1.1-pre9/crypto/dsa/dsa_ossl.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/dsa/dsa_ossl.c	2018-08-22 12:20:54.839098914 +0200
+diff -up openssl-1.1.1/crypto/dsa/dsa_ossl.c.12~ openssl-1.1.1/crypto/dsa/dsa_ossl.c
+--- openssl-1.1.1/crypto/dsa/dsa_ossl.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/dsa/dsa_ossl.c	2018-09-11 21:44:00.048688560 +0200
 @@ -13,6 +13,9 @@
  #include <openssl/sha.h>
  #include "dsa_locl.h"
@@ -624,9 +624,9 @@ diff -up openssl-1.1.1-pre9/crypto/dsa/dsa_ossl.c.fips openssl-1.1.1-pre9/crypto
      dsa->flags |= DSA_FLAG_CACHE_MONT_P;
      return 1;
  }
-diff -up openssl-1.1.1-pre9/crypto/dsa/dsa_pmeth.c.fips openssl-1.1.1-pre9/crypto/dsa/dsa_pmeth.c
---- openssl-1.1.1-pre9/crypto/dsa/dsa_pmeth.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/dsa/dsa_pmeth.c	2018-08-22 12:17:53.420655094 +0200
+diff -up openssl-1.1.1/crypto/dsa/dsa_pmeth.c.12~ openssl-1.1.1/crypto/dsa/dsa_pmeth.c
+--- openssl-1.1.1/crypto/dsa/dsa_pmeth.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/dsa/dsa_pmeth.c	2018-09-11 21:44:00.048688560 +0200
 @@ -211,8 +211,8 @@ static int pkey_dsa_paramgen(EVP_PKEY_CT
          BN_GENCB_free(pcb);
          return 0;
@@ -638,9 +638,9 @@ diff -up openssl-1.1.1-pre9/crypto/dsa/dsa_pmeth.c.fips openssl-1.1.1-pre9/crypt
      BN_GENCB_free(pcb);
      if (ret)
          EVP_PKEY_assign_DSA(pkey, dsa);
-diff -up openssl-1.1.1-pre9/crypto/ec/ecdh_ossl.c.fips openssl-1.1.1-pre9/crypto/ec/ecdh_ossl.c
---- openssl-1.1.1-pre9/crypto/ec/ecdh_ossl.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/ec/ecdh_ossl.c	2018-08-22 12:17:53.420655094 +0200
+diff -up openssl-1.1.1/crypto/ec/ecdh_ossl.c.12~ openssl-1.1.1/crypto/ec/ecdh_ossl.c
+--- openssl-1.1.1/crypto/ec/ecdh_ossl.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/ec/ecdh_ossl.c	2018-09-11 21:44:00.048688560 +0200
 @@ -19,9 +19,20 @@
  #include <openssl/ec.h>
  #include "ec_lcl.h"
@@ -662,9 +662,9 @@ diff -up openssl-1.1.1-pre9/crypto/ec/ecdh_ossl.c.fips openssl-1.1.1-pre9/crypto
      if (ecdh->group->meth->ecdh_compute_key == NULL) {
          ECerr(EC_F_OSSL_ECDH_COMPUTE_KEY, EC_R_CURVE_DOES_NOT_SUPPORT_ECDH);
          return 0;
-diff -up openssl-1.1.1-pre9/crypto/ec/ecdsa_ossl.c.fips openssl-1.1.1-pre9/crypto/ec/ecdsa_ossl.c
---- openssl-1.1.1-pre9/crypto/ec/ecdsa_ossl.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/ec/ecdsa_ossl.c	2018-08-22 12:21:45.828347887 +0200
+diff -up openssl-1.1.1/crypto/ec/ecdsa_ossl.c.12~ openssl-1.1.1/crypto/ec/ecdsa_ossl.c
+--- openssl-1.1.1/crypto/ec/ecdsa_ossl.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/ec/ecdsa_ossl.c	2018-09-11 21:44:00.048688560 +0200
 @@ -14,6 +14,10 @@
  #include "internal/bn_int.h"
  #include "ec_lcl.h"
@@ -704,9 +704,9 @@ diff -up openssl-1.1.1-pre9/crypto/ec/ecdsa_ossl.c.fips openssl-1.1.1-pre9/crypt
      /* check input values */
      if (eckey == NULL || (group = EC_KEY_get0_group(eckey)) == NULL ||
          (pub_key = EC_KEY_get0_public_key(eckey)) == NULL || sig == NULL) {
-diff -up openssl-1.1.1-pre9/crypto/ec/ec_key.c.fips openssl-1.1.1-pre9/crypto/ec/ec_key.c
---- openssl-1.1.1-pre9/crypto/ec/ec_key.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/ec/ec_key.c	2018-08-22 12:17:53.422655143 +0200
+diff -up openssl-1.1.1/crypto/ec/ec_key.c.12~ openssl-1.1.1/crypto/ec/ec_key.c
+--- openssl-1.1.1/crypto/ec/ec_key.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/ec/ec_key.c	2018-09-11 21:44:00.048688560 +0200
 @@ -178,14 +178,62 @@ ENGINE *EC_KEY_get0_engine(const EC_KEY
      return eckey->engine;
  }
@@ -772,9 +772,9 @@ diff -up openssl-1.1.1-pre9/crypto/ec/ec_key.c.fips openssl-1.1.1-pre9/crypto/ec
      ECerr(EC_F_EC_KEY_GENERATE_KEY, EC_R_OPERATION_NOT_SUPPORTED);
      return 0;
  }
-diff -up openssl-1.1.1-pre9/crypto/evp/c_allc.c.fips openssl-1.1.1-pre9/crypto/evp/c_allc.c
---- openssl-1.1.1-pre9/crypto/evp/c_allc.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/evp/c_allc.c	2018-08-22 12:17:53.422655143 +0200
+diff -up openssl-1.1.1/crypto/evp/c_allc.c.12~ openssl-1.1.1/crypto/evp/c_allc.c
+--- openssl-1.1.1/crypto/evp/c_allc.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/evp/c_allc.c	2018-09-11 21:44:00.048688560 +0200
 @@ -17,6 +17,9 @@
  void openssl_add_all_ciphers_int(void)
  {
@@ -856,9 +856,9 @@ diff -up openssl-1.1.1-pre9/crypto/evp/c_allc.c.fips openssl-1.1.1-pre9/crypto/e
 +    }
 +#endif
  }
-diff -up openssl-1.1.1-pre9/crypto/evp/c_alld.c.fips openssl-1.1.1-pre9/crypto/evp/c_alld.c
---- openssl-1.1.1-pre9/crypto/evp/c_alld.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/evp/c_alld.c	2018-08-22 12:17:53.422655143 +0200
+diff -up openssl-1.1.1/crypto/evp/c_alld.c.12~ openssl-1.1.1/crypto/evp/c_alld.c
+--- openssl-1.1.1/crypto/evp/c_alld.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/evp/c_alld.c	2018-09-11 21:44:00.048688560 +0200
 @@ -16,6 +16,9 @@
  
  void openssl_add_all_digests_int(void)
@@ -894,9 +894,9 @@ diff -up openssl-1.1.1-pre9/crypto/evp/c_alld.c.fips openssl-1.1.1-pre9/crypto/e
 +    }
 +#endif
  }
-diff -up openssl-1.1.1-pre9/crypto/evp/digest.c.fips openssl-1.1.1-pre9/crypto/evp/digest.c
---- openssl-1.1.1-pre9/crypto/evp/digest.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/evp/digest.c	2018-08-22 12:17:53.423655168 +0200
+diff -up openssl-1.1.1/crypto/evp/digest.c.12~ openssl-1.1.1/crypto/evp/digest.c
+--- openssl-1.1.1/crypto/evp/digest.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/evp/digest.c	2018-09-11 21:44:00.048688560 +0200
 @@ -14,6 +14,9 @@
  #include <openssl/engine.h>
  #include "internal/evp_int.h"
@@ -907,7 +907,7 @@ diff -up openssl-1.1.1-pre9/crypto/evp/digest.c.fips openssl-1.1.1-pre9/crypto/e
  
  /* This call frees resources associated with the context */
  int EVP_MD_CTX_reset(EVP_MD_CTX *ctx)
-@@ -61,6 +64,12 @@ int EVP_DigestInit(EVP_MD_CTX *ctx, cons
+@@ -66,6 +69,12 @@ int EVP_DigestInit(EVP_MD_CTX *ctx, cons
  int EVP_DigestInit_ex(EVP_MD_CTX *ctx, const EVP_MD *type, ENGINE *impl)
  {
      EVP_MD_CTX_clear_flags(ctx, EVP_MD_CTX_FLAG_CLEANED);
@@ -920,7 +920,7 @@ diff -up openssl-1.1.1-pre9/crypto/evp/digest.c.fips openssl-1.1.1-pre9/crypto/e
  #ifndef OPENSSL_NO_ENGINE
      /*
       * Whether it's nice or not, "Inits" can be used on "Final"'d contexts so
-@@ -114,6 +123,15 @@ int EVP_DigestInit_ex(EVP_MD_CTX *ctx, c
+@@ -119,6 +128,15 @@ int EVP_DigestInit_ex(EVP_MD_CTX *ctx, c
      }
  #endif
      if (ctx->digest != type) {
@@ -936,7 +936,7 @@ diff -up openssl-1.1.1-pre9/crypto/evp/digest.c.fips openssl-1.1.1-pre9/crypto/e
          if (ctx->digest && ctx->digest->ctx_size) {
              OPENSSL_clear_free(ctx->md_data, ctx->digest->ctx_size);
              ctx->md_data = NULL;
-@@ -145,6 +163,9 @@ int EVP_DigestInit_ex(EVP_MD_CTX *ctx, c
+@@ -150,6 +168,9 @@ int EVP_DigestInit_ex(EVP_MD_CTX *ctx, c
  
  int EVP_DigestUpdate(EVP_MD_CTX *ctx, const void *data, size_t count)
  {
@@ -946,7 +946,7 @@ diff -up openssl-1.1.1-pre9/crypto/evp/digest.c.fips openssl-1.1.1-pre9/crypto/e
      return ctx->update(ctx, data, count);
  }
  
-@@ -162,6 +183,9 @@ int EVP_DigestFinal_ex(EVP_MD_CTX *ctx,
+@@ -167,6 +188,9 @@ int EVP_DigestFinal_ex(EVP_MD_CTX *ctx,
  {
      int ret;
  
@@ -956,9 +956,9 @@ diff -up openssl-1.1.1-pre9/crypto/evp/digest.c.fips openssl-1.1.1-pre9/crypto/e
      OPENSSL_assert(ctx->digest->md_size <= EVP_MAX_MD_SIZE);
      ret = ctx->digest->final(ctx, md);
      if (size != NULL)
-diff -up openssl-1.1.1-pre9/crypto/evp/e_aes.c.fips openssl-1.1.1-pre9/crypto/evp/e_aes.c
---- openssl-1.1.1-pre9/crypto/evp/e_aes.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/evp/e_aes.c	2018-08-22 12:17:53.423655168 +0200
+diff -up openssl-1.1.1/crypto/evp/e_aes.c.12~ openssl-1.1.1/crypto/evp/e_aes.c
+--- openssl-1.1.1/crypto/evp/e_aes.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/evp/e_aes.c	2018-09-11 21:44:00.049688548 +0200
 @@ -2794,9 +2794,9 @@ static int aes_ctr_cipher(EVP_CIPHER_CTX
      return 1;
  }
@@ -1054,9 +1054,9 @@ diff -up openssl-1.1.1-pre9/crypto/evp/e_aes.c.fips openssl-1.1.1-pre9/crypto/ev
                  | EVP_CIPH_CUSTOM_IV | EVP_CIPH_FLAG_CUSTOM_CIPHER \
                  | EVP_CIPH_ALWAYS_CALL_INIT | EVP_CIPH_FLAG_DEFAULT_ASN1)
  
-diff -up openssl-1.1.1-pre9/crypto/evp/e_des3.c.fips openssl-1.1.1-pre9/crypto/evp/e_des3.c
---- openssl-1.1.1-pre9/crypto/evp/e_des3.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/evp/e_des3.c	2018-08-22 12:17:53.424655192 +0200
+diff -up openssl-1.1.1/crypto/evp/e_des3.c.12~ openssl-1.1.1/crypto/evp/e_des3.c
+--- openssl-1.1.1/crypto/evp/e_des3.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/evp/e_des3.c	2018-09-11 21:44:00.049688548 +0200
 @@ -211,16 +211,19 @@ BLOCK_CIPHER_defs(des_ede, DES_EDE_KEY,
  # define des_ede3_cbc_cipher des_ede_cbc_cipher
  # define des_ede3_ecb_cipher des_ede_ecb_cipher
@@ -1083,9 +1083,9 @@ diff -up openssl-1.1.1-pre9/crypto/evp/e_des3.c.fips openssl-1.1.1-pre9/crypto/e
  
  static int des_ede_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
                              const unsigned char *iv, int enc)
-diff -up openssl-1.1.1-pre9/crypto/evp/e_null.c.fips openssl-1.1.1-pre9/crypto/evp/e_null.c
---- openssl-1.1.1-pre9/crypto/evp/e_null.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/evp/e_null.c	2018-08-22 12:17:53.424655192 +0200
+diff -up openssl-1.1.1/crypto/evp/e_null.c.12~ openssl-1.1.1/crypto/evp/e_null.c
+--- openssl-1.1.1/crypto/evp/e_null.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/evp/e_null.c	2018-09-11 21:44:00.049688548 +0200
 @@ -19,7 +19,8 @@ static int null_cipher(EVP_CIPHER_CTX *c
                         const unsigned char *in, size_t inl);
  static const EVP_CIPHER n_cipher = {
@@ -1096,9 +1096,9 @@ diff -up openssl-1.1.1-pre9/crypto/evp/e_null.c.fips openssl-1.1.1-pre9/crypto/e
      null_init_key,
      null_cipher,
      NULL,
-diff -up openssl-1.1.1-pre9/crypto/evp/evp_enc.c.fips openssl-1.1.1-pre9/crypto/evp/evp_enc.c
---- openssl-1.1.1-pre9/crypto/evp/evp_enc.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/evp/evp_enc.c	2018-08-22 12:17:53.424655192 +0200
+diff -up openssl-1.1.1/crypto/evp/evp_enc.c.12~ openssl-1.1.1/crypto/evp/evp_enc.c
+--- openssl-1.1.1/crypto/evp/evp_enc.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/evp/evp_enc.c	2018-09-11 21:44:00.049688548 +0200
 @@ -17,10 +17,19 @@
  #include <openssl/engine.h>
  #include "internal/evp_int.h"
@@ -1174,9 +1174,9 @@ diff -up openssl-1.1.1-pre9/crypto/evp/evp_enc.c.fips openssl-1.1.1-pre9/crypto/
  
      if (key || (ctx->cipher->flags & EVP_CIPH_ALWAYS_CALL_INIT)) {
          if (!ctx->cipher->init(ctx, key, iv, enc))
-diff -up openssl-1.1.1-pre9/crypto/evp/evp_err.c.fips openssl-1.1.1-pre9/crypto/evp/evp_err.c
---- openssl-1.1.1-pre9/crypto/evp/evp_err.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/evp/evp_err.c	2018-08-22 12:17:53.424655192 +0200
+diff -up openssl-1.1.1/crypto/evp/evp_err.c.12~ openssl-1.1.1/crypto/evp/evp_err.c
+--- openssl-1.1.1/crypto/evp/evp_err.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/evp/evp_err.c	2018-09-11 21:44:00.049688548 +0200
 @@ -20,6 +20,7 @@ static const ERR_STRING_DATA EVP_str_fun
      {ERR_PACK(ERR_LIB_EVP, EVP_F_AES_OCB_CIPHER, 0), "aes_ocb_cipher"},
      {ERR_PACK(ERR_LIB_EVP, EVP_F_AES_T4_INIT_KEY, 0), "aes_t4_init_key"},
@@ -1201,9 +1201,9 @@ diff -up openssl-1.1.1-pre9/crypto/evp/evp_err.c.fips openssl-1.1.1-pre9/crypto/
      {ERR_PACK(ERR_LIB_EVP, 0, EVP_R_UNKNOWN_CIPHER), "unknown cipher"},
      {ERR_PACK(ERR_LIB_EVP, 0, EVP_R_UNKNOWN_DIGEST), "unknown digest"},
      {ERR_PACK(ERR_LIB_EVP, 0, EVP_R_UNKNOWN_OPTION), "unknown option"},
-diff -up openssl-1.1.1-pre9/crypto/evp/evp_lib.c.fips openssl-1.1.1-pre9/crypto/evp/evp_lib.c
---- openssl-1.1.1-pre9/crypto/evp/evp_lib.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/evp/evp_lib.c	2018-08-22 12:17:53.424655192 +0200
+diff -up openssl-1.1.1/crypto/evp/evp_lib.c.12~ openssl-1.1.1/crypto/evp/evp_lib.c
+--- openssl-1.1.1/crypto/evp/evp_lib.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/evp/evp_lib.c	2018-09-11 21:44:00.049688548 +0200
 @@ -192,6 +192,9 @@ int EVP_CIPHER_impl_ctx_size(const EVP_C
  int EVP_Cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
                 const unsigned char *in, unsigned int inl)
@@ -1214,9 +1214,9 @@ diff -up openssl-1.1.1-pre9/crypto/evp/evp_lib.c.fips openssl-1.1.1-pre9/crypto/
      return ctx->cipher->do_cipher(ctx, out, in, inl);
  }
  
-diff -up openssl-1.1.1-pre9/crypto/evp/m_sha1.c.fips openssl-1.1.1-pre9/crypto/evp/m_sha1.c
---- openssl-1.1.1-pre9/crypto/evp/m_sha1.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/evp/m_sha1.c	2018-08-22 12:17:53.424655192 +0200
+diff -up openssl-1.1.1/crypto/evp/m_sha1.c.12~ openssl-1.1.1/crypto/evp/m_sha1.c
+--- openssl-1.1.1/crypto/evp/m_sha1.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/evp/m_sha1.c	2018-09-11 21:44:00.049688548 +0200
 @@ -95,7 +95,7 @@ static const EVP_MD sha1_md = {
      NID_sha1,
      NID_sha1WithRSAEncryption,
@@ -1280,9 +1280,9 @@ diff -up openssl-1.1.1-pre9/crypto/evp/m_sha1.c.fips openssl-1.1.1-pre9/crypto/e
      init512,
      update512,
      final512,
-diff -up openssl-1.1.1-pre9/crypto/fips/build.info.fips openssl-1.1.1-pre9/crypto/fips/build.info
---- openssl-1.1.1-pre9/crypto/fips/build.info.fips	2018-08-22 12:17:53.425655217 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/build.info	2018-08-22 12:17:53.425655217 +0200
+diff -up openssl-1.1.1/crypto/fips/build.info.12~ openssl-1.1.1/crypto/fips/build.info
+--- openssl-1.1.1/crypto/fips/build.info.12~	2018-09-11 21:44:00.049688548 +0200
++++ openssl-1.1.1/crypto/fips/build.info	2018-09-11 21:44:00.049688548 +0200
 @@ -0,0 +1,15 @@
 +LIBS=../../libcrypto
 +SOURCE[../../libcrypto]=\
@@ -1299,9 +1299,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/build.info.fips openssl-1.1.1-pre9/crypt
 +SOURCE[fips_standalone_hmac]=fips_standalone_hmac.c
 +INCLUDE[fips_standalone_hmac]=../../include
 +DEPEND[fips_standalone_hmac]=../../libcrypto
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_aes_selftest.c.fips openssl-1.1.1-pre9/crypto/fips/fips_aes_selftest.c
---- openssl-1.1.1-pre9/crypto/fips/fips_aes_selftest.c.fips	2018-08-22 12:17:53.425655217 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_aes_selftest.c	2018-08-22 12:17:53.425655217 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_aes_selftest.c.12~ openssl-1.1.1/crypto/fips/fips_aes_selftest.c
+--- openssl-1.1.1/crypto/fips/fips_aes_selftest.c.12~	2018-09-11 21:44:00.049688548 +0200
++++ openssl-1.1.1/crypto/fips/fips_aes_selftest.c	2018-09-11 21:44:00.049688548 +0200
 @@ -0,0 +1,372 @@
 +/* ====================================================================
 + * Copyright (c) 2003 The OpenSSL Project.  All rights reserved.
@@ -1675,9 +1675,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_aes_selftest.c.fips openssl-1.1.1-p
 +}
 +
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips.c.fips openssl-1.1.1-pre9/crypto/fips/fips.c
---- openssl-1.1.1-pre9/crypto/fips/fips.c.fips	2018-08-22 12:17:53.425655217 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips.c	2018-08-22 12:17:53.425655217 +0200
+diff -up openssl-1.1.1/crypto/fips/fips.c.12~ openssl-1.1.1/crypto/fips/fips.c
+--- openssl-1.1.1/crypto/fips/fips.c.12~	2018-09-11 21:44:00.049688548 +0200
++++ openssl-1.1.1/crypto/fips/fips.c	2018-09-11 21:44:00.049688548 +0200
 @@ -0,0 +1,526 @@
 +/* ====================================================================
 + * Copyright (c) 2003 The OpenSSL Project.  All rights reserved.
@@ -2205,9 +2205,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips.c.fips openssl-1.1.1-pre9/crypto/fi
 +}
 +
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_cmac_selftest.c.fips openssl-1.1.1-pre9/crypto/fips/fips_cmac_selftest.c
---- openssl-1.1.1-pre9/crypto/fips/fips_cmac_selftest.c.fips	2018-08-22 12:17:53.425655217 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_cmac_selftest.c	2018-08-22 12:17:53.425655217 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_cmac_selftest.c.12~ openssl-1.1.1/crypto/fips/fips_cmac_selftest.c
+--- openssl-1.1.1/crypto/fips/fips_cmac_selftest.c.12~	2018-09-11 21:44:00.049688548 +0200
++++ openssl-1.1.1/crypto/fips/fips_cmac_selftest.c	2018-09-11 21:44:00.049688548 +0200
 @@ -0,0 +1,156 @@
 +/* ====================================================================
 + * Copyright (c) 2011 The OpenSSL Project.  All rights reserved.
@@ -2365,9 +2365,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_cmac_selftest.c.fips openssl-1.1.1-
 +    return rv;
 +}
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_des_selftest.c.fips openssl-1.1.1-pre9/crypto/fips/fips_des_selftest.c
---- openssl-1.1.1-pre9/crypto/fips/fips_des_selftest.c.fips	2018-08-22 12:17:53.425655217 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_des_selftest.c	2018-08-22 12:17:53.425655217 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_des_selftest.c.12~ openssl-1.1.1/crypto/fips/fips_des_selftest.c
+--- openssl-1.1.1/crypto/fips/fips_des_selftest.c.12~	2018-09-11 21:44:00.049688548 +0200
++++ openssl-1.1.1/crypto/fips/fips_des_selftest.c	2018-09-11 21:44:00.049688548 +0200
 @@ -0,0 +1,133 @@
 +/* ====================================================================
 + * Copyright (c) 2003 The OpenSSL Project.  All rights reserved.
@@ -2502,9 +2502,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_des_selftest.c.fips openssl-1.1.1-p
 +    return ret;
 +}
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_dh_selftest.c.fips openssl-1.1.1-pre9/crypto/fips/fips_dh_selftest.c
---- openssl-1.1.1-pre9/crypto/fips/fips_dh_selftest.c.fips	2018-08-22 12:17:53.426655241 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_dh_selftest.c	2018-08-22 12:17:53.426655241 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_dh_selftest.c.12~ openssl-1.1.1/crypto/fips/fips_dh_selftest.c
+--- openssl-1.1.1/crypto/fips/fips_dh_selftest.c.12~	2018-09-11 21:44:00.049688548 +0200
++++ openssl-1.1.1/crypto/fips/fips_dh_selftest.c	2018-09-11 21:44:00.049688548 +0200
 @@ -0,0 +1,180 @@
 +/* ====================================================================
 + * Copyright (c) 2011 The OpenSSL Project.  All rights reserved.
@@ -2686,9 +2686,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_dh_selftest.c.fips openssl-1.1.1-pr
 +    return ret;
 +}
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_ctr.c.fips openssl-1.1.1-pre9/crypto/fips/fips_drbg_ctr.c
---- openssl-1.1.1-pre9/crypto/fips/fips_drbg_ctr.c.fips	2018-08-22 12:17:53.426655241 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_drbg_ctr.c	2018-08-22 12:17:53.426655241 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_drbg_ctr.c.12~ openssl-1.1.1/crypto/fips/fips_drbg_ctr.c
+--- openssl-1.1.1/crypto/fips/fips_drbg_ctr.c.12~	2018-09-11 21:44:00.050688536 +0200
++++ openssl-1.1.1/crypto/fips/fips_drbg_ctr.c	2018-09-11 21:44:00.050688536 +0200
 @@ -0,0 +1,406 @@
 +/* fips/rand/fips_drbg_ctr.c */
 +/* Written by Dr Stephen N Henson (steve@openssl.org) for the OpenSSL
@@ -3096,9 +3096,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_ctr.c.fips openssl-1.1.1-pre9/
 +
 +    return 1;
 +}
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_hash.c.fips openssl-1.1.1-pre9/crypto/fips/fips_drbg_hash.c
---- openssl-1.1.1-pre9/crypto/fips/fips_drbg_hash.c.fips	2018-08-22 12:17:53.430655339 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_drbg_hash.c	2018-08-22 12:17:53.430655339 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_drbg_hash.c.12~ openssl-1.1.1/crypto/fips/fips_drbg_hash.c
+--- openssl-1.1.1/crypto/fips/fips_drbg_hash.c.12~	2018-09-11 21:44:00.050688536 +0200
++++ openssl-1.1.1/crypto/fips/fips_drbg_hash.c	2018-09-11 21:44:00.050688536 +0200
 @@ -0,0 +1,354 @@
 +/* fips/rand/fips_drbg_hash.c */
 +/* Written by Dr Stephen N Henson (steve@openssl.org) for the OpenSSL
@@ -3454,9 +3454,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_hash.c.fips openssl-1.1.1-pre9
 +
 +    return 1;
 +}
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_hmac.c.fips openssl-1.1.1-pre9/crypto/fips/fips_drbg_hmac.c
---- openssl-1.1.1-pre9/crypto/fips/fips_drbg_hmac.c.fips	2018-08-22 12:17:53.431655364 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_drbg_hmac.c	2018-08-22 12:17:53.431655364 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_drbg_hmac.c.12~ openssl-1.1.1/crypto/fips/fips_drbg_hmac.c
+--- openssl-1.1.1/crypto/fips/fips_drbg_hmac.c.12~	2018-09-11 21:44:00.050688536 +0200
++++ openssl-1.1.1/crypto/fips/fips_drbg_hmac.c	2018-09-11 21:44:00.050688536 +0200
 @@ -0,0 +1,262 @@
 +/* fips/rand/fips_drbg_hmac.c */
 +/* Written by Dr Stephen N Henson (steve@openssl.org) for the OpenSSL
@@ -3720,9 +3720,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_hmac.c.fips openssl-1.1.1-pre9
 +
 +    return 1;
 +}
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_lib.c.fips openssl-1.1.1-pre9/crypto/fips/fips_drbg_lib.c
---- openssl-1.1.1-pre9/crypto/fips/fips_drbg_lib.c.fips	2018-08-22 12:17:53.431655364 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_drbg_lib.c	2018-08-22 12:17:53.431655364 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_drbg_lib.c.12~ openssl-1.1.1/crypto/fips/fips_drbg_lib.c
+--- openssl-1.1.1/crypto/fips/fips_drbg_lib.c.12~	2018-09-11 21:44:00.050688536 +0200
++++ openssl-1.1.1/crypto/fips/fips_drbg_lib.c	2018-09-11 21:44:00.050688536 +0200
 @@ -0,0 +1,528 @@
 +/* Written by Dr Stephen N Henson (steve@openssl.org) for the OpenSSL
 + * project.
@@ -4252,9 +4252,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_lib.c.fips openssl-1.1.1-pre9/
 +{
 +    /* Just backwards compatibility API call with no effect. */
 +}
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_rand.c.fips openssl-1.1.1-pre9/crypto/fips/fips_drbg_rand.c
---- openssl-1.1.1-pre9/crypto/fips/fips_drbg_rand.c.fips	2018-08-22 12:17:53.431655364 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_drbg_rand.c	2018-08-22 12:17:53.431655364 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_drbg_rand.c.12~ openssl-1.1.1/crypto/fips/fips_drbg_rand.c
+--- openssl-1.1.1/crypto/fips/fips_drbg_rand.c.12~	2018-09-11 21:44:00.050688536 +0200
++++ openssl-1.1.1/crypto/fips/fips_drbg_rand.c	2018-09-11 21:44:00.050688536 +0200
 @@ -0,0 +1,183 @@
 +/* fips/rand/fips_drbg_rand.c */
 +/* Written by Dr Stephen N Henson (steve@openssl.org) for the OpenSSL
@@ -4439,9 +4439,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_rand.c.fips openssl-1.1.1-pre9
 +{
 +    return &rand_drbg_meth;
 +}
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_selftest.c.fips openssl-1.1.1-pre9/crypto/fips/fips_drbg_selftest.c
---- openssl-1.1.1-pre9/crypto/fips/fips_drbg_selftest.c.fips	2018-08-22 12:17:53.431655364 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_drbg_selftest.c	2018-08-22 12:17:53.431655364 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_drbg_selftest.c.12~ openssl-1.1.1/crypto/fips/fips_drbg_selftest.c
+--- openssl-1.1.1/crypto/fips/fips_drbg_selftest.c.12~	2018-09-11 21:44:00.050688536 +0200
++++ openssl-1.1.1/crypto/fips/fips_drbg_selftest.c	2018-09-11 21:44:00.050688536 +0200
 @@ -0,0 +1,828 @@
 +/* fips/rand/fips_drbg_selftest.c */
 +/* Written by Dr Stephen N Henson (steve@openssl.org) for the OpenSSL
@@ -5271,9 +5271,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_selftest.c.fips openssl-1.1.1-
 +    FIPS_drbg_free(dctx);
 +    return rv;
 +}
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_selftest.h.fips openssl-1.1.1-pre9/crypto/fips/fips_drbg_selftest.h
---- openssl-1.1.1-pre9/crypto/fips/fips_drbg_selftest.h.fips	2018-08-22 12:17:53.438655535 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_drbg_selftest.h	2018-08-22 12:17:53.438655535 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_drbg_selftest.h.12~ openssl-1.1.1/crypto/fips/fips_drbg_selftest.h
+--- openssl-1.1.1/crypto/fips/fips_drbg_selftest.h.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_drbg_selftest.h	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,1791 @@
 +/* ====================================================================
 + * Copyright (c) 2011 The OpenSSL Project.  All rights reserved.
@@ -7066,9 +7066,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_drbg_selftest.h.fips openssl-1.1.1-
 +    0xef, 0x05, 0x9e, 0xb8, 0xc7, 0x52, 0xe4, 0x0e, 0x42, 0xaa, 0x7c, 0x79,
 +    0xc2, 0xd6, 0xfd, 0xa5
 +};
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_dsa_selftest.c.fips openssl-1.1.1-pre9/crypto/fips/fips_dsa_selftest.c
---- openssl-1.1.1-pre9/crypto/fips/fips_dsa_selftest.c.fips	2018-08-22 12:17:53.438655535 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_dsa_selftest.c	2018-08-22 12:17:53.438655535 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_dsa_selftest.c.12~ openssl-1.1.1/crypto/fips/fips_dsa_selftest.c
+--- openssl-1.1.1/crypto/fips/fips_dsa_selftest.c.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_dsa_selftest.c	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,195 @@
 +/* ====================================================================
 + * Copyright (c) 2011 The OpenSSL Project.  All rights reserved.
@@ -7265,9 +7265,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_dsa_selftest.c.fips openssl-1.1.1-p
 +    return ret;
 +}
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_ecdh_selftest.c.fips openssl-1.1.1-pre9/crypto/fips/fips_ecdh_selftest.c
---- openssl-1.1.1-pre9/crypto/fips/fips_ecdh_selftest.c.fips	2018-08-22 12:17:53.438655535 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_ecdh_selftest.c	2018-08-22 12:17:53.438655535 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_ecdh_selftest.c.12~ openssl-1.1.1/crypto/fips/fips_ecdh_selftest.c
+--- openssl-1.1.1/crypto/fips/fips_ecdh_selftest.c.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_ecdh_selftest.c	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,242 @@
 +/* fips/ecdh/fips_ecdh_selftest.c */
 +/* Written by Dr Stephen N Henson (steve@openssl.org) for the OpenSSL
@@ -7511,9 +7511,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_ecdh_selftest.c.fips openssl-1.1.1-
 +}
 +
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_ecdsa_selftest.c.fips openssl-1.1.1-pre9/crypto/fips/fips_ecdsa_selftest.c
---- openssl-1.1.1-pre9/crypto/fips/fips_ecdsa_selftest.c.fips	2018-08-22 12:17:53.439655560 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_ecdsa_selftest.c	2018-08-22 12:17:53.438655535 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_ecdsa_selftest.c.12~ openssl-1.1.1/crypto/fips/fips_ecdsa_selftest.c
+--- openssl-1.1.1/crypto/fips/fips_ecdsa_selftest.c.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_ecdsa_selftest.c	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,166 @@
 +/* fips/ecdsa/fips_ecdsa_selftest.c */
 +/* Written by Dr Stephen N Henson (steve@openssl.org) for the OpenSSL
@@ -7681,9 +7681,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_ecdsa_selftest.c.fips openssl-1.1.1
 +}
 +
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_enc.c.fips openssl-1.1.1-pre9/crypto/fips/fips_enc.c
---- openssl-1.1.1-pre9/crypto/fips/fips_enc.c.fips	2018-08-22 12:17:53.439655560 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_enc.c	2018-08-22 12:17:53.439655560 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_enc.c.12~ openssl-1.1.1/crypto/fips/fips_enc.c
+--- openssl-1.1.1/crypto/fips/fips_enc.c.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_enc.c	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,189 @@
 +/* fipe/evp/fips_enc.c */
 +/* Copyright (C) 1995-1998 Eric Young (eay@cryptsoft.com)
@@ -7874,9 +7874,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_enc.c.fips openssl-1.1.1-pre9/crypt
 +
 +    }
 +}
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_err.h.fips openssl-1.1.1-pre9/crypto/fips/fips_err.h
---- openssl-1.1.1-pre9/crypto/fips/fips_err.h.fips	2018-08-22 12:17:53.439655560 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_err.h	2018-08-22 12:17:53.439655560 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_err.h.12~ openssl-1.1.1/crypto/fips/fips_err.h
+--- openssl-1.1.1/crypto/fips/fips_err.h.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_err.h	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,196 @@
 +/* crypto/fips_err.h */
 +/* ====================================================================
@@ -8074,9 +8074,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_err.h.fips openssl-1.1.1-pre9/crypt
 +#endif
 +    return 1;
 +}
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_ers.c.fips openssl-1.1.1-pre9/crypto/fips/fips_ers.c
---- openssl-1.1.1-pre9/crypto/fips/fips_ers.c.fips	2018-08-22 12:17:53.439655560 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_ers.c	2018-08-22 12:17:53.439655560 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_ers.c.12~ openssl-1.1.1/crypto/fips/fips_ers.c
+--- openssl-1.1.1/crypto/fips/fips_ers.c.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_ers.c	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,7 @@
 +#include <openssl/opensslconf.h>
 +
@@ -8085,9 +8085,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_ers.c.fips openssl-1.1.1-pre9/crypt
 +#else
 +static void *dummy = &dummy;
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_hmac_selftest.c.fips openssl-1.1.1-pre9/crypto/fips/fips_hmac_selftest.c
---- openssl-1.1.1-pre9/crypto/fips/fips_hmac_selftest.c.fips	2018-08-22 12:17:53.439655560 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_hmac_selftest.c	2018-08-22 12:17:53.439655560 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_hmac_selftest.c.12~ openssl-1.1.1/crypto/fips/fips_hmac_selftest.c
+--- openssl-1.1.1/crypto/fips/fips_hmac_selftest.c.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_hmac_selftest.c	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,134 @@
 +/* ====================================================================
 + * Copyright (c) 2005 The OpenSSL Project.  All rights reserved.
@@ -8223,9 +8223,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_hmac_selftest.c.fips openssl-1.1.1-
 +    return 1;
 +}
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_locl.h.fips openssl-1.1.1-pre9/crypto/fips/fips_locl.h
---- openssl-1.1.1-pre9/crypto/fips/fips_locl.h.fips	2018-08-22 12:17:53.439655560 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_locl.h	2018-08-22 12:17:53.439655560 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_locl.h.12~ openssl-1.1.1/crypto/fips/fips_locl.h
+--- openssl-1.1.1/crypto/fips/fips_locl.h.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_locl.h	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,71 @@
 +/* ====================================================================
 + * Copyright (c) 2011 The OpenSSL Project.  All rights reserved.
@@ -8298,9 +8298,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_locl.h.fips openssl-1.1.1-pre9/cryp
 +}
 +# endif
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_md.c.fips openssl-1.1.1-pre9/crypto/fips/fips_md.c
---- openssl-1.1.1-pre9/crypto/fips/fips_md.c.fips	2018-08-22 12:17:53.439655560 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_md.c	2018-08-22 12:17:53.439655560 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_md.c.12~ openssl-1.1.1/crypto/fips/fips_md.c
+--- openssl-1.1.1/crypto/fips/fips_md.c.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_md.c	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,144 @@
 +/* fips/evp/fips_md.c */
 +/* Copyright (C) 1995-1998 Eric Young (eay@cryptsoft.com)
@@ -8446,9 +8446,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_md.c.fips openssl-1.1.1-pre9/crypto
 +        return NULL;
 +    }
 +}
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_post.c.fips openssl-1.1.1-pre9/crypto/fips/fips_post.c
---- openssl-1.1.1-pre9/crypto/fips/fips_post.c.fips	2018-08-22 12:17:53.439655560 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_post.c	2018-08-22 12:17:53.439655560 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_post.c.12~ openssl-1.1.1/crypto/fips/fips_post.c
+--- openssl-1.1.1/crypto/fips/fips_post.c.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_post.c	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,222 @@
 +/* ====================================================================
 + * Copyright (c) 2011 The OpenSSL Project.  All rights reserved.
@@ -8672,9 +8672,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_post.c.fips openssl-1.1.1-pre9/cryp
 +    return 1;
 +}
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_rand_lcl.h.fips openssl-1.1.1-pre9/crypto/fips/fips_rand_lcl.h
---- openssl-1.1.1-pre9/crypto/fips/fips_rand_lcl.h.fips	2018-08-22 12:17:53.439655560 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_rand_lcl.h	2018-08-22 12:17:53.439655560 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_rand_lcl.h.12~ openssl-1.1.1/crypto/fips/fips_rand_lcl.h
+--- openssl-1.1.1/crypto/fips/fips_rand_lcl.h.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_rand_lcl.h	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,203 @@
 +/* fips/rand/fips_rand_lcl.h */
 +/* Written by Dr Stephen N Henson (steve@openssl.org) for the OpenSSL
@@ -8879,9 +8879,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_rand_lcl.h.fips openssl-1.1.1-pre9/
 +#define FIPS_digestupdate EVP_DigestUpdate
 +#define FIPS_digestfinal EVP_DigestFinal
 +#define M_EVP_MD_size EVP_MD_size
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_rand_lib.c.fips openssl-1.1.1-pre9/crypto/fips/fips_rand_lib.c
---- openssl-1.1.1-pre9/crypto/fips/fips_rand_lib.c.fips	2018-08-22 12:17:53.440655584 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_rand_lib.c	2018-08-22 12:17:53.440655584 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_rand_lib.c.12~ openssl-1.1.1/crypto/fips/fips_rand_lib.c
+--- openssl-1.1.1/crypto/fips/fips_rand_lib.c.12~	2018-09-11 21:44:00.051688525 +0200
++++ openssl-1.1.1/crypto/fips/fips_rand_lib.c	2018-09-11 21:44:00.051688525 +0200
 @@ -0,0 +1,234 @@
 +/* ====================================================================
 + * Copyright (c) 2011 The OpenSSL Project.  All rights reserved.
@@ -9117,9 +9117,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_rand_lib.c.fips openssl-1.1.1-pre9/
 +# endif
 +}
 +
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_rsa_selftest.c.fips openssl-1.1.1-pre9/crypto/fips/fips_rsa_selftest.c
---- openssl-1.1.1-pre9/crypto/fips/fips_rsa_selftest.c.fips	2018-08-22 12:17:53.440655584 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_rsa_selftest.c	2018-08-22 12:17:53.440655584 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_rsa_selftest.c.12~ openssl-1.1.1/crypto/fips/fips_rsa_selftest.c
+--- openssl-1.1.1/crypto/fips/fips_rsa_selftest.c.12~	2018-09-11 21:44:00.052688512 +0200
++++ openssl-1.1.1/crypto/fips/fips_rsa_selftest.c	2018-09-11 21:44:00.052688512 +0200
 @@ -0,0 +1,338 @@
 +/* ====================================================================
 + * Copyright (c) 2003-2007 The OpenSSL Project.  All rights reserved.
@@ -9459,9 +9459,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_rsa_selftest.c.fips openssl-1.1.1-p
 +}
 +
 +#endif                          /* def OPENSSL_FIPS */
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_sha_selftest.c.fips openssl-1.1.1-pre9/crypto/fips/fips_sha_selftest.c
---- openssl-1.1.1-pre9/crypto/fips/fips_sha_selftest.c.fips	2018-08-22 12:17:53.440655584 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_sha_selftest.c	2018-08-22 12:17:53.440655584 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_sha_selftest.c.12~ openssl-1.1.1/crypto/fips/fips_sha_selftest.c
+--- openssl-1.1.1/crypto/fips/fips_sha_selftest.c.12~	2018-09-11 21:44:00.052688512 +0200
++++ openssl-1.1.1/crypto/fips/fips_sha_selftest.c	2018-09-11 21:44:00.052688512 +0200
 @@ -0,0 +1,138 @@
 +/* ====================================================================
 + * Copyright (c) 2003 The OpenSSL Project.  All rights reserved.
@@ -9601,9 +9601,9 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_sha_selftest.c.fips openssl-1.1.1-p
 +}
 +
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/fips/fips_standalone_hmac.c.fips openssl-1.1.1-pre9/crypto/fips/fips_standalone_hmac.c
---- openssl-1.1.1-pre9/crypto/fips/fips_standalone_hmac.c.fips	2018-08-22 12:17:53.440655584 +0200
-+++ openssl-1.1.1-pre9/crypto/fips/fips_standalone_hmac.c	2018-08-22 12:17:53.440655584 +0200
+diff -up openssl-1.1.1/crypto/fips/fips_standalone_hmac.c.12~ openssl-1.1.1/crypto/fips/fips_standalone_hmac.c
+--- openssl-1.1.1/crypto/fips/fips_standalone_hmac.c.12~	2018-09-11 21:44:00.052688512 +0200
++++ openssl-1.1.1/crypto/fips/fips_standalone_hmac.c	2018-09-11 21:44:00.052688512 +0200
 @@ -0,0 +1,127 @@
 +/* ====================================================================
 + * Copyright (c) 2003 The OpenSSL Project.  All rights reserved.
@@ -9732,10 +9732,10 @@ diff -up openssl-1.1.1-pre9/crypto/fips/fips_standalone_hmac.c.fips openssl-1.1.
 +#endif
 +    return 0;
 +}
-diff -up openssl-1.1.1-pre9/crypto/hmac/hmac.c.fips openssl-1.1.1-pre9/crypto/hmac/hmac.c
---- openssl-1.1.1-pre9/crypto/hmac/hmac.c.fips	2018-08-21 14:14:12.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/hmac/hmac.c	2018-08-22 12:17:53.440655584 +0200
-@@ -35,6 +35,13 @@ int HMAC_Init_ex(HMAC_CTX *ctx, const vo
+diff -up openssl-1.1.1/crypto/hmac/hmac.c.12~ openssl-1.1.1/crypto/hmac/hmac.c
+--- openssl-1.1.1/crypto/hmac/hmac.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/hmac/hmac.c	2018-09-11 21:44:00.052688512 +0200
+@@ -36,6 +36,13 @@ int HMAC_Init_ex(HMAC_CTX *ctx, const vo
      }
  
      if (key != NULL) {
@@ -9749,9 +9749,9 @@ diff -up openssl-1.1.1-pre9/crypto/hmac/hmac.c.fips openssl-1.1.1-pre9/crypto/hm
          reset = 1;
          j = EVP_MD_block_size(md);
          if (!ossl_assert(j <= (int)sizeof(ctx->key)))
-diff -up openssl-1.1.1-pre9/crypto/include/internal/fips_int.h.fips openssl-1.1.1-pre9/crypto/include/internal/fips_int.h
---- openssl-1.1.1-pre9/crypto/include/internal/fips_int.h.fips	2018-08-22 12:17:53.440655584 +0200
-+++ openssl-1.1.1-pre9/crypto/include/internal/fips_int.h	2018-08-22 12:17:53.440655584 +0200
+diff -up openssl-1.1.1/crypto/include/internal/fips_int.h.12~ openssl-1.1.1/crypto/include/internal/fips_int.h
+--- openssl-1.1.1/crypto/include/internal/fips_int.h.12~	2018-09-11 21:44:00.052688512 +0200
++++ openssl-1.1.1/crypto/include/internal/fips_int.h	2018-09-11 21:44:00.052688512 +0200
 @@ -0,0 +1,101 @@
 +/* ====================================================================
 + * Copyright (c) 2003 The OpenSSL Project.  All rights reserved.
@@ -9854,9 +9854,9 @@ diff -up openssl-1.1.1-pre9/crypto/include/internal/fips_int.h.fips openssl-1.1.
 +void FIPS_get_timevec(unsigned char *buf, unsigned long *pctr);
 +
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/o_fips.c.fips openssl-1.1.1-pre9/crypto/o_fips.c
---- openssl-1.1.1-pre9/crypto/o_fips.c.fips	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/o_fips.c	2018-08-22 12:17:53.440655584 +0200
+diff -up openssl-1.1.1/crypto/o_fips.c.12~ openssl-1.1.1/crypto/o_fips.c
+--- openssl-1.1.1/crypto/o_fips.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/o_fips.c	2018-09-11 21:44:00.052688512 +0200
 @@ -11,14 +11,25 @@
  
  int FIPS_mode(void)
@@ -9883,9 +9883,9 @@ diff -up openssl-1.1.1-pre9/crypto/o_fips.c.fips openssl-1.1.1-pre9/crypto/o_fip
      return 0;
 +#endif
  }
-diff -up openssl-1.1.1-pre9/crypto/o_init.c.fips openssl-1.1.1-pre9/crypto/o_init.c
---- openssl-1.1.1-pre9/crypto/o_init.c.fips	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/o_init.c	2018-08-22 12:17:53.441655609 +0200
+diff -up openssl-1.1.1/crypto/o_init.c.12~ openssl-1.1.1/crypto/o_init.c
+--- openssl-1.1.1/crypto/o_init.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/o_init.c	2018-09-11 21:44:00.052688512 +0200
 @@ -7,8 +7,68 @@
   * https://www.openssl.org/source/license.html
   */
@@ -9955,9 +9955,9 @@ diff -up openssl-1.1.1-pre9/crypto/o_init.c.fips openssl-1.1.1-pre9/crypto/o_ini
  
  /*
   * Perform any essential OpenSSL initialization operations. Currently does
-diff -up openssl-1.1.1-pre9/crypto/rand/rand_lib.c.fips openssl-1.1.1-pre9/crypto/rand/rand_lib.c
---- openssl-1.1.1-pre9/crypto/rand/rand_lib.c.fips	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/rand/rand_lib.c	2018-08-22 12:17:53.441655609 +0200
+diff -up openssl-1.1.1/crypto/rand/rand_lib.c.12~ openssl-1.1.1/crypto/rand/rand_lib.c
+--- openssl-1.1.1/crypto/rand/rand_lib.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/rand/rand_lib.c	2018-09-11 21:44:00.052688512 +0200
 @@ -16,6 +16,10 @@
  #include "internal/thread_once.h"
  #include "rand_lcl.h"
@@ -9969,7 +9969,7 @@ diff -up openssl-1.1.1-pre9/crypto/rand/rand_lib.c.fips openssl-1.1.1-pre9/crypt
  
  #ifndef OPENSSL_NO_ENGINE
  /* non-NULL if default_RAND_meth is ENGINE-provided */
-@@ -793,3 +797,15 @@ int RAND_status(void)
+@@ -797,3 +801,15 @@ int RAND_status(void)
          return meth->status();
      return 0;
  }
@@ -9985,9 +9985,9 @@ diff -up openssl-1.1.1-pre9/crypto/rand/rand_lib.c.fips openssl-1.1.1-pre9/crypt
 +    return 1;
 +}
 +#endif
-diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_crpt.c.fips openssl-1.1.1-pre9/crypto/rsa/rsa_crpt.c
---- openssl-1.1.1-pre9/crypto/rsa/rsa_crpt.c.fips	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/rsa/rsa_crpt.c	2018-08-22 12:17:53.441655609 +0200
+diff -up openssl-1.1.1/crypto/rsa/rsa_crpt.c.12~ openssl-1.1.1/crypto/rsa/rsa_crpt.c
+--- openssl-1.1.1/crypto/rsa/rsa_crpt.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/rsa/rsa_crpt.c	2018-09-11 21:44:00.052688512 +0200
 @@ -27,24 +27,52 @@ int RSA_size(const RSA *r)
  int RSA_public_encrypt(int flen, const unsigned char *from, unsigned char *to,
                         RSA *rsa, int padding)
@@ -10041,9 +10041,9 @@ diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_crpt.c.fips openssl-1.1.1-pre9/crypto
      return rsa->meth->rsa_pub_dec(flen, from, to, rsa, padding);
  }
  
-diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_err.c.fips openssl-1.1.1-pre9/crypto/rsa/rsa_err.c
---- openssl-1.1.1-pre9/crypto/rsa/rsa_err.c.fips	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/rsa/rsa_err.c	2018-08-22 12:17:53.441655609 +0200
+diff -up openssl-1.1.1/crypto/rsa/rsa_err.c.12~ openssl-1.1.1/crypto/rsa/rsa_err.c
+--- openssl-1.1.1/crypto/rsa/rsa_err.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/rsa/rsa_err.c	2018-09-11 21:44:00.052688512 +0200
 @@ -16,6 +16,8 @@
  static const ERR_STRING_DATA RSA_str_functs[] = {
      {ERR_PACK(ERR_LIB_RSA, RSA_F_CHECK_PADDING_MD, 0), "check_padding_md"},
@@ -10112,9 +10112,9 @@ diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_err.c.fips openssl-1.1.1-pre9/crypto/
      {ERR_PACK(ERR_LIB_RSA, 0, RSA_R_UNSUPPORTED_SIGNATURE_TYPE),
      "unsupported signature type"},
      {ERR_PACK(ERR_LIB_RSA, 0, RSA_R_VALUE_MISSING), "value missing"},
-diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_gen.c.fips openssl-1.1.1-pre9/crypto/rsa/rsa_gen.c
---- openssl-1.1.1-pre9/crypto/rsa/rsa_gen.c.fips	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/rsa/rsa_gen.c	2018-08-22 12:17:53.441655609 +0200
+diff -up openssl-1.1.1/crypto/rsa/rsa_gen.c.12~ openssl-1.1.1/crypto/rsa/rsa_gen.c
+--- openssl-1.1.1/crypto/rsa/rsa_gen.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/rsa/rsa_gen.c	2018-09-11 21:44:00.052688512 +0200
 @@ -18,6 +18,78 @@
  #include "internal/cryptlib.h"
  #include <openssl/bn.h>
@@ -10509,9 +10509,9 @@ diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_gen.c.fips openssl-1.1.1-pre9/crypto/
  static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
                                BN_GENCB *cb)
  {
-diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_lib.c.fips openssl-1.1.1-pre9/crypto/rsa/rsa_lib.c
---- openssl-1.1.1-pre9/crypto/rsa/rsa_lib.c.fips	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/rsa/rsa_lib.c	2018-08-22 12:17:53.442655633 +0200
+diff -up openssl-1.1.1/crypto/rsa/rsa_lib.c.12~ openssl-1.1.1/crypto/rsa/rsa_lib.c
+--- openssl-1.1.1/crypto/rsa/rsa_lib.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/rsa/rsa_lib.c	2018-09-11 21:44:00.052688512 +0200
 @@ -34,6 +34,12 @@ int RSA_set_method(RSA *rsa, const RSA_M
       * to deal with which ENGINE it comes from.
       */
@@ -10554,9 +10554,9 @@ diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_lib.c.fips openssl-1.1.1-pre9/crypto/
      if (!CRYPTO_new_ex_data(CRYPTO_EX_INDEX_RSA, ret, &ret->ex_data)) {
          goto err;
      }
-diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_ossl.c.fips openssl-1.1.1-pre9/crypto/rsa/rsa_ossl.c
---- openssl-1.1.1-pre9/crypto/rsa/rsa_ossl.c.fips	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/rsa/rsa_ossl.c	2018-08-22 12:17:53.442655633 +0200
+diff -up openssl-1.1.1/crypto/rsa/rsa_ossl.c.12~ openssl-1.1.1/crypto/rsa/rsa_ossl.c
+--- openssl-1.1.1/crypto/rsa/rsa_ossl.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/rsa/rsa_ossl.c	2018-09-11 21:44:00.053688500 +0200
 @@ -11,6 +11,10 @@
  #include "internal/bn_int.h"
  #include "rsa_locl.h"
@@ -10673,9 +10673,9 @@ diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_ossl.c.fips openssl-1.1.1-pre9/crypto
      if (BN_num_bits(rsa->n) > OPENSSL_RSA_MAX_MODULUS_BITS) {
          RSAerr(RSA_F_RSA_OSSL_PUBLIC_DECRYPT, RSA_R_MODULUS_TOO_LARGE);
          return -1;
-diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_sign.c.fips openssl-1.1.1-pre9/crypto/rsa/rsa_sign.c
---- openssl-1.1.1-pre9/crypto/rsa/rsa_sign.c.fips	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/rsa/rsa_sign.c	2018-08-22 12:17:53.442655633 +0200
+diff -up openssl-1.1.1/crypto/rsa/rsa_sign.c.12~ openssl-1.1.1/crypto/rsa/rsa_sign.c
+--- openssl-1.1.1/crypto/rsa/rsa_sign.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/rsa/rsa_sign.c	2018-09-11 21:44:00.053688500 +0200
 @@ -73,6 +73,13 @@ int RSA_sign(int type, const unsigned ch
      unsigned char *tmps = NULL;
      const unsigned char *encoded = NULL;
@@ -10702,22 +10702,9 @@ diff -up openssl-1.1.1-pre9/crypto/rsa/rsa_sign.c.fips openssl-1.1.1-pre9/crypto
      if (encrypt_len <= 0)
          goto err;
  
-diff -up openssl-1.1.1-pre9/crypto/sha/sha_locl.h.fips openssl-1.1.1-pre9/crypto/sha/sha_locl.h
---- openssl-1.1.1-pre9/crypto/sha/sha_locl.h.fips	2018-08-22 12:17:52.546633685 +0200
-+++ openssl-1.1.1-pre9/crypto/sha/sha_locl.h	2018-08-22 12:17:53.442655633 +0200
-@@ -52,6 +52,9 @@ void sha1_block_data_order(SHA_CTX *c, c
- 
- int HASH_INIT(SHA_CTX *c)
- {
-+#if defined(OPENSSL_FIPS)
-+    FIPS_selftest_check();
-+#endif
-     memset(c, 0, sizeof(*c));
-     c->h0 = INIT_DATA_h0;
-     c->h1 = INIT_DATA_h1;
-diff -up openssl-1.1.1-pre9/crypto/sha/sha256.c.fips openssl-1.1.1-pre9/crypto/sha/sha256.c
---- openssl-1.1.1-pre9/crypto/sha/sha256.c.fips	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/sha/sha256.c	2018-08-22 12:17:53.663661047 +0200
+diff -up openssl-1.1.1/crypto/sha/sha256.c.12~ openssl-1.1.1/crypto/sha/sha256.c
+--- openssl-1.1.1/crypto/sha/sha256.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/sha/sha256.c	2018-09-11 21:44:00.053688500 +0200
 @@ -18,6 +18,9 @@
  
  int SHA224_Init(SHA256_CTX *c)
@@ -10738,9 +10725,9 @@ diff -up openssl-1.1.1-pre9/crypto/sha/sha256.c.fips openssl-1.1.1-pre9/crypto/s
      memset(c, 0, sizeof(*c));
      c->h[0] = 0x6a09e667UL;
      c->h[1] = 0xbb67ae85UL;
-diff -up openssl-1.1.1-pre9/crypto/sha/sha512.c.fips openssl-1.1.1-pre9/crypto/sha/sha512.c
---- openssl-1.1.1-pre9/crypto/sha/sha512.c.fips	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/crypto/sha/sha512.c	2018-08-22 12:17:53.666661121 +0200
+diff -up openssl-1.1.1/crypto/sha/sha512.c.12~ openssl-1.1.1/crypto/sha/sha512.c
+--- openssl-1.1.1/crypto/sha/sha512.c.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/sha/sha512.c	2018-09-11 21:44:00.053688500 +0200
 @@ -98,6 +98,9 @@ int sha512_256_init(SHA512_CTX *c)
  
  int SHA384_Init(SHA512_CTX *c)
@@ -10761,9 +10748,22 @@ diff -up openssl-1.1.1-pre9/crypto/sha/sha512.c.fips openssl-1.1.1-pre9/crypto/s
      c->h[0] = U64(0x6a09e667f3bcc908);
      c->h[1] = U64(0xbb67ae8584caa73b);
      c->h[2] = U64(0x3c6ef372fe94f82b);
-diff -up openssl-1.1.1-pre9/doc/man3/DSA_generate_parameters.pod.fips openssl-1.1.1-pre9/doc/man3/DSA_generate_parameters.pod
---- openssl-1.1.1-pre9/doc/man3/DSA_generate_parameters.pod.fips	2018-08-21 14:14:14.000000000 +0200
-+++ openssl-1.1.1-pre9/doc/man3/DSA_generate_parameters.pod	2018-08-22 12:17:53.666661121 +0200
+diff -up openssl-1.1.1/crypto/sha/sha_locl.h.12~ openssl-1.1.1/crypto/sha/sha_locl.h
+--- openssl-1.1.1/crypto/sha/sha_locl.h.12~	2018-09-11 14:48:21.000000000 +0200
++++ openssl-1.1.1/crypto/sha/sha_locl.h	2018-09-11 21:44:00.053688500 +0200
+@@ -52,6 +52,9 @@ void sha1_block_data_order(SHA_CTX *c, c
+ 
+ int HASH_INIT(SHA_CTX *c)
+ {
++#if defined(OPENSSL_FIPS)
++    FIPS_selftest_check();
++#endif
+     memset(c, 0, sizeof(*c));
+     c->h0 = INIT_DATA_h0;
+     c->h1 = INIT_DATA_h1;
+diff -up openssl-1.1.1/doc/man3/DSA_generate_parameters.pod.12~ openssl-1.1.1/doc/man3/DSA_generate_parameters.pod
+--- openssl-1.1.1/doc/man3/DSA_generate_parameters.pod.12~	2018-09-11 14:48:22.000000000 +0200
++++ openssl-1.1.1/doc/man3/DSA_generate_parameters.pod	2018-09-11 21:44:00.053688500 +0200
 @@ -30,8 +30,10 @@ B<bits> is the length of the prime p to
  For lengths under 2048 bits, the length of q is 160 bits; for lengths
  greater than or equal to 2048 bits, the length of q is set to 256 bits.
@@ -10777,9 +10777,9 @@ diff -up openssl-1.1.1-pre9/doc/man3/DSA_generate_parameters.pod.fips openssl-1.
  
  DSA_generate_parameters_ex() places the iteration count in
  *B<counter_ret> and a counter used for finding a generator in
-diff -up openssl-1.1.1-pre9/include/openssl/crypto.h.fips openssl-1.1.1-pre9/include/openssl/crypto.h
---- openssl-1.1.1-pre9/include/openssl/crypto.h.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/include/openssl/crypto.h	2018-08-22 12:17:53.673661292 +0200
+diff -up openssl-1.1.1/include/openssl/crypto.h.12~ openssl-1.1.1/include/openssl/crypto.h
+--- openssl-1.1.1/include/openssl/crypto.h.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/include/openssl/crypto.h	2018-09-11 21:44:00.053688500 +0200
 @@ -336,6 +336,11 @@ int OPENSSL_isservice(void);
  int FIPS_mode(void);
  int FIPS_mode_set(int r);
@@ -10792,9 +10792,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/crypto.h.fips openssl-1.1.1-pre9/inc
  void OPENSSL_init(void);
  # ifdef OPENSSL_SYS_UNIX
  void OPENSSL_fork_prepare(void);
-diff -up openssl-1.1.1-pre9/include/openssl/dherr.h.fips openssl-1.1.1-pre9/include/openssl/dherr.h
---- openssl-1.1.1-pre9/include/openssl/dherr.h.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/include/openssl/dherr.h	2018-08-22 12:17:53.674661316 +0200
+diff -up openssl-1.1.1/include/openssl/dherr.h.12~ openssl-1.1.1/include/openssl/dherr.h
+--- openssl-1.1.1/include/openssl/dherr.h.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/include/openssl/dherr.h	2018-09-11 21:44:00.053688500 +0200
 @@ -32,6 +32,9 @@ int ERR_load_DH_strings(void);
  #  define DH_F_DH_CMS_DECRYPT                              114
  #  define DH_F_DH_CMS_SET_PEERKEY                          115
@@ -10820,9 +10820,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/dherr.h.fips openssl-1.1.1-pre9/incl
  #  define DH_R_PARAMETER_ENCODING_ERROR                    105
  #  define DH_R_PEER_KEY_ERROR                              111
  #  define DH_R_SHARED_INFO_ERROR                           113
-diff -up openssl-1.1.1-pre9/include/openssl/dh.h.fips openssl-1.1.1-pre9/include/openssl/dh.h
---- openssl-1.1.1-pre9/include/openssl/dh.h.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/include/openssl/dh.h	2018-08-22 12:17:53.677661390 +0200
+diff -up openssl-1.1.1/include/openssl/dh.h.12~ openssl-1.1.1/include/openssl/dh.h
+--- openssl-1.1.1/include/openssl/dh.h.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/include/openssl/dh.h	2018-09-11 21:44:00.053688500 +0200
 @@ -31,6 +31,7 @@ extern "C" {
  # endif
  
@@ -10831,9 +10831,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/dh.h.fips openssl-1.1.1-pre9/include
  
  # define DH_FLAG_CACHE_MONT_P     0x01
  
-diff -up openssl-1.1.1-pre9/include/openssl/dsaerr.h.fips openssl-1.1.1-pre9/include/openssl/dsaerr.h
---- openssl-1.1.1-pre9/include/openssl/dsaerr.h.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/include/openssl/dsaerr.h	2018-08-22 12:17:53.685661586 +0200
+diff -up openssl-1.1.1/include/openssl/dsaerr.h.12~ openssl-1.1.1/include/openssl/dsaerr.h
+--- openssl-1.1.1/include/openssl/dsaerr.h.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/include/openssl/dsaerr.h	2018-09-11 21:44:00.053688500 +0200
 @@ -25,8 +25,11 @@ int ERR_load_DSA_strings(void);
   */
  #  define DSA_F_DSAPARAMS_PRINT                            100
@@ -10859,9 +10859,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/dsaerr.h.fips openssl-1.1.1-pre9/inc
  #  define DSA_R_PARAMETER_ENCODING_ERROR                   105
  #  define DSA_R_Q_NOT_PRIME                                113
  #  define DSA_R_SEED_LEN_SMALL                             110
-diff -up openssl-1.1.1-pre9/include/openssl/dsa.h.fips openssl-1.1.1-pre9/include/openssl/dsa.h
---- openssl-1.1.1-pre9/include/openssl/dsa.h.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/include/openssl/dsa.h	2018-08-22 12:17:53.686661611 +0200
+diff -up openssl-1.1.1/include/openssl/dsa.h.12~ openssl-1.1.1/include/openssl/dsa.h
+--- openssl-1.1.1/include/openssl/dsa.h.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/include/openssl/dsa.h	2018-09-11 21:44:00.053688500 +0200
 @@ -31,6 +31,7 @@ extern "C" {
  # endif
  
@@ -10870,9 +10870,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/dsa.h.fips openssl-1.1.1-pre9/includ
  
  # define DSA_FLAG_CACHE_MONT_P   0x01
  # if OPENSSL_API_COMPAT < 0x10100000L
-diff -up openssl-1.1.1-pre9/include/openssl/evperr.h.fips openssl-1.1.1-pre9/include/openssl/evperr.h
---- openssl-1.1.1-pre9/include/openssl/evperr.h.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/include/openssl/evperr.h	2018-08-22 12:17:53.687661635 +0200
+diff -up openssl-1.1.1/include/openssl/evperr.h.12~ openssl-1.1.1/include/openssl/evperr.h
+--- openssl-1.1.1/include/openssl/evperr.h.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/include/openssl/evperr.h	2018-09-11 21:44:00.053688500 +0200
 @@ -25,6 +25,7 @@ int ERR_load_EVP_strings(void);
  # define EVP_F_AES_OCB_CIPHER                             169
  # define EVP_F_AES_T4_INIT_KEY                            178
@@ -10897,9 +10897,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/evperr.h.fips openssl-1.1.1-pre9/inc
  # define EVP_R_UNKNOWN_CIPHER                             160
  # define EVP_R_UNKNOWN_DIGEST                             161
  # define EVP_R_UNKNOWN_OPTION                             169
-diff -up openssl-1.1.1-pre9/include/openssl/fips.h.fips openssl-1.1.1-pre9/include/openssl/fips.h
---- openssl-1.1.1-pre9/include/openssl/fips.h.fips	2018-08-22 12:17:53.687661635 +0200
-+++ openssl-1.1.1-pre9/include/openssl/fips.h	2018-08-22 12:17:53.687661635 +0200
+diff -up openssl-1.1.1/include/openssl/fips.h.12~ openssl-1.1.1/include/openssl/fips.h
+--- openssl-1.1.1/include/openssl/fips.h.12~	2018-09-11 21:44:00.053688500 +0200
++++ openssl-1.1.1/include/openssl/fips.h	2018-09-11 21:44:00.053688500 +0200
 @@ -0,0 +1,186 @@
 +/* ====================================================================
 + * Copyright (c) 2003 The OpenSSL Project.  All rights reserved.
@@ -11087,9 +11087,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/fips.h.fips openssl-1.1.1-pre9/inclu
 +}
 +# endif
 +#endif
-diff -up openssl-1.1.1-pre9/include/openssl/fips_rand.h.fips openssl-1.1.1-pre9/include/openssl/fips_rand.h
---- openssl-1.1.1-pre9/include/openssl/fips_rand.h.fips	2018-08-22 12:17:53.688661659 +0200
-+++ openssl-1.1.1-pre9/include/openssl/fips_rand.h	2018-08-22 12:17:53.688661659 +0200
+diff -up openssl-1.1.1/include/openssl/fips_rand.h.12~ openssl-1.1.1/include/openssl/fips_rand.h
+--- openssl-1.1.1/include/openssl/fips_rand.h.12~	2018-09-11 21:44:00.053688500 +0200
++++ openssl-1.1.1/include/openssl/fips_rand.h	2018-09-11 21:44:00.053688500 +0200
 @@ -0,0 +1,145 @@
 +/* ====================================================================
 + * Copyright (c) 2003 The OpenSSL Project.  All rights reserved.
@@ -11236,9 +11236,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/fips_rand.h.fips openssl-1.1.1-pre9/
 +#  endif
 +# endif
 +#endif
-diff -up openssl-1.1.1-pre9/include/openssl/opensslconf.h.in.fips openssl-1.1.1-pre9/include/openssl/opensslconf.h.in
---- openssl-1.1.1-pre9/include/openssl/opensslconf.h.in.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/include/openssl/opensslconf.h.in	2018-08-22 12:17:53.688661659 +0200
+diff -up openssl-1.1.1/include/openssl/opensslconf.h.in.12~ openssl-1.1.1/include/openssl/opensslconf.h.in
+--- openssl-1.1.1/include/openssl/opensslconf.h.in.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/include/openssl/opensslconf.h.in	2018-09-11 21:44:00.053688500 +0200
 @@ -150,6 +150,11 @@ extern "C" {
  
  #define RC4_INT {- $config{rc4_int} -}
@@ -11251,9 +11251,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/opensslconf.h.in.fips openssl-1.1.1-
  #ifdef  __cplusplus
  }
  #endif
-diff -up openssl-1.1.1-pre9/include/openssl/randerr.h.fips openssl-1.1.1-pre9/include/openssl/randerr.h
---- openssl-1.1.1-pre9/include/openssl/randerr.h.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/include/openssl/randerr.h	2018-08-22 12:17:53.689661684 +0200
+diff -up openssl-1.1.1/include/openssl/randerr.h.12~ openssl-1.1.1/include/openssl/randerr.h
+--- openssl-1.1.1/include/openssl/randerr.h.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/include/openssl/randerr.h	2018-09-11 21:44:00.054688488 +0200
 @@ -35,6 +35,7 @@ int ERR_load_RAND_strings(void);
  # define RAND_F_RAND_DRBG_SET                             104
  # define RAND_F_RAND_DRBG_SET_DEFAULTS                    121
@@ -11262,9 +11262,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/randerr.h.fips openssl-1.1.1-pre9/in
  # define RAND_F_RAND_LOAD_FILE                            111
  # define RAND_F_RAND_POOL_ACQUIRE_ENTROPY                 122
  # define RAND_F_RAND_POOL_ADD                             103
-diff -up openssl-1.1.1-pre9/include/openssl/rand.h.fips openssl-1.1.1-pre9/include/openssl/rand.h
---- openssl-1.1.1-pre9/include/openssl/rand.h.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/include/openssl/rand.h	2018-08-22 12:17:53.689661684 +0200
+diff -up openssl-1.1.1/include/openssl/rand.h.12~ openssl-1.1.1/include/openssl/rand.h
+--- openssl-1.1.1/include/openssl/rand.h.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/include/openssl/rand.h	2018-09-11 21:44:00.054688488 +0200
 @@ -69,6 +69,11 @@ DEPRECATEDIN_1_1_0(void RAND_screen(void
  DEPRECATEDIN_1_1_0(int RAND_event(UINT, WPARAM, LPARAM))
  # endif
@@ -11277,9 +11277,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/rand.h.fips openssl-1.1.1-pre9/inclu
  
  #ifdef  __cplusplus
  }
-diff -up openssl-1.1.1-pre9/include/openssl/rsaerr.h.fips openssl-1.1.1-pre9/include/openssl/rsaerr.h
---- openssl-1.1.1-pre9/include/openssl/rsaerr.h.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/include/openssl/rsaerr.h	2018-08-22 12:17:53.691661733 +0200
+diff -up openssl-1.1.1/include/openssl/rsaerr.h.12~ openssl-1.1.1/include/openssl/rsaerr.h
+--- openssl-1.1.1/include/openssl/rsaerr.h.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/include/openssl/rsaerr.h	2018-09-11 21:44:00.054688488 +0200
 @@ -21,6 +21,7 @@ int ERR_load_RSA_strings(void);
   */
  # define RSA_F_CHECK_PADDING_MD                           140
@@ -11335,10 +11335,10 @@ diff -up openssl-1.1.1-pre9/include/openssl/rsaerr.h.fips openssl-1.1.1-pre9/inc
  # define RSA_R_UNSUPPORTED_SIGNATURE_TYPE                 155
  # define RSA_R_VALUE_MISSING                              147
  # define RSA_R_WRONG_SIGNATURE_LENGTH                     119
-diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.fips openssl-1.1.1-pre9/ssl/ssl_ciph.c
---- openssl-1.1.1-pre9/ssl/ssl_ciph.c.fips	2018-08-22 12:17:53.414654947 +0200
-+++ openssl-1.1.1-pre9/ssl/ssl_ciph.c	2018-08-22 12:17:53.691661733 +0200
-@@ -385,7 +385,7 @@ int ssl_load_ciphers(void)
+diff -up openssl-1.1.1/ssl/ssl_ciph.c.12~ openssl-1.1.1/ssl/ssl_ciph.c
+--- openssl-1.1.1/ssl/ssl_ciph.c.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/ssl/ssl_ciph.c	2018-09-11 21:44:00.054688488 +0200
+@@ -383,7 +383,7 @@ int ssl_load_ciphers(void)
          }
      }
      /* Make sure we can access MD5 and SHA1 */
@@ -11347,7 +11347,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.fips openssl-1.1.1-pre9/ssl/ssl_ciph.
          return 0;
      if (!ossl_assert(ssl_digest_methods[SSL_MD_SHA1_IDX] != NULL))
          return 0;
-@@ -557,6 +557,9 @@ int ssl_cipher_get_evp(const SSL_SESSION
+@@ -555,6 +555,9 @@ int ssl_cipher_get_evp(const SSL_SESSION
              s->ssl_version < TLS1_VERSION)
              return 1;
  
@@ -11357,7 +11357,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.fips openssl-1.1.1-pre9/ssl/ssl_ciph.
          if (c->algorithm_enc == SSL_RC4 &&
              c->algorithm_mac == SSL_MD5 &&
              (evp = EVP_get_cipherbyname("RC4-HMAC-MD5")))
-@@ -665,6 +668,8 @@ static void ssl_cipher_collect_ciphers(c
+@@ -663,6 +666,8 @@ static void ssl_cipher_collect_ciphers(c
          /* drop those that use any of that is not available */
          if (c == NULL || !c->valid)
              continue;
@@ -11366,7 +11366,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.fips openssl-1.1.1-pre9/ssl/ssl_ciph.
          if ((c->algorithm_mkey & disabled_mkey) ||
              (c->algorithm_auth & disabled_auth) ||
              (c->algorithm_enc & disabled_enc) ||
-@@ -1668,7 +1673,8 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
+@@ -1608,7 +1613,8 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
       * to the resulting precedence to the STACK_OF(SSL_CIPHER).
       */
      for (curr = head; curr != NULL; curr = curr->next) {
@@ -11376,9 +11376,9 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.fips openssl-1.1.1-pre9/ssl/ssl_ciph.
              if (!sk_SSL_CIPHER_push(cipherstack, curr->cipher)) {
                  OPENSSL_free(co_list);
                  sk_SSL_CIPHER_free(cipherstack);
-diff -up openssl-1.1.1-pre9/ssl/ssl_init.c.fips openssl-1.1.1-pre9/ssl/ssl_init.c
---- openssl-1.1.1-pre9/ssl/ssl_init.c.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/ssl/ssl_init.c	2018-08-22 12:17:53.691661733 +0200
+diff -up openssl-1.1.1/ssl/ssl_init.c.12~ openssl-1.1.1/ssl/ssl_init.c
+--- openssl-1.1.1/ssl/ssl_init.c.12~	2018-09-11 14:48:23.000000000 +0200
++++ openssl-1.1.1/ssl/ssl_init.c	2018-09-11 21:44:00.054688488 +0200
 @@ -27,6 +27,10 @@ DEFINE_RUN_ONCE_STATIC(ossl_init_ssl_bas
      fprintf(stderr, "OPENSSL_INIT: ossl_init_ssl_base: "
              "Adding SSL ciphers and digests\n");
@@ -11422,10 +11422,10 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_init.c.fips openssl-1.1.1-pre9/ssl/ssl_init.
  #ifndef OPENSSL_NO_COMP
  # ifdef OPENSSL_INIT_DEBUG
      fprintf(stderr, "OPENSSL_INIT: ossl_init_ssl_base: "
-diff -up openssl-1.1.1-pre9/ssl/ssl_lib.c.fips openssl-1.1.1-pre9/ssl/ssl_lib.c
---- openssl-1.1.1-pre9/ssl/ssl_lib.c.fips	2018-08-22 12:17:53.415654972 +0200
-+++ openssl-1.1.1-pre9/ssl/ssl_lib.c	2018-08-22 12:17:53.692661757 +0200
-@@ -2887,6 +2887,11 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *m
+diff -up openssl-1.1.1/ssl/ssl_lib.c.12~ openssl-1.1.1/ssl/ssl_lib.c
+--- openssl-1.1.1/ssl/ssl_lib.c.12~	2018-09-11 21:44:00.045688596 +0200
++++ openssl-1.1.1/ssl/ssl_lib.c	2018-09-11 21:44:00.054688488 +0200
+@@ -2883,6 +2883,11 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *m
      if (!OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS, NULL))
          return NULL;
  
@@ -11437,7 +11437,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_lib.c.fips openssl-1.1.1-pre9/ssl/ssl_lib.c
      if (SSL_get_ex_data_X509_STORE_CTX_idx() < 0) {
          SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_X509_VERIFICATION_SETUP_PROBLEMS);
          goto err;
-@@ -2943,13 +2948,17 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *m
+@@ -2939,13 +2944,17 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *m
      if (ret->param == NULL)
          goto err;
  
@@ -11462,9 +11462,9 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_lib.c.fips openssl-1.1.1-pre9/ssl/ssl_lib.c
      }
  
      if ((ret->ca_names = sk_X509_NAME_new_null()) == NULL)
-diff -up openssl-1.1.1-pre9/test/dsatest.c.fips openssl-1.1.1-pre9/test/dsatest.c
---- openssl-1.1.1-pre9/test/dsatest.c.fips	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/test/dsatest.c	2018-08-22 12:17:53.692661757 +0200
+diff -up openssl-1.1.1/test/dsatest.c.12~ openssl-1.1.1/test/dsatest.c
+--- openssl-1.1.1/test/dsatest.c.12~	2018-09-11 14:48:24.000000000 +0200
++++ openssl-1.1.1/test/dsatest.c	2018-09-11 21:44:00.054688488 +0200
 @@ -24,41 +24,42 @@
  #ifndef OPENSSL_NO_DSA
  static int dsa_cb(int p, int n, BN_GENCB *arg);
@@ -11547,13 +11547,13 @@ diff -up openssl-1.1.1-pre9/test/dsatest.c.fips openssl-1.1.1-pre9/test/dsatest.
          goto end;
      if (!TEST_int_eq(h, 2))
          goto end;
-diff -up openssl-1.1.1-pre9/util/libcrypto.num.fips openssl-1.1.1-pre9/util/libcrypto.num
---- openssl-1.1.1-pre9/util/libcrypto.num.fips	2018-08-22 12:17:53.693661782 +0200
-+++ openssl-1.1.1-pre9/util/libcrypto.num	2018-08-22 12:24:43.162691652 +0200
-@@ -4572,3 +4572,38 @@ EC_POINT_set_affine_coordinates
- EC_POINT_get_affine_coordinates         4526	1_1_1	EXIST::FUNCTION:EC
- EC_GROUP_set_curve                      4527	1_1_1	EXIST::FUNCTION:EC
- EC_GROUP_get_curve                      4528	1_1_1	EXIST::FUNCTION:EC
+diff -up openssl-1.1.1/util/libcrypto.num.12~ openssl-1.1.1/util/libcrypto.num
+--- openssl-1.1.1/util/libcrypto.num.12~	2018-09-11 21:44:00.055688476 +0200
++++ openssl-1.1.1/util/libcrypto.num	2018-09-11 21:44:49.881091018 +0200
+@@ -4577,3 +4577,38 @@ OCSP_resp_get0_respdata
+ EVP_MD_CTX_set_pkey_ctx                 4531	1_1_1	EXIST::FUNCTION:
+ EVP_PKEY_meth_set_digest_custom         4532	1_1_1	EXIST::FUNCTION:
+ EVP_PKEY_meth_get_digest_custom         4533	1_1_1	EXIST::FUNCTION:
 +FIPS_drbg_reseed                        6348	1_1_0g	EXIST::FUNCTION:
 +FIPS_selftest_check                     6349	1_1_0g	EXIST::FUNCTION:
 +FIPS_rand_set_method                    6350	1_1_0g	EXIST::FUNCTION:

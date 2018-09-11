@@ -34,12 +34,12 @@
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
 Version: 1.1.1
-%define beta pre9
-Release: %{?beta:0.%{beta}.}1
+%define beta %{nil}
+Release: %{-beta:0.%{beta}.}1
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
 # The original openssl upstream tarball cannot be shipped in the .src.rpm.
-Source0: https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
+Source0: https://www.openssl.org/source/openssl-%{version}%{-beta:-%{beta}}.tar.gz
 Source1: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/hobble-openssl
 Source2: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/Makefile.certificate
 Source6: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/make-dummy-cert
@@ -68,7 +68,6 @@ Patch43: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1
 Patch44: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-version-override.patch
 Patch45: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-weak-ciphers.patch
 #Patch47: openssl-1.0.2a-readme-warning.patch FIPS
-Patch70: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-seclevel-check.patch
 #Patch72: openssl-1.0.2a-fips-ctor.patch
 #Patch76: openssl-1.0.2f-new-fips-reqs.patch
 Patch92: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-system-cipherlist.patch
@@ -156,7 +155,7 @@ Requires: %{name} = %{EVRD}
 OpenSSL documentation.
 
 %prep
-%autosetup -p1 -n %{name}-%{version}%{?beta:-%{beta}}
+%autosetup -p1 -n %{name}-%{version}%{-beta:-%{beta}}
 cp %{SOURCE12} crypto/ec/
 cp %{SOURCE13} test/
 
