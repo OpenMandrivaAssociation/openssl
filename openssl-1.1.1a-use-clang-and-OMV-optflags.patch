@@ -1,0 +1,23 @@
+diff -Naur openssl-1.1.1a/Configurations/10-main.conf openssl-1.1.1a.tpg/Configurations/10-main.conf
+--- openssl-1.1.1a/Configurations/10-main.conf	2019-01-07 15:13:27.608052000 +0000
++++ openssl-1.1.1a.tpg/Configurations/10-main.conf	2019-01-07 15:24:07.035010618 +0000
+@@ -634,8 +634,9 @@
+ # throw in -D[BL]_ENDIAN, whichever appropriate...
+     "linux-generic32" => {
+         inherit_from     => [ "BASE_unix" ],
+-        CC               => "gcc",
+-        CXX              => "g++",
++        CC               => "clang",
++        CXX              => "clang++",
++        CFLAGS           => add($ENV{'CFLAGS'}),
+         CFLAGS           => picker(default => "-Wall",
+                                    debug   => "-O0 -g",
+                                    release => "-O3"),
+@@ -763,6 +764,7 @@
+     #### machines where gcc doesn't understand -m32 and -m64
+     "linux-elf" => {
+         inherit_from     => [ "linux-generic32", asm("x86_elf_asm") ],
++        CFLAGS           => add($ENV{'CFLAGS'}),
+         CFLAGS           => add(picker(release => "-fomit-frame-pointer")),
+         lib_cppflags     => add("-DL_ENDIAN"),
+         bn_ops           => "BN_LLONG",
