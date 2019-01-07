@@ -88,7 +88,7 @@ BuildRequires: krb5-devel
 %endif
 BuildRequires: perl
 BuildRequires: sed
-BuildRequires: pkgconfgi(zlib)
+BuildRequires: pkgconfig(zlib)
 BuildRequires: pkgconfig(libsctp)
 BuildRequires: /usr/bin/cmp
 BuildRequires: /usr/bin/rename
