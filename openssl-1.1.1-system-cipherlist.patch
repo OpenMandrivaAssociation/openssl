@@ -1,6 +1,6 @@
-diff -up openssl-1.1.1-pre9/Configurations/unix-Makefile.tmpl.system-cipherlist openssl-1.1.1-pre9/Configurations/unix-Makefile.tmpl
---- openssl-1.1.1-pre9/Configurations/unix-Makefile.tmpl.system-cipherlist	2018-08-22 12:15:54.520742678 +0200
-+++ openssl-1.1.1-pre9/Configurations/unix-Makefile.tmpl	2018-08-22 12:15:54.554743511 +0200
+diff -up openssl-1.1.1b/Configurations/unix-Makefile.tmpl.15~ openssl-1.1.1b/Configurations/unix-Makefile.tmpl
+--- openssl-1.1.1b/Configurations/unix-Makefile.tmpl.15~	2019-02-26 20:37:28.358202385 +0100
++++ openssl-1.1.1b/Configurations/unix-Makefile.tmpl	2019-02-26 20:37:28.389202887 +0100
 @@ -180,6 +180,10 @@ MANDIR=$(INSTALLTOP)/share/man
  DOCDIR=$(INSTALLTOP)/share/doc/$(BASENAME)
  HTMLDIR=$(DOCDIR)/html
@@ -20,9 +20,9 @@ diff -up openssl-1.1.1-pre9/Configurations/unix-Makefile.tmpl.system-cipherlist 
                                    (map { "-I".$_} @{$config{CPPINCLUDES}}),
                                    @{$config{CPPFLAGS}}) -}
  CFLAGS={- join(' ', @{$config{CFLAGS}}) -}
-diff -up openssl-1.1.1-pre9/Configure.system-cipherlist openssl-1.1.1-pre9/Configure
---- openssl-1.1.1-pre9/Configure.system-cipherlist	2018-08-21 14:14:11.000000000 +0200
-+++ openssl-1.1.1-pre9/Configure	2018-08-22 12:16:46.600018343 +0200
+diff -up openssl-1.1.1b/Configure.15~ openssl-1.1.1b/Configure
+--- openssl-1.1.1b/Configure.15~	2019-02-26 20:37:28.370202579 +0100
++++ openssl-1.1.1b/Configure	2019-02-26 20:37:28.389202887 +0100
 @@ -24,7 +24,7 @@ use OpenSSL::Glob;
  my $orig_death_handler = $SIG{__DIE__};
  $SIG{__DIE__} = \&death_handler;
@@ -42,7 +42,7 @@ diff -up openssl-1.1.1-pre9/Configure.system-cipherlist openssl-1.1.1-pre9/Confi
  # --cross-compile-prefix Add specified prefix to binutils components.
  #
  # --api         One of 0.9.8, 1.0.0 or 1.1.0.  Do not compile support for
-@@ -295,6 +298,7 @@ $config{prefix}="";
+@@ -298,6 +301,7 @@ $config{prefix}="";
  $config{openssldir}="";
  $config{processor}="";
  $config{libdir}="";
@@ -50,7 +50,7 @@ diff -up openssl-1.1.1-pre9/Configure.system-cipherlist openssl-1.1.1-pre9/Confi
  my $auto_threads=1;    # enable threads automatically? true by default
  my $default_ranlib;
  
-@@ -817,6 +821,10 @@ while (@argvcopy)
+@@ -821,6 +825,10 @@ while (@argvcopy)
  			    push @seed_sources, $x;
  			    }
                          }
@@ -61,7 +61,7 @@ diff -up openssl-1.1.1-pre9/Configure.system-cipherlist openssl-1.1.1-pre9/Confi
  		elsif (/^--cross-compile-prefix=(.*)$/)
  			{
  			$user{CROSS_COMPILE}=$1;
-@@ -1003,6 +1011,8 @@ if ($target eq "HASH") {
+@@ -1007,6 +1015,8 @@ if ($target eq "HASH") {
      exit 0;
  }
  
@@ -70,9 +70,9 @@ diff -up openssl-1.1.1-pre9/Configure.system-cipherlist openssl-1.1.1-pre9/Confi
  print "Configuring OpenSSL version $config{version} ($config{version_num}) ";
  print "for $target\n";
  
-diff -up openssl-1.1.1-pre9/doc/man1/ciphers.pod.system-cipherlist openssl-1.1.1-pre9/doc/man1/ciphers.pod
---- openssl-1.1.1-pre9/doc/man1/ciphers.pod.system-cipherlist	2018-08-21 14:14:13.000000000 +0200
-+++ openssl-1.1.1-pre9/doc/man1/ciphers.pod	2018-08-22 12:15:54.555743536 +0200
+diff -up openssl-1.1.1b/doc/man1/ciphers.pod.15~ openssl-1.1.1b/doc/man1/ciphers.pod
+--- openssl-1.1.1b/doc/man1/ciphers.pod.15~	2019-02-26 15:15:30.000000000 +0100
++++ openssl-1.1.1b/doc/man1/ciphers.pod	2019-02-26 20:37:28.389202887 +0100
 @@ -182,6 +182,15 @@ As of OpenSSL 1.0.0, the B<ALL> cipher s
  
  The cipher suites not enabled by B<ALL>, currently B<eNULL>.
@@ -89,9 +89,9 @@ diff -up openssl-1.1.1-pre9/doc/man1/ciphers.pod.system-cipherlist openssl-1.1.1
  =item B<HIGH>
  
  "High" encryption cipher suites. This currently means those with key lengths
-diff -up openssl-1.1.1-pre9/include/openssl/ssl.h.system-cipherlist openssl-1.1.1-pre9/include/openssl/ssl.h
---- openssl-1.1.1-pre9/include/openssl/ssl.h.system-cipherlist	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/include/openssl/ssl.h	2018-08-22 12:15:54.557743585 +0200
+diff -up openssl-1.1.1b/include/openssl/ssl.h.15~ openssl-1.1.1b/include/openssl/ssl.h
+--- openssl-1.1.1b/include/openssl/ssl.h.15~	2019-02-26 15:15:30.000000000 +0100
++++ openssl-1.1.1b/include/openssl/ssl.h	2019-02-26 20:37:28.390202903 +0100
 @@ -186,6 +186,11 @@ extern "C" {
   * throwing out anonymous and unencrypted ciphersuites! (The latter are not
   * actually enabled by ALL, but "ALL:RSA" would enable some of them.)
@@ -104,9 +104,9 @@ diff -up openssl-1.1.1-pre9/include/openssl/ssl.h.system-cipherlist openssl-1.1.
  
  /* Used in SSL_set_shutdown()/SSL_get_shutdown(); */
  # define SSL_SENT_SHUTDOWN       1
-diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.system-cipherlist openssl-1.1.1-pre9/ssl/ssl_ciph.c
---- openssl-1.1.1-pre9/ssl/ssl_ciph.c.system-cipherlist	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/ssl/ssl_ciph.c	2018-08-22 12:15:54.557743585 +0200
+diff -up openssl-1.1.1b/ssl/ssl_ciph.c.15~ openssl-1.1.1b/ssl/ssl_ciph.c
+--- openssl-1.1.1b/ssl/ssl_ciph.c.15~	2019-02-26 20:37:28.382202774 +0100
++++ openssl-1.1.1b/ssl/ssl_ciph.c	2019-02-26 20:37:28.390202903 +0100
 @@ -9,6 +9,8 @@
   * https://www.openssl.org/source/license.html
   */
@@ -116,7 +116,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.system-cipherlist openssl-1.1.1-pre9/
  #include <stdio.h>
  #include <ctype.h>
  #include <openssl/objects.h>
-@@ -1397,6 +1399,53 @@ int SSL_set_ciphersuites(SSL *s, const c
+@@ -1404,6 +1406,53 @@ int SSL_set_ciphersuites(SSL *s, const c
      return ret;
  }
  
@@ -170,7 +170,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.system-cipherlist openssl-1.1.1-pre9/
  STACK_OF(SSL_CIPHER) *ssl_create_cipher_list(const SSL_METHOD *ssl_method,
                                               STACK_OF(SSL_CIPHER) *tls13_ciphersuites,
                                               STACK_OF(SSL_CIPHER) **cipher_list,
-@@ -1410,15 +1459,25 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
+@@ -1417,15 +1466,25 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
      const char *rule_p;
      CIPHER_ORDER *co_list = NULL, *head = NULL, *tail = NULL, *curr;
      const SSL_CIPHER **ca_list = NULL;
@@ -198,7 +198,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.system-cipherlist openssl-1.1.1-pre9/
  #endif
  
      /*
-@@ -1441,7 +1500,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
+@@ -1448,7 +1507,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
      co_list = OPENSSL_malloc(sizeof(*co_list) * num_of_ciphers);
      if (co_list == NULL) {
          SSLerr(SSL_F_SSL_CREATE_CIPHER_LIST, ERR_R_MALLOC_FAILURE);
@@ -207,7 +207,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.system-cipherlist openssl-1.1.1-pre9/
      }
  
      ssl_cipher_collect_ciphers(ssl_method, num_of_ciphers,
-@@ -1507,8 +1566,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
+@@ -1514,8 +1573,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
       * in force within each class
       */
      if (!ssl_cipher_strength_sort(&head, &tail)) {
@@ -217,7 +217,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.system-cipherlist openssl-1.1.1-pre9/
      }
  
      /*
-@@ -1553,9 +1611,8 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
+@@ -1560,9 +1618,8 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
      num_of_alias_max = num_of_ciphers + num_of_group_aliases + 1;
      ca_list = OPENSSL_malloc(sizeof(*ca_list) * num_of_alias_max);
      if (ca_list == NULL) {
@@ -228,7 +228,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.system-cipherlist openssl-1.1.1-pre9/
      }
      ssl_cipher_collect_aliases(ca_list, num_of_group_aliases,
                                 disabled_mkey, disabled_auth, disabled_enc,
-@@ -1581,8 +1638,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
+@@ -1588,8 +1645,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
      OPENSSL_free(ca_list);      /* Not needed anymore */
  
      if (!ok) {                  /* Rule processing failure */
@@ -238,7 +238,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.system-cipherlist openssl-1.1.1-pre9/
      }
  
      /*
-@@ -1590,14 +1646,18 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
+@@ -1597,14 +1653,18 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
       * if we cannot get one.
       */
      if ((cipherstack = sk_SSL_CIPHER_new_null()) == NULL) {
@@ -259,7 +259,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.system-cipherlist openssl-1.1.1-pre9/
              sk_SSL_CIPHER_free(cipherstack);
              return NULL;
          }
-@@ -1629,6 +1689,14 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
+@@ -1637,6 +1697,14 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_
      *cipher_list = cipherstack;
  
      return cipherstack;
@@ -274,10 +274,10 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_ciph.c.system-cipherlist openssl-1.1.1-pre9/
  }
  
  char *SSL_CIPHER_description(const SSL_CIPHER *cipher, char *buf, int len)
-diff -up openssl-1.1.1-pre9/ssl/ssl_lib.c.system-cipherlist openssl-1.1.1-pre9/ssl/ssl_lib.c
---- openssl-1.1.1-pre9/ssl/ssl_lib.c.system-cipherlist	2018-08-22 12:15:54.552743462 +0200
-+++ openssl-1.1.1-pre9/ssl/ssl_lib.c	2018-08-22 12:15:54.558743609 +0200
-@@ -658,7 +658,7 @@ int SSL_CTX_set_ssl_version(SSL_CTX *ctx
+diff -up openssl-1.1.1b/ssl/ssl_lib.c.15~ openssl-1.1.1b/ssl/ssl_lib.c
+--- openssl-1.1.1b/ssl/ssl_lib.c.15~	2019-02-26 20:37:28.383202790 +0100
++++ openssl-1.1.1b/ssl/ssl_lib.c	2019-02-26 20:37:28.390202903 +0100
+@@ -662,7 +662,7 @@ int SSL_CTX_set_ssl_version(SSL_CTX *ctx
                                  ctx->tls13_ciphersuites,
                                  &(ctx->cipher_list),
                                  &(ctx->cipher_list_by_id),
@@ -286,7 +286,7 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_lib.c.system-cipherlist openssl-1.1.1-pre9/s
      if ((sk == NULL) || (sk_SSL_CIPHER_num(sk) <= 0)) {
          SSLerr(SSL_F_SSL_CTX_SET_SSL_VERSION, SSL_R_SSL_LIBRARY_HAS_NO_CIPHERS);
          return 0;
-@@ -2933,7 +2933,7 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *m
+@@ -2959,7 +2959,7 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *m
      if (!ssl_create_cipher_list(ret->method,
                                  ret->tls13_ciphersuites,
                                  &ret->cipher_list, &ret->cipher_list_by_id,
@@ -295,10 +295,10 @@ diff -up openssl-1.1.1-pre9/ssl/ssl_lib.c.system-cipherlist openssl-1.1.1-pre9/s
          || sk_SSL_CIPHER_num(ret->cipher_list) <= 0) {
          SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_LIBRARY_HAS_NO_CIPHERS);
          goto err2;
-diff -up openssl-1.1.1-pre9/test/cipherlist_test.c.system-cipherlist openssl-1.1.1-pre9/test/cipherlist_test.c
---- openssl-1.1.1-pre9/test/cipherlist_test.c.system-cipherlist	2018-08-21 14:14:15.000000000 +0200
-+++ openssl-1.1.1-pre9/test/cipherlist_test.c	2018-08-22 12:15:54.558743609 +0200
-@@ -217,7 +217,9 @@ static int test_default_cipherlist_expli
+diff -up openssl-1.1.1b/test/cipherlist_test.c.15~ openssl-1.1.1b/test/cipherlist_test.c
+--- openssl-1.1.1b/test/cipherlist_test.c.15~	2019-02-26 20:37:28.391202920 +0100
++++ openssl-1.1.1b/test/cipherlist_test.c	2019-02-26 20:38:38.798343850 +0100
+@@ -251,7 +251,9 @@ end:
  
  int setup_tests(void)
  {
@@ -306,5 +306,5 @@ diff -up openssl-1.1.1-pre9/test/cipherlist_test.c.system-cipherlist openssl-1.1
      ADD_TEST(test_default_cipherlist_implicit);
 +#endif
      ADD_TEST(test_default_cipherlist_explicit);
+     ADD_TEST(test_default_cipherlist_clear);
      return 1;
- }

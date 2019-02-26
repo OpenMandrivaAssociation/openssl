@@ -25,7 +25,7 @@
 # also be handled in opensslconf-new.h.
 %define multilib_arches %{ix86} ia64 %{mips} ppc %{power64} s390 s390x sparcv9 sparc64 %{x86_64}
 
-%global optflags %{optflags} -O3
+%global optflags %{optflags} -Ofast -fopenmp -mllvm -polly -mllvm -polly-vectorizer=polly
 
 # Disables krb5 support to avoid circular dependency
 # (tpg) 2018-04-18 why do we need krb5 here ?
@@ -33,7 +33,7 @@
 
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
-Version: 1.1.1a
+Version: 1.1.1b
 %define beta %{nil}
 Release: %{-beta:0.%{beta}.}3
 # We have to remove certain patented algorithms from the openssl source

@@ -1,6 +1,6 @@
-diff -up openssl-1.1.0g/crypto/asn1/a_verify.c.no-md5-verify openssl-1.1.0g/crypto/asn1/a_verify.c
---- openssl-1.1.0g/crypto/asn1/a_verify.c.no-md5-verify	2017-11-02 15:29:02.000000000 +0100
-+++ openssl-1.1.0g/crypto/asn1/a_verify.c	2017-11-03 16:15:46.125801341 +0100
+diff -up openssl-1.1.1b/crypto/asn1/a_verify.c.9~ openssl-1.1.1b/crypto/asn1/a_verify.c
+--- openssl-1.1.1b/crypto/asn1/a_verify.c.9~	2019-02-26 15:15:30.000000000 +0100
++++ openssl-1.1.1b/crypto/asn1/a_verify.c	2019-02-26 20:34:27.150264020 +0100
 @@ -7,6 +7,9 @@
   * https://www.openssl.org/source/license.html
   */
@@ -11,7 +11,7 @@ diff -up openssl-1.1.0g/crypto/asn1/a_verify.c.no-md5-verify openssl-1.1.0g/cryp
  #include <stdio.h>
  #include <time.h>
  #include <sys/types.h>
-@@ -126,6 +129,12 @@ int ASN1_item_verify(const ASN1_ITEM *it
+@@ -130,6 +133,12 @@ int ASN1_item_verify(const ASN1_ITEM *it
          if (ret != 2)
              goto err;
          ret = -1;
@@ -22,5 +22,5 @@ diff -up openssl-1.1.0g/crypto/asn1/a_verify.c.no-md5-verify openssl-1.1.0g/cryp
 +                ASN1_R_UNKNOWN_MESSAGE_DIGEST_ALGORITHM);
 +        goto err;
      } else {
-         const EVP_MD *type;
-         type = EVP_get_digestbynid(mdnid);
+         const EVP_MD *type = EVP_get_digestbynid(mdnid);
+ 
