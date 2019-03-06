@@ -222,6 +222,9 @@ sslarch="linux64-mips64 -mips64r2"
 %ifarch mips64el
 sslflags=enable-ec_nistp_64_gcc_128
 %endif
+%ifarch riscv64
+sslarch=linux-generic64
+%endif
 
 # Add -Wa,--noexecstack here so that libcrypto's assembler modules will be
 # marked as not requiring an executable stack.
