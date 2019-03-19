@@ -24,8 +24,9 @@
 # Arches on which we need to prevent arch conflicts on opensslconf.h, must
 # also be handled in opensslconf-new.h.
 %define multilib_arches %{ix86} ia64 %{mips} ppc %{power64} s390 s390x sparcv9 sparc64 %{x86_64}
-
+%ifnarch riscv64
 %global optflags %{optflags} -Ofast -fopenmp -mllvm -polly -mllvm -polly-vectorizer=polly
+%endif
 
 # Disables krb5 support to avoid circular dependency
 # (tpg) 2018-04-18 why do we need krb5 here ?
