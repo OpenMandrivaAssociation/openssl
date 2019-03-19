@@ -87,6 +87,9 @@ BuildRequires: coreutils
 %if ! %{with bootstrap}
 BuildRequires: krb5-devel
 %endif
+%ifarch riscv64
+BuildRequires: atomic-devel
+%endif
 BuildRequires: perl
 BuildRequires: sed
 BuildRequires: pkgconfig(zlib)
