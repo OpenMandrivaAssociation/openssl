@@ -161,6 +161,10 @@ OpenSSL documentation.
 %autosetup -p1 -n %{name}-%{version}%{-beta:-%{beta}}
 cp %{SOURCE12} crypto/ec/
 cp %{SOURCE13} test/
+%ifarch riscv64
+sed -i 's!clang!gcc!g' Configurations/10-main.conf
+sed -i 's!clang++!g++!g' Configurations/10-main.conf
+%endif
 
 %build
 %serverbuild
