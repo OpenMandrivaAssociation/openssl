@@ -25,18 +25,21 @@
 # also be handled in opensslconf-new.h.
 %define multilib_arches %{ix86} ia64 %{mips} ppc %{power64} s390 s390x sparcv9 sparc64 %{x86_64}
 %ifnarch riscv64
-%global optflags %{optflags} -Ofast -fopenmp -mllvm -polly -mllvm -polly-vectorizer=polly
+%global optflags %{optflags} -O3 -fopenmp
 %endif
 
 # Disables krb5 support to avoid circular dependency
 # (tpg) 2018-04-18 why do we need krb5 here ?
 %bcond_with bootstrap
 
+# (tpg) enable PGO build
+%bcond_without pgo
+
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
 Version: 1.1.1b
 %define beta %{nil}
-Release: %{-beta:0.%{beta}.}3
+Release: %{-beta:0.%{beta}.}4
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
 # The original openssl upstream tarball cannot be shipped in the .src.rpm.
@@ -243,6 +246,29 @@ RPM_OPT_FLAGS="%{optflags} -Wa,--noexecstack -DPURIFY %{ldflags}"
 %ifarch %{arm}
 # For Thumb2-isms in ecp_nistz256-armv4
 sed -i -e 's,-march=armv7-a,-march=armv7-a -fno-integrated-as,g' config
+%endif
+
+%if %{with pgo}
+export LLVM_PROFILE_FILE=%{name}-%p.profile.d
+export LD_LIBRARY_PATH="$(pwd)"
+CFLAGS="%{optflags} -fprofile-instr-generate" \
+CXXFLAGS="%{optflags} -fprofile-instr-generate" \
+FFLAGS="$CFLAGS_PGO" \
+FCFLAGS="$CFLAGS_PGO" \
+LDFLAGS="%{ldflags} -fprofile-instr-generate" \
+./config shared no-ssl zlib-dynamic no-rc4 no-ssl2 no-ssl3  \
+ --prefix=/usr \
+ --openssldir=/etc/ssl \
+ --libdir=lib64
+
+make depend
+make
+
+#apps/openssl speed
+LD_PRELOAD="./libcrypto.so ./libssl.so" apps/openssl speed rsa
+
+make clean
+
 %endif
 
 # ia64, x86_64, ppc are OK by default
