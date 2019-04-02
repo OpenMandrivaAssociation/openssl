@@ -24,6 +24,14 @@
 # Arches on which we need to prevent arch conflicts on opensslconf.h, must
 # also be handled in opensslconf-new.h.
 %define multilib_arches %{ix86} ia64 %{mips} ppc %{power64} s390 s390x sparcv9 sparc64 %{x86_64}
+
+# Add -Wa,--noexecstack here so that libcrypto's assembler modules will be
+# marked as not requiring an executable stack.
+# Also add -DPURIFY to make using valgrind with openssl easier as we do not
+# want to depend on the uninitialized memory as a source of entropy anyway.
+%global optflags %{optflags} -Wa,--noexecstack -DPURIFY
+%global ldflags %{ldflags} -Wl,-z,noexecstack
+
 %ifnarch riscv64
 %global optflags %{optflags} -O3 -fopenmp
 %endif
@@ -237,12 +245,6 @@ sslflags=enable-ec_nistp_64_gcc_128
 sslarch=linux-generic64
 %endif
 
-# Add -Wa,--noexecstack here so that libcrypto's assembler modules will be
-# marked as not requiring an executable stack.
-# Also add -DPURIFY to make using valgrind with openssl easier as we do not
-# want to depend on the uninitialized memory as a source of entropy anyway.
-RPM_OPT_FLAGS="%{optflags} -Wa,--noexecstack -DPURIFY %{ldflags}"
-
 %ifarch %{arm}
 # For Thumb2-isms in ecp_nistz256-armv4
 sed -i -e 's,-march=armv7-a,-march=armv7-a -fno-integrated-as,g' config
@@ -256,10 +258,14 @@ CXXFLAGS="%{optflags} -fprofile-instr-generate" \
 FFLAGS="$CFLAGS_PGO" \
 FCFLAGS="$CFLAGS_PGO" \
 LDFLAGS="%{ldflags} -fprofile-instr-generate" \
-./config shared no-ssl zlib-dynamic no-rc4 no-ssl2 no-ssl3  \
- --prefix=/usr \
- --openssldir=/etc/ssl \
- --libdir=lib64
+./Configure \
+	--prefix=%{_prefix} --libdir=%{_lib} \
+	--system-ciphers-file=%{_sysconfdir}/crypto-policies/back-ends/openssl.config \
+	--openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
+	zlib-dynamic enable-camellia enable-seed enable-rfc3779 enable-sctp \
+	enable-cms enable-md2 enable-rc5 enable-ssl3 enable-ssl3-method \
+	no-mdc2 no-ec2m no-gost no-srp \
+	shared  ${sslarch}
 
 make depend
 make
@@ -267,10 +273,16 @@ make
 #apps/openssl speed
 LD_PRELOAD="./libcrypto.so ./libssl.so" apps/openssl speed rsa
 
+unset LD_LIBRARY_PATH
+unset LLVM_PROFILE_FILE
+llvm-profdata merge --output=%{name}.profile *.profile.d
+
 make clean
 
+CFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+CXXFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 %endif
-
 # ia64, x86_64, ppc are OK by default
 # Configure the build tree.  Override OpenSSL defaults with known-good defaults
 # usable on all platforms.  The Configure script already knows to use -fPIC and
@@ -282,7 +294,7 @@ make clean
 	zlib-dynamic enable-camellia enable-seed enable-rfc3779 enable-sctp \
 	enable-cms enable-md2 enable-rc5 enable-ssl3 enable-ssl3-method \
 	no-mdc2 no-ec2m no-gost no-srp \
-	shared  ${sslarch} $RPM_OPT_FLAGS
+	shared  ${sslarch}
 
 # {?!nofips:fips}
 util/mkdef.pl crypto update
