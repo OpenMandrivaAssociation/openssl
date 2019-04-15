@@ -47,7 +47,7 @@ Summary: Utilities from the general purpose cryptography library with TLS implem
 Name: openssl
 Version: 1.1.1b
 %define beta %{nil}
-Release: %{-beta:0.%{beta}.}4
+Release: %{-beta:0.%{beta}.}5
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
 # The original openssl upstream tarball cannot be shipped in the .src.rpm.
@@ -90,7 +90,7 @@ Patch100: openssl-1.1.1-icpbrasil.diff
 #Patch102: openssl-1.1.0c-fips-linkerscript.patch
 # (tpg) by default use LLVM/clang and our optflags
 Patch103: openssl-1.1.1a-use-clang-and-OMV-optflags.patch
-
+Patch104: https://raw.githubusercontent.com/clearlinux-pkgs/openssl/master/0002-Hide-a-symbol-from-Steam.patch
 License: OpenSSL
 Group: System/Libraries
 URL: http://www.openssl.org/

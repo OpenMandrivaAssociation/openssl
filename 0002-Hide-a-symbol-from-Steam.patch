@@ -1,0 +1,37 @@
+From 220e98c74bbefffd4029087ba53b2f3ad0997494 Mon Sep 17 00:00:00 2001
+From: Auke Kok <auke-jan.h.kok@intel.com>
+Date: Sat, 3 Nov 2018 20:31:44 -0700
+Subject: [PATCH 2/3] Hide a symbol from Steam.
+
+---
+ crypto/x86_64cpuid.pl | 1 +
+ crypto/x86cpuid.pl    | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/crypto/x86_64cpuid.pl b/crypto/x86_64cpuid.pl
+index 6423e80..42bdbb9 100644
+--- a/crypto/x86_64cpuid.pl
++++ b/crypto/x86_64cpuid.pl
+@@ -60,6 +60,7 @@ OPENSSL_rdtsc:
+ .size	OPENSSL_rdtsc,.-OPENSSL_rdtsc
+ 
+ .globl	OPENSSL_ia32_cpuid
++.hidden	OPENSSL_ia32_cpuid
+ .type	OPENSSL_ia32_cpuid,\@function,1
+ .align	16
+ OPENSSL_ia32_cpuid:
+diff --git a/crypto/x86cpuid.pl b/crypto/x86cpuid.pl
+index d43dda4..493dd5f 100644
+--- a/crypto/x86cpuid.pl
++++ b/crypto/x86cpuid.pl
+@@ -503,6 +503,7 @@ my $rdop = shift;
+ 
+ &hidden("OPENSSL_cpuid_setup");
+ &hidden("OPENSSL_ia32cap_P");
++&hidden("OPENSSL_ia32_cpuid");
+ 
+ &asm_finish();
+ 
+-- 
+2.20.1
+
