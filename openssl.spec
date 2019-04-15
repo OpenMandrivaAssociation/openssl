@@ -41,7 +41,9 @@
 %bcond_with bootstrap
 
 # (tpg) enable PGO build
+%ifnarch riscv64
 %bcond_without pgo
+%endif
 
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
