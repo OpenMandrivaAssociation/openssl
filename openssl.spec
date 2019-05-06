@@ -49,7 +49,7 @@ Summary: Utilities from the general purpose cryptography library with TLS implem
 Name: openssl
 Version: 1.1.1b
 %define beta %{nil}
-Release: %{-beta:0.%{beta}.}5
+Release: %{-beta:0.%{beta}.}6
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
 # The original openssl upstream tarball cannot be shipped in the .src.rpm.
@@ -116,7 +116,6 @@ BuildRequires: perl(Math::BigInt)
 BuildRequires: perl(Module::Load::Conditional)
 BuildRequires: perl(Time::HiRes)
 Requires: coreutils
-Requires: make
 
 %description
 The OpenSSL toolkit provides support for secure communications between

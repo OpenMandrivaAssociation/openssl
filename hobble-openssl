@@ -15,28 +15,28 @@ set -e
 
 # SRP.
 for a in srp; do
-  for c in `find crypto/$a -name "*.c" -a \! -name "*test*" -type f` ; do
+  for c in $(find crypto/$a -name "*.c" -a \! -name "*test*" -type f) ; do
 	echo Destroying $c
 	> $c
   done
 done
 
-for c in `find crypto/bn -name "*gf2m.c"`; do
+for c in $(find crypto/bn -name "*gf2m.c"); do
 	echo Destroying $c
 	> $c
 done
 
-for c in `find crypto/ec -name "ec2*.c" -o -name "ec_curve.c" -o -name "ecp_nistp22?.c"`; do
+for c in $(find crypto/ec -name "ec2*.c" -o -name "ec_curve.c" -o -name "ecp_nistp22?.c"); do
 	echo Destroying $c
 	> $c
 done
 
-for c in `find test -name "ectest.c"`; do
+for c in $(find test -name "ectest.c"); do
 	echo Destroying $c
 	> $c
 done
 
-for h in `find crypto ssl apps test -name "*.h"` ; do
+for h in $(find crypto ssl apps test -name "*.h"`); do
 	echo Removing SRP and EC2M references from $h
 	cat $h | \
 	awk    'BEGIN {ech=1;} \
