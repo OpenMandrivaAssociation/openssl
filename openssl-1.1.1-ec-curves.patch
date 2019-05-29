@@ -1,8 +1,8 @@
-diff -up openssl-1.1.1-pre8/apps/speed.c.curves openssl-1.1.1-pre8/apps/speed.c
---- openssl-1.1.1-pre8/apps/speed.c.curves	2018-07-17 08:48:56.106625020 +0200
-+++ openssl-1.1.1-pre8/apps/speed.c	2018-07-17 08:50:07.526521809 +0200
-@@ -511,56 +511,20 @@ static double rsa_results[RSA_NUM][2];
- #define R_EC_X448    23
+diff -up openssl-1.1.1c/apps/speed.c.8~ openssl-1.1.1c/apps/speed.c
+--- openssl-1.1.1c/apps/speed.c.8~	2019-05-29 21:35:27.069858733 +0200
++++ openssl-1.1.1c/apps/speed.c	2019-05-29 21:51:48.731868710 +0200
+@@ -520,60 +520,20 @@ enum {
+ 
  #ifndef OPENSSL_NO_EC
  static OPT_PAIR ecdsa_choices[] = {
 -    {"ecdsap160", R_EC_P160},
@@ -11,6 +11,7 @@ diff -up openssl-1.1.1-pre8/apps/speed.c.curves openssl-1.1.1-pre8/apps/speed.c
      {"ecdsap256", R_EC_P256},
      {"ecdsap384", R_EC_P384},
      {"ecdsap521", R_EC_P521},
+-# ifndef OPENSSL_NO_EC2M
 -    {"ecdsak163", R_EC_K163},
 -    {"ecdsak233", R_EC_K233},
 -    {"ecdsak283", R_EC_K283},
@@ -21,6 +22,7 @@ diff -up openssl-1.1.1-pre8/apps/speed.c.curves openssl-1.1.1-pre8/apps/speed.c
 -    {"ecdsab283", R_EC_B283},
 -    {"ecdsab409", R_EC_B409},
 -    {"ecdsab571", R_EC_B571},
+-# endif
 -    {"ecdsabrp256r1", R_EC_BRP256R1},
 -    {"ecdsabrp256t1", R_EC_BRP256T1},
 -    {"ecdsabrp384r1", R_EC_BRP384R1},
@@ -39,6 +41,7 @@ diff -up openssl-1.1.1-pre8/apps/speed.c.curves openssl-1.1.1-pre8/apps/speed.c
      {"ecdhp256", R_EC_P256},
      {"ecdhp384", R_EC_P384},
      {"ecdhp521", R_EC_P521},
+-# ifndef OPENSSL_NO_EC2M
 -    {"ecdhk163", R_EC_K163},
 -    {"ecdhk233", R_EC_K233},
 -    {"ecdhk283", R_EC_K283},
@@ -49,6 +52,7 @@ diff -up openssl-1.1.1-pre8/apps/speed.c.curves openssl-1.1.1-pre8/apps/speed.c
 -    {"ecdhb283", R_EC_B283},
 -    {"ecdhb409", R_EC_B409},
 -    {"ecdhb571", R_EC_B571},
+-# endif
 -    {"ecdhbrp256r1", R_EC_BRP256R1},
 -    {"ecdhbrp256t1", R_EC_BRP256T1},
 -    {"ecdhbrp384r1", R_EC_BRP384R1},
@@ -58,10 +62,10 @@ diff -up openssl-1.1.1-pre8/apps/speed.c.curves openssl-1.1.1-pre8/apps/speed.c
      {"ecdhx25519", R_EC_X25519},
      {"ecdhx448", R_EC_X448}
  };
-diff -up openssl-1.1.1-pre8/crypto/ec/ecp_smpl.c.curves openssl-1.1.1-pre8/crypto/ec/ecp_smpl.c
---- openssl-1.1.1-pre8/crypto/ec/ecp_smpl.c.curves	2018-06-20 16:48:10.000000000 +0200
-+++ openssl-1.1.1-pre8/crypto/ec/ecp_smpl.c	2018-07-17 08:48:56.107625044 +0200
-@@ -141,6 +141,11 @@ int ec_GFp_simple_group_set_curve(EC_GRO
+diff -up openssl-1.1.1c/crypto/ec/ecp_smpl.c.8~ openssl-1.1.1c/crypto/ec/ecp_smpl.c
+--- openssl-1.1.1c/crypto/ec/ecp_smpl.c.8~	2019-05-28 15:12:21.000000000 +0200
++++ openssl-1.1.1c/crypto/ec/ecp_smpl.c	2019-05-29 21:35:27.069858733 +0200
+@@ -145,6 +145,11 @@ int ec_GFp_simple_group_set_curve(EC_GRO
          return 0;
      }
  
@@ -73,22 +77,19 @@ diff -up openssl-1.1.1-pre8/crypto/ec/ecp_smpl.c.curves openssl-1.1.1-pre8/crypt
      if (ctx == NULL) {
          ctx = new_ctx = BN_CTX_new();
          if (ctx == NULL)
-diff -up openssl-1.1.1-pre8/test/ecdsatest.c.curves openssl-1.1.1-pre8/test/ecdsatest.c
---- openssl-1.1.1-pre8/test/ecdsatest.c.curves	2018-06-20 16:48:14.000000000 +0200
-+++ openssl-1.1.1-pre8/test/ecdsatest.c	2018-07-17 08:48:56.107625044 +0200
-@@ -173,6 +173,7 @@ static int x9_62_tests(void)
-     if (!change_rand())
-         goto x962_err;
- 
+diff -up openssl-1.1.1c/test/ecdsatest.c.8~ openssl-1.1.1c/test/ecdsatest.c
+diff -up openssl-1.1.1c/test/ecdsatest.c.omv~ openssl-1.1.1c/test/ecdsatest.c
+--- openssl-1.1.1c/test/ecdsatest.c.omv~	2019-05-29 22:50:21.497904409 +0200
++++ openssl-1.1.1c/test/ecdsatest.c	2019-05-29 22:54:45.071907088 +0200
+@@ -326,8 +326,10 @@ int setup_tests(void)
+         || !TEST_true(EC_get_builtin_curves(curves, crv_len)))
+         return 0;
+     ADD_ALL_TESTS(test_builtin, crv_len);
 +#if 0
-     if (!TEST_true(x9_62_test_internal(NID_X9_62_prime192v1,
-                  "3342403536405981729393488334694600415596881826869351677613",
-                  "5735822328888155254683894997897571951568553642892029982342")))
-@@ -183,6 +184,7 @@ static int x9_62_tests(void)
-                  "3238135532097973577080787768312505059318910517550078427819"
-                              "78505179448783")))
-         goto x962_err;
+     ADD_ALL_TESTS(x9_62_tests, OSSL_NELEM(ecdsa_cavs_kats));
+ #endif
 +#endif
+     return 1;
+ }
  
- # ifndef OPENSSL_NO_EC2M
-     if (!TEST_true(x9_62_test_internal(NID_X9_62_c2tnb191v1,
+diff -up openssl-1.1.1c/test/recipes/15-test_ecdsa.t.omv~ openssl-1.1.1c/test/recipes/15-test_ecdsa.t

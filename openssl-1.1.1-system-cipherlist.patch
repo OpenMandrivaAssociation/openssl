@@ -1,6 +1,6 @@
-diff -up openssl-1.1.1b/Configurations/unix-Makefile.tmpl.15~ openssl-1.1.1b/Configurations/unix-Makefile.tmpl
---- openssl-1.1.1b/Configurations/unix-Makefile.tmpl.15~	2019-02-26 20:37:28.358202385 +0100
-+++ openssl-1.1.1b/Configurations/unix-Makefile.tmpl	2019-02-26 20:37:28.389202887 +0100
+diff -up openssl-1.1.1c/Configurations/unix-Makefile.tmpl.15~ openssl-1.1.1c/Configurations/unix-Makefile.tmpl
+--- openssl-1.1.1c/Configurations/unix-Makefile.tmpl.15~	2019-05-29 22:02:20.919875134 +0200
++++ openssl-1.1.1c/Configurations/unix-Makefile.tmpl	2019-05-29 22:02:20.946875135 +0200
 @@ -180,6 +180,10 @@ MANDIR=$(INSTALLTOP)/share/man
  DOCDIR=$(INSTALLTOP)/share/doc/$(BASENAME)
  HTMLDIR=$(DOCDIR)/html
@@ -20,15 +20,15 @@ diff -up openssl-1.1.1b/Configurations/unix-Makefile.tmpl.15~ openssl-1.1.1b/Con
                                    (map { "-I".$_} @{$config{CPPINCLUDES}}),
                                    @{$config{CPPFLAGS}}) -}
  CFLAGS={- join(' ', @{$config{CFLAGS}}) -}
-diff -up openssl-1.1.1b/Configure.15~ openssl-1.1.1b/Configure
---- openssl-1.1.1b/Configure.15~	2019-02-26 20:37:28.370202579 +0100
-+++ openssl-1.1.1b/Configure	2019-02-26 20:37:28.389202887 +0100
+diff -up openssl-1.1.1c/Configure.15~ openssl-1.1.1c/Configure
+--- openssl-1.1.1c/Configure.15~	2019-05-29 22:02:20.931875135 +0200
++++ openssl-1.1.1c/Configure	2019-05-29 22:03:37.108875909 +0200
 @@ -24,7 +24,7 @@ use OpenSSL::Glob;
  my $orig_death_handler = $SIG{__DIE__};
  $SIG{__DIE__} = \&death_handler;
  
--my $usage="Usage: Configure [no-<cipher> ...] [enable-<cipher> ...] [-Dxxx] [-lxxx] [-Lxxx] [-fxxx] [-Kxxx] [no-hw-xxx|no-hw] [[no-]threads] [[no-]shared] [[no-]zlib|zlib-dynamic] [no-asm] [no-dso] [no-egd] [sctp] [386] [--prefix=DIR] [--openssldir=OPENSSLDIR] [--with-xxx[=vvv]] [--config=FILE] os/compiler[:flags]\n";
-+my $usage="Usage: Configure [no-<cipher> ...] [enable-<cipher> ...] [-Dxxx] [-lxxx] [-Lxxx] [-fxxx] [-Kxxx] [no-hw-xxx|no-hw] [[no-]threads] [[no-]shared] [[no-]zlib|zlib-dynamic] [no-asm] [no-dso] [no-egd] [sctp] [386] [--prefix=DIR] [--openssldir=OPENSSLDIR] [--system-ciphers-file=SYSTEMCIPHERFILE] [--with-xxx[=vvv]] [--config=FILE] os/compiler[:flags]\n";
+-my $usage="Usage: Configure [no-<cipher> ...] [enable-<cipher> ...] [-Dxxx] [-lxxx] [-Lxxx] [-fxxx] [-Kxxx] [no-hw-xxx|no-hw] [[no-]threads] [[no-]shared] [[no-]zlib|zlib-dynamic] [no-asm] [no-egd] [sctp] [386] [--prefix=DIR] [--openssldir=OPENSSLDIR] [--with-xxx[=vvv]] [--config=FILE] os/compiler[:flags]\n";
++my $usage="Usage: Configure [no-<cipher> ...] [enable-<cipher> ...] [-Dxxx] [-lxxx] [-Lxxx] [-fxxx] [-Kxxx] [no-hw-xxx|no-hw] [[no-]threads] [[no-]shared] [[no-]zlib|zlib-dynamic] [no-asm] [no-egd] [sctp] [386] [--prefix=DIR] [--openssldir=OPENSSLDIR] [--system-ciphers-file=SYSTEMCIPHERFILE] [--with-xxx[=vvv]] [--config=FILE] os/compiler[:flags]\n";
  
  # Options:
  #
@@ -42,7 +42,7 @@ diff -up openssl-1.1.1b/Configure.15~ openssl-1.1.1b/Configure
  # --cross-compile-prefix Add specified prefix to binutils components.
  #
  # --api         One of 0.9.8, 1.0.0 or 1.1.0.  Do not compile support for
-@@ -298,6 +301,7 @@ $config{prefix}="";
+@@ -295,6 +298,7 @@ $config{prefix}="";
  $config{openssldir}="";
  $config{processor}="";
  $config{libdir}="";
@@ -50,18 +50,18 @@ diff -up openssl-1.1.1b/Configure.15~ openssl-1.1.1b/Configure
  my $auto_threads=1;    # enable threads automatically? true by default
  my $default_ranlib;
  
-@@ -821,6 +825,10 @@ while (@argvcopy)
- 			    push @seed_sources, $x;
- 			    }
+@@ -824,6 +828,10 @@ while (@argvcopy)
+                             push @seed_sources, $x;
+                             }
                          }
-+		elsif (/^--system-ciphers-file=(.*)$/)
-+			{
-+			$config{system_ciphers_file}=$1;
-+			}
- 		elsif (/^--cross-compile-prefix=(.*)$/)
- 			{
- 			$user{CROSS_COMPILE}=$1;
-@@ -1007,6 +1015,8 @@ if ($target eq "HASH") {
++                elsif (/^--system-ciphers-file=(.*)$/)
++                        {
++                        $config{system_ciphers_file}=$1;
++                        }
+                 elsif (/^--cross-compile-prefix=(.*)$/)
+                         {
+                         $user{CROSS_COMPILE}=$1;
+@@ -1016,6 +1024,8 @@ if ($target eq "HASH") {
      exit 0;
  }
  
@@ -70,9 +70,9 @@ diff -up openssl-1.1.1b/Configure.15~ openssl-1.1.1b/Configure
  print "Configuring OpenSSL version $config{version} ($config{version_num}) ";
  print "for $target\n";
  
-diff -up openssl-1.1.1b/doc/man1/ciphers.pod.15~ openssl-1.1.1b/doc/man1/ciphers.pod
---- openssl-1.1.1b/doc/man1/ciphers.pod.15~	2019-02-26 15:15:30.000000000 +0100
-+++ openssl-1.1.1b/doc/man1/ciphers.pod	2019-02-26 20:37:28.389202887 +0100
+diff -up openssl-1.1.1c/doc/man1/ciphers.pod.15~ openssl-1.1.1c/doc/man1/ciphers.pod
+--- openssl-1.1.1c/doc/man1/ciphers.pod.15~	2019-05-28 15:12:21.000000000 +0200
++++ openssl-1.1.1c/doc/man1/ciphers.pod	2019-05-29 22:02:20.946875135 +0200
 @@ -182,6 +182,15 @@ As of OpenSSL 1.0.0, the B<ALL> cipher s
  
  The cipher suites not enabled by B<ALL>, currently B<eNULL>.
@@ -89,9 +89,9 @@ diff -up openssl-1.1.1b/doc/man1/ciphers.pod.15~ openssl-1.1.1b/doc/man1/ciphers
  =item B<HIGH>
  
  "High" encryption cipher suites. This currently means those with key lengths
-diff -up openssl-1.1.1b/include/openssl/ssl.h.15~ openssl-1.1.1b/include/openssl/ssl.h
---- openssl-1.1.1b/include/openssl/ssl.h.15~	2019-02-26 15:15:30.000000000 +0100
-+++ openssl-1.1.1b/include/openssl/ssl.h	2019-02-26 20:37:28.390202903 +0100
+diff -up openssl-1.1.1c/include/openssl/ssl.h.15~ openssl-1.1.1c/include/openssl/ssl.h
+--- openssl-1.1.1c/include/openssl/ssl.h.15~	2019-05-28 15:12:21.000000000 +0200
++++ openssl-1.1.1c/include/openssl/ssl.h	2019-05-29 22:02:20.946875135 +0200
 @@ -186,6 +186,11 @@ extern "C" {
   * throwing out anonymous and unencrypted ciphersuites! (The latter are not
   * actually enabled by ALL, but "ALL:RSA" would enable some of them.)
@@ -104,9 +104,9 @@ diff -up openssl-1.1.1b/include/openssl/ssl.h.15~ openssl-1.1.1b/include/openssl
  
  /* Used in SSL_set_shutdown()/SSL_get_shutdown(); */
  # define SSL_SENT_SHUTDOWN       1
-diff -up openssl-1.1.1b/ssl/ssl_ciph.c.15~ openssl-1.1.1b/ssl/ssl_ciph.c
---- openssl-1.1.1b/ssl/ssl_ciph.c.15~	2019-02-26 20:37:28.382202774 +0100
-+++ openssl-1.1.1b/ssl/ssl_ciph.c	2019-02-26 20:37:28.390202903 +0100
+diff -up openssl-1.1.1c/ssl/ssl_ciph.c.15~ openssl-1.1.1c/ssl/ssl_ciph.c
+--- openssl-1.1.1c/ssl/ssl_ciph.c.15~	2019-05-29 22:02:20.940875135 +0200
++++ openssl-1.1.1c/ssl/ssl_ciph.c	2019-05-29 22:02:20.947875135 +0200
 @@ -9,6 +9,8 @@
   * https://www.openssl.org/source/license.html
   */
@@ -274,9 +274,9 @@ diff -up openssl-1.1.1b/ssl/ssl_ciph.c.15~ openssl-1.1.1b/ssl/ssl_ciph.c
  }
  
  char *SSL_CIPHER_description(const SSL_CIPHER *cipher, char *buf, int len)
-diff -up openssl-1.1.1b/ssl/ssl_lib.c.15~ openssl-1.1.1b/ssl/ssl_lib.c
---- openssl-1.1.1b/ssl/ssl_lib.c.15~	2019-02-26 20:37:28.383202790 +0100
-+++ openssl-1.1.1b/ssl/ssl_lib.c	2019-02-26 20:37:28.390202903 +0100
+diff -up openssl-1.1.1c/ssl/ssl_lib.c.15~ openssl-1.1.1c/ssl/ssl_lib.c
+--- openssl-1.1.1c/ssl/ssl_lib.c.15~	2019-05-29 22:02:20.940875135 +0200
++++ openssl-1.1.1c/ssl/ssl_lib.c	2019-05-29 22:02:20.947875135 +0200
 @@ -662,7 +662,7 @@ int SSL_CTX_set_ssl_version(SSL_CTX *ctx
                                  ctx->tls13_ciphersuites,
                                  &(ctx->cipher_list),
@@ -295,9 +295,9 @@ diff -up openssl-1.1.1b/ssl/ssl_lib.c.15~ openssl-1.1.1b/ssl/ssl_lib.c
          || sk_SSL_CIPHER_num(ret->cipher_list) <= 0) {
          SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_LIBRARY_HAS_NO_CIPHERS);
          goto err2;
-diff -up openssl-1.1.1b/test/cipherlist_test.c.15~ openssl-1.1.1b/test/cipherlist_test.c
---- openssl-1.1.1b/test/cipherlist_test.c.15~	2019-02-26 20:37:28.391202920 +0100
-+++ openssl-1.1.1b/test/cipherlist_test.c	2019-02-26 20:38:38.798343850 +0100
+diff -up openssl-1.1.1c/test/cipherlist_test.c.15~ openssl-1.1.1c/test/cipherlist_test.c
+--- openssl-1.1.1c/test/cipherlist_test.c.15~	2019-05-28 15:12:21.000000000 +0200
++++ openssl-1.1.1c/test/cipherlist_test.c	2019-05-29 22:02:20.947875135 +0200
 @@ -251,7 +251,9 @@ end:
  
  int setup_tests(void)
