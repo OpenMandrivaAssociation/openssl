@@ -47,7 +47,7 @@
 
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
-Version: 1.1.1c
+Version: 1.1.1d
 %define beta %{nil}
 Release: %{-beta:0.%{beta}.}1
 # We have to remove certain patented algorithms from the openssl source
@@ -77,10 +77,10 @@ Patch37: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1
 Patch38: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-no-weak-verify.patch
 Patch40: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-disable-ssl3.patch
 # Ported by OMV
-Patch41: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1a-fips.patch
+Patch41: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-fips.patch
 Patch43: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-ignore-bound.patch
 # Ported by OMV
-Patch44: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1a-version-override.patch
+Patch44: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-version-override.patch
 Patch45: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-weak-ciphers.patch
 #Patch47: openssl-1.0.2a-readme-warning.patch FIPS
 #Patch72: openssl-1.0.2a-fips-ctor.patch
