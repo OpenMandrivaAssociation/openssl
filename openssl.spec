@@ -21,6 +21,12 @@
 # Number of threads to spawn when testing some threading fixes.
 %define thread_test_threads %{?threads:%{threads}}%{!?threads:1}
 
+# This directory is defined in /usr/bin/openssl-config and %%_rpmmacrodir/*openssl*
+# during the build.
+# The purpose is a system-wide definition of this directory
+# to guarantee consistency across the whole repository.
+%define _openssldir %{_sysconfdir}/pki/tls
+
 # Arches on which we need to prevent arch conflicts on opensslconf.h, must
 # also be handled in opensslconf-new.h.
 %define multilib_arches %{ix86} ia64 %{mips} ppc %{power64} s390 s390x sparcv9 sparc64 %{x86_64}
@@ -56,6 +62,8 @@ Release: %{-beta:0.%{beta}.}1
 Source0: https://www.openssl.org/source/openssl-%{version}%{-beta:-%{beta}}.tar.gz
 Source1: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/hobble-openssl
 Source2: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/Makefile.certificate
+Source3: openssl.macros
+Source5: openssl-config
 Source6: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/make-dummy-cert
 Source7: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/renew-dummy-cert
 Source9: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/opensslconf-new.h
@@ -116,6 +124,7 @@ BuildRequires: perl(Math::BigInt)
 BuildRequires: perl(Module::Load::Conditional)
 BuildRequires: perl(Time::HiRes)
 Requires: coreutils
+Provides: openssl-config
 
 %description
 The OpenSSL toolkit provides support for secure communications between
@@ -401,6 +410,22 @@ touch -r %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/tls/ct_log_list.cnf
 rm -f %{buildroot}%{_sysconfdir}/pki/tls/openssl.cnf.dist
 rm -f %{buildroot}%{_sysconfdir}/pki/tls/ct_log_list.cnf.dist
 
+cat %{SOURCE6} | sed -e "s#@OPENSSLDIR@#%{_openssldir}#g" > macros_file
+install -m0644 macros_file %{buildroot}%{_rpmmacrodir}/macros.openssl
+
+# install openssl-config
+install -m0755 %{SOURCE5} %{buildroot}/%{_bindir}/
+# define values in openssl-config
+sed -i %{buildroot}/%{_bindir}/openssl-config \
+	-e "s#@VERSION@#%{version}#g" \
+	-e "s#@OPENSSLDIR@#%{_openssldir}#g" \
+	-e "s#@CPPFLAGS@#${CPPFLAGS}#g" \
+	-e "s#@CFLAGS@#${RPM_OPT_FLAGS}#g" \
+	-e "s#@LDFLAGS@#%{ldflags}#g"
+
+# test openssl-config
+[ "$(%{buildroot}/%{_bindir}/openssl-config --openssldir)" = '%{_openssldir}' ]
+
 # Determine which arch opensslconf.h is going to try to #include.
 basearch=%{_arch}
 %ifarch %{ix86}
@@ -439,6 +464,7 @@ export LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 %license LICENSE
 %{_bindir}/make-dummy-cert
 %{_bindir}/renew-dummy-cert
+%{_bindir}/openssl-config
 %{_sysconfdir}/pki/tls/certs/Makefile
 %dir %{_sysconfdir}/pki/tls
 %dir %{_sysconfdir}/pki/tls/certs
@@ -460,6 +486,7 @@ export LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 %attr(0755,root,root) %{_libdir}/*.so
 %attr(0644,root,root) %{_mandir}/man3*/*
 %attr(0644,root,root) %{_libdir}/pkgconfig/*.pc
+%{_rpmmacrodir}/*openssl*
 
 %files -n %{staticname}
 %attr(0644,root,root) %{_libdir}/*.a

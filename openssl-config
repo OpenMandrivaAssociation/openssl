@@ -1,0 +1,68 @@
+#!/bin/sh
+
+# openssl-config
+# provides configuration info for openssl.
+
+version="@VERSION@"
+openssldir="@OPENSSLDIR@"
+cppflags="@CPPFLAGS@"
+cflags="@CFLAGS@"
+ldflags="@LDFLAGS@"
+libs="-lcrypto -lssl"
+
+usage()
+{
+    cat <<EOF
+Usage: openssl-config [OPTION] ...
+
+Known values for OPTION are:
+
+  --openssldir		print OpenSSL directory
+  --cflags              print compiler flags
+  --cppflags            print pre-processor flags
+  --ldflags             print loader flags
+  --libs                print library linking information
+  --help                display this help and exit
+  --version             output version information
+EOF
+
+    exit $1
+}
+
+if test $# -eq 0; then
+    usage 1
+fi
+
+while test $# -gt 0; do
+    case "$1" in
+    --openssldir)
+        echo "${openssldir}"
+        ;;
+    --cflags)
+        echo "${cflags}"
+        ;;
+    --cppflags)
+        echo "${cppflags}"
+        ;;
+    --libs)
+        echo "${libs}"
+        ;;
+    --ldflags)
+        echo "${ldflags}"
+        ;;
+    --version)
+        echo "${version}"
+        exit 0
+        ;;
+    --help)
+        usage 0
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+    esac
+    shift
+done
+
+exit 0
