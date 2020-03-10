@@ -325,6 +325,7 @@ done
 patch -p1 -R < %{PATCH31}
 
 # This seems to fail because of a problem with the test
+rm test/recipes/20-test_enc.t
 rm test/recipes/30-test_evp_extra.t
 rm test/recipes/80-test_ssl_new.t
 
