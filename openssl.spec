@@ -412,7 +412,7 @@ rm -f %{buildroot}%{_sysconfdir}/pki/tls/openssl.cnf.dist
 rm -f %{buildroot}%{_sysconfdir}/pki/tls/ct_log_list.cnf.dist
 
 mkdir -p %{buildroot}%{_rpmmacrodir}
-cat %{SOURCE6} | sed -e "s#@OPENSSLDIR@#%{_openssldir}#g" > macros_file
+cat %{SOURCE3} | sed -e "s#@OPENSSLDIR@#%{_openssldir}#g" > macros_file
 install -m0644 macros_file %{buildroot}%{_rpmmacrodir}/macros.openssl
 
 # install openssl-config
