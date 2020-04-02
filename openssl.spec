@@ -53,7 +53,7 @@
 
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
-Version: 1.1.1d
+Version: 1.1.1f
 %define beta %{nil}
 Release: %{-beta:0.%{beta}.}1
 # We have to remove certain patented algorithms from the openssl source
@@ -74,7 +74,6 @@ Source13: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/ectest.c
 # Build changes
 Patch1: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-build.patch
 Patch2: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-defaults.patch
-Patch3: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-no-html.patch
 # Bug fixes
 Patch21: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-issuer-hash.patch
 # Functionality changes
@@ -361,6 +360,9 @@ for lib in %{buildroot}%{_libdir}/*.so.%{version} ; do
     ln -s -f `basename ${lib}` %{buildroot}%{_libdir}/`basename ${lib} .%{version}`
     ln -s -f `basename ${lib}` %{buildroot}%{_libdir}/`basename ${lib} .%{version}`.%{soversion}
 done
+
+# No need to install HTML-ized man pages, we have the real thing
+rm -rf %{buildroot}%{_docdir}/openssl/html
 
 # Install a makefile for generating keys and self-signed certs, and a script
 # for generating them on the fly.
