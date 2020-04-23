@@ -31,7 +31,7 @@ diff -up openssl-1.1.1-pre8/apps/openssl.cnf.conf-paths openssl-1.1.1-pre8/apps/
 +
 +[ crypto_policy ]
 +
-+.include /etc/crypto-policies/back-ends/opensslcnf.config
++.include = /etc/crypto-policies/back-ends/opensslcnf.config
 +
  [ new_oids ]
  

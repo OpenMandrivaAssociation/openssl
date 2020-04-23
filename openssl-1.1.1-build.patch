@@ -1,6 +1,6 @@
-diff -up openssl-1.1.1f/Configurations/10-main.conf.1~ openssl-1.1.1f/Configurations/10-main.conf
---- openssl-1.1.1f/Configurations/10-main.conf.1~	2020-03-31 14:17:45.000000000 +0200
-+++ openssl-1.1.1f/Configurations/10-main.conf	2020-04-01 01:31:08.418332354 +0200
+diff -up openssl-1.1.1f/Configurations/10-main.conf.build openssl-1.1.1f/Configurations/10-main.conf
+--- openssl-1.1.1f/Configurations/10-main.conf.build	2020-03-31 14:17:45.000000000 +0200
++++ openssl-1.1.1f/Configurations/10-main.conf	2020-04-07 16:42:10.920546387 +0200
 @@ -678,6 +678,7 @@ my %targets = (
          cxxflags         => add("-m64"),
          lib_cppflags     => add("-DL_ENDIAN"),
@@ -17,10 +17,10 @@ diff -up openssl-1.1.1f/Configurations/10-main.conf.1~ openssl-1.1.1f/Configurat
      },
      "linux-arm64ilp32" => {  # https://wiki.linaro.org/Platform/arm64-ilp32
          inherit_from     => [ "linux-generic32", asm("aarch64_asm") ],
-diff -up openssl-1.1.1f/Configurations/unix-Makefile.tmpl.1~ openssl-1.1.1f/Configurations/unix-Makefile.tmpl
---- openssl-1.1.1f/Configurations/unix-Makefile.tmpl.1~	2020-04-01 01:31:08.417332348 +0200
-+++ openssl-1.1.1f/Configurations/unix-Makefile.tmpl	2020-04-01 01:32:04.329707627 +0200
-@@ -823,24 +823,24 @@ uninstall_runtime_libs:
+diff -up openssl-1.1.1f/Configurations/unix-Makefile.tmpl.build openssl-1.1.1f/Configurations/unix-Makefile.tmpl
+--- openssl-1.1.1f/Configurations/unix-Makefile.tmpl.build	2020-04-07 16:42:10.920546387 +0200
++++ openssl-1.1.1f/Configurations/unix-Makefile.tmpl	2020-04-07 16:44:23.539142108 +0200
+@@ -823,7 +823,7 @@ uninstall_runtime_libs:
  install_man_docs:
  	@[ -n "$(INSTALLTOP)" ] || (echo INSTALLTOP should not be empty; exit 1)
  	@$(ECHO) "*** Installing manpages"
@@ -29,12 +29,7 @@ diff -up openssl-1.1.1f/Configurations/unix-Makefile.tmpl.1~ openssl-1.1.1f/Conf
  		"--destdir=$(DESTDIR)$(MANDIR)" --type=man --suffix=$(MANSUFFIX)
  
  uninstall_man_docs:
- 	@$(ECHO) "*** Uninstalling manpages"
--	$(PERL) $(SRCDIR)/util/process_docs.pl \
-+	TZ=UTC $(PERL) $(SRCDIR)/util/process_docs.pl \
- 		"--destdir=$(DESTDIR)$(MANDIR)" --type=man --suffix=$(MANSUFFIX) \
- 		--remove
- 
+@@ -835,7 +835,7 @@ uninstall_man_docs:
  install_html_docs:
  	@[ -n "$(INSTALLTOP)" ] || (echo INSTALLTOP should not be empty; exit 1)
  	@$(ECHO) "*** Installing HTML manpages"
@@ -43,9 +38,3 @@ diff -up openssl-1.1.1f/Configurations/unix-Makefile.tmpl.1~ openssl-1.1.1f/Conf
  		"--destdir=$(DESTDIR)$(HTMLDIR)" --type=html
  
  uninstall_html_docs:
- 	@$(ECHO) "*** Uninstalling manpages"
--	$(PERL) $(SRCDIR)/util/process_docs.pl \
-+	TZ=UTC $(PERL) $(SRCDIR)/util/process_docs.pl \
- 		"--destdir=$(DESTDIR)$(HTMLDIR)" --type=html --remove
- 
- 

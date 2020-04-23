@@ -1,6 +1,6 @@
-diff -up openssl-1.1.1b/crypto/asn1/a_verify.c.9~ openssl-1.1.1b/crypto/asn1/a_verify.c
---- openssl-1.1.1b/crypto/asn1/a_verify.c.9~	2019-02-26 15:15:30.000000000 +0100
-+++ openssl-1.1.1b/crypto/asn1/a_verify.c	2019-02-26 20:34:27.150264020 +0100
+diff -up openssl-1.1.1b/crypto/asn1/a_verify.c.no-weak-verify openssl-1.1.1b/crypto/asn1/a_verify.c
+--- openssl-1.1.1b/crypto/asn1/a_verify.c.no-weak-verify	2019-02-26 15:15:30.000000000 +0100
++++ openssl-1.1.1b/crypto/asn1/a_verify.c	2019-02-28 11:25:31.531862873 +0100
 @@ -7,6 +7,9 @@
   * https://www.openssl.org/source/license.html
   */

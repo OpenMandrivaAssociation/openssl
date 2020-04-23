@@ -1,15 +1,15 @@
-diff -up openssl-1.1.1e/apps/pkcs12.c.fips openssl-1.1.1e/apps/pkcs12.c
---- openssl-1.1.1e/apps/pkcs12.c.fips	2020-03-17 15:31:17.000000000 +0100
-+++ openssl-1.1.1e/apps/pkcs12.c	2020-03-17 17:30:52.020567497 +0100
-@@ -127,7 +127,7 @@ int pkcs12_main(int argc, char **argv)
+diff -up openssl-1.1.1g/apps/pkcs12.c.fips openssl-1.1.1g/apps/pkcs12.c
+--- openssl-1.1.1g/apps/pkcs12.c.fips	2020-04-23 13:26:06.975649817 +0200
++++ openssl-1.1.1g/apps/pkcs12.c	2020-04-23 13:28:27.689995889 +0200
+@@ -123,7 +123,7 @@ int pkcs12_main(int argc, char **argv)
      int export_cert = 0, options = 0, chain = 0, twopass = 0, keytype = 0;
      int iter = PKCS12_DEFAULT_ITER, maciter = PKCS12_DEFAULT_ITER;
- # ifndef OPENSSL_NO_RC2
+ #ifndef OPENSSL_NO_RC2
 -    int cert_pbe = NID_pbe_WithSHA1And40BitRC2_CBC;
 +    int cert_pbe = FIPS_mode() ? NID_pbe_WithSHA1And3_Key_TripleDES_CBC : NID_pbe_WithSHA1And40BitRC2_CBC;
- # else
+ #else
      int cert_pbe = NID_pbe_WithSHA1And3_Key_TripleDES_CBC;
- # endif
+ #endif
 diff -up openssl-1.1.1e/apps/speed.c.fips openssl-1.1.1e/apps/speed.c
 --- openssl-1.1.1e/apps/speed.c.fips	2020-03-17 17:30:51.997567897 +0100
 +++ openssl-1.1.1e/apps/speed.c	2020-03-17 17:30:52.021567479 +0100

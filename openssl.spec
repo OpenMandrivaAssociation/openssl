@@ -53,7 +53,7 @@
 
 Summary: Utilities from the general purpose cryptography library with TLS implementation
 Name: openssl
-Version: 1.1.1f
+Version: 1.1.1g
 %define beta %{nil}
 Release: %{-beta:0.%{beta}.}1
 # We have to remove certain patented algorithms from the openssl source
@@ -73,22 +73,22 @@ Source12: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/ec_curve.c
 Source13: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/ectest.c
 # Build changes
 Patch1: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-build.patch
-Patch2: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-defaults.patch
+Patch2: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-defaults.patch
 # Bug fixes
 Patch21: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-issuer-hash.patch
 # Functionality changes
 Patch31: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-conf-paths.patch
 Patch32: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-version-add-engines.patch
-Patch33: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-apps-dgst.patch
+Patch33: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-apps-dgst.patch
 Patch37: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-ec-curves.patch
-Patch38: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-no-weak-verify.patch
+Patch38: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-no-weak-verify.patch
 Patch40: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-disable-ssl3.patch
 # Ported by OMV
 Patch41: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-fips.patch
 Patch43: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-ignore-bound.patch
 # Ported by OMV
 Patch44: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-version-override.patch
-Patch45: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.0-weak-ciphers.patch
+Patch45: http://pkgs.fedoraproject.org/cgit/rpms/openssl.git/plain/openssl-1.1.1-weak-ciphers.patch
 #Patch47: openssl-1.0.2a-readme-warning.patch FIPS
 #Patch72: openssl-1.0.2a-fips-ctor.patch
 #Patch76: openssl-1.0.2f-new-fips-reqs.patch
