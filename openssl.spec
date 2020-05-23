@@ -1,3 +1,10 @@
+# OpenSSL is used by wine and various things wine depends on
+%ifarch %{x86_64}
+%bcond_without compat32
+%else
+%bcond_with compat32
+%endif
+
 # For the curious:
 # 0.9.5a soversion = 0
 # 0.9.6  soversion = 1
@@ -17,6 +24,11 @@
 %define engines_name %mklibname openssl-engines %{soversion}
 %define devname %mklibname openssl -d
 %define staticname %mklibname openssl -s -d
+%define lib32crypto libcrypto%{soversion}
+%define lib32ssl libssl%{soversion}
+%define engines32_name libopenssl-engines%{soversion}
+%define dev32name libopenssl-devel
+%define static32name libopenssl-static-devel
 
 # Number of threads to spawn when testing some threading fixes.
 %define thread_test_threads %{?threads:%{threads}}%{!?threads:1}
@@ -55,7 +67,7 @@ Summary: Utilities from the general purpose cryptography library with TLS implem
 Name: openssl
 Version: 1.1.1g
 %define beta %{nil}
-Release: %{-beta:0.%{beta}.}1
+Release: %{-beta:0.%{beta}.}2
 # We have to remove certain patented algorithms from the openssl source
 # tarball with the hobble-openssl script which is included below.
 # The original openssl upstream tarball cannot be shipped in the .src.rpm.
@@ -124,6 +136,9 @@ BuildRequires: perl(Module::Load::Conditional)
 BuildRequires: perl(Time::HiRes)
 Requires: coreutils
 Provides: openssl-config
+%if %{with compat32}
+BuildRequires:	devel(libz)
+%endif
 
 %description
 The OpenSSL toolkit provides support for secure communications between
@@ -162,6 +177,52 @@ package contains static libraries needed for static linking of
 applications which support various cryptographic algorithms and
 protocols.
 
+%if %{with compat32}
+%package -n %{lib32crypto}
+Summary: OpenSSL crypto library (32-bit)
+Group: System/Libraries
+
+%description -n %{lib32crypto}
+OpenSSL crypto library (32-bit)
+
+%package -n %{lib32ssl}
+Summary: OpenSSL SSL library (32-bit)
+Group: System/Libraries
+
+%description -n %{lib32ssl}
+OpenSSL SSL library (32-bit)
+
+%package -n %{engines32_name}
+Summary: Engines for openssl (32-bit)
+Group: System/Libraries
+
+%description -n %{engines32_name}
+This package provides engines for openssl.
+
+%package -n %{dev32name}
+Summary: Files for development of applications which will use OpenSSL (32-bit)
+Group: Development/Other
+Requires: %{devname} = %{EVRD}
+Requires: %{lib32crypto} = %{EVRD}
+Requires: %{lib32ssl} = %{EVRD}
+
+%description -n %{dev32name}
+OpenSSL is a toolkit for supporting cryptography. The openssl-devel
+package contains include files needed to develop applications which
+support various cryptographic algorithms and protocols.
+
+%package -n %{static32name}
+Summary:  Libraries for static linking of applications which will use OpenSSL (32-bit)
+Group: Development/Other
+Requires: %{dev32name} = %{EVRD}
+
+%description -n %{static32name}
+OpenSSL is a toolkit for supporting cryptography. The openssl-static
+package contains static libraries needed for static linking of
+applications which support various cryptographic algorithms and
+protocols.
+%endif
+
 %package perl
 Summary: Perl scripts provided with OpenSSL
 Group: System/Libraries
@@ -190,8 +251,29 @@ sed -i 's!clang!gcc!g' Configurations/10-main.conf
 sed -i 's!clang++!g++!g' Configurations/10-main.conf
 %endif
 
+%if %{with compat32}
+mkdir build32
+cd build32
+CC="gcc -m32" CXX="g++ -m32" LD="gcc -m32" ../Configure linux-x86 \
+	--prefix=%{_prefix} --libdir=lib \
+	--system-ciphers-file=%{_sysconfdir}/crypto-policies/back-ends/openssl.config \
+	--openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
+	zlib-dynamic enable-camellia enable-seed enable-rfc3779 enable-sctp \
+	enable-cms enable-md2 enable-rc5 enable-ssl3 enable-ssl3-method \
+	no-mdc2 no-ec2m no-gost no-srp \
+	shared
+make depend
+%endif
+
 %build
 %serverbuild
+
+%if %{with compat32}
+cd build32
+make
+cd ..
+%endif
+
 # Figure out which flags we want to use.
 # default
 sslarch=%{_os}-%{_target_cpu}
@@ -351,6 +433,18 @@ make test
 
 %install
 # Install OpenSSL.
+%if %{with compat32}
+install -d %{buildroot}{%{_bindir},%{_includedir},%{_prefix}/lib,%{_mandir},%{_prefix}/lib/openssl}
+cd build32
+make DESTDIR=%{buildroot} install
+rename so.%{soversion} so.%{version} %{buildroot}%{_prefix}/lib/*.so.%{soversion}
+cd ..
+install -m644 %{SOURCE10} \
+	%{buildroot}/%{_includedir}/openssl/opensslconf-i386.h
+cat %{buildroot}/%{_includedir}/openssl/opensslconf.h >> \
+	%{buildroot}/%{_includedir}/openssl/opensslconf-i386.h
+%endif
+
 install -d %{buildroot}{%{_bindir},%{_includedir},%{_libdir},%{_mandir},%{_libdir}/openssl}
 make DESTDIR=%{buildroot} install
 rename so.%{soversion} so.%{version} %{buildroot}%{_libdir}/*.so.%{soversion}
@@ -432,6 +526,9 @@ sed -i %{buildroot}/%{_bindir}/openssl-config \
 
 # Determine which arch opensslconf.h is going to try to #include.
 basearch=%{_arch}
+%ifarch znver1
+basearch=x86_64
+%endif
 %ifarch %{ix86}
 basearch=i386
 %endif
@@ -491,6 +588,11 @@ export LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 %attr(0644,root,root) %{_mandir}/man3*/*
 %attr(0644,root,root) %{_libdir}/pkgconfig/*.pc
 %{_rpmmacrodir}/*openssl*
+%if %{with compat32}
+%ifarch %{x86_64}
+%exclude %{_includedir}/openssl/opensslconf-i386.h
+%endif
+%endif
 
 %files -n %{staticname}
 %attr(0644,root,root) %{_libdir}/*.a
@@ -509,3 +611,24 @@ export LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 %files doc
 %doc CHANGES doc/dir-locals.example.el doc/openssl-c-indent.el
 %doc FAQ NEWS README README.FIPS
+
+%if %{with compat32}
+%files -n %{lib32crypto}
+%{_prefix}/lib/libcrypto.so.*
+
+%files -n %{lib32ssl}
+%{_prefix}/lib/libssl.so.*
+
+%files -n %{engines32_name}
+%{_prefix}/lib/engines-1.1
+
+%files -n %{dev32name}
+%{_prefix}/lib/libcrypto.so
+%{_prefix}/lib/libssl.so
+%{_prefix}/lib/pkgconfig/*
+%{_includedir}/openssl/opensslconf-i386.h
+
+%files -n %{static32name}
+%{_prefix}/lib/libcrypto.a
+%{_prefix}/lib/libssl.a
+%endif
