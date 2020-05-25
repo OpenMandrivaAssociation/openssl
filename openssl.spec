@@ -28,6 +28,7 @@ BuildRequires:	perl
 BuildRequires:	perl(Pod::Man)
 BuildRequires:	perl(Pod::Html)
 BuildRequires:	pkgconfig(libsctp)
+BuildRequires:	pkgconfig(zlib)
 
 %description
 The OpenSSL cryptography and TLS library
