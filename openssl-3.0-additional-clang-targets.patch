@@ -1,0 +1,46 @@
+diff -up openssl-3.0.0-alpha2/Configurations/10-main.conf.omv~ openssl-3.0.0-alpha2/Configurations/10-main.conf
+--- openssl-3.0.0-alpha2/Configurations/10-main.conf.omv~	2020-05-25 19:31:40.546705908 +0200
++++ openssl-3.0.0-alpha2/Configurations/10-main.conf	2020-05-25 19:35:11.146512063 +0200
+@@ -697,10 +697,20 @@ my %targets = (
+         shared_ldflag    => sub { $disabled{pinshared} ? () : "-Wl,-znodelete" },
+         enable           => [ "afalgeng" ],
+     },
++    "linux-generic32-clang" => {
++        inherit_from     => [ "linux-generic32" ],
++        CC               => "clang",
++        CXX              => "clang++",
++    },
+     "linux-generic64" => {
+         inherit_from     => [ "linux-generic32" ],
+         bn_ops           => "SIXTY_FOUR_BIT_LONG RC4_CHAR",
+     },
++    "linux-generic64-clang" => {
++        inherit_from     => [ "linux-generic64" ],
++        CC               => "clang",
++        CXX              => "clang++",
++    },
+ 
+     "linux-ppc" => {
+         inherit_from     => [ "linux-generic32" ],
+@@ -761,11 +771,21 @@ my %targets = (
+         asm_arch         => 'armv4',
+         perlasm_scheme   => "linux32",
+     },
++    "linux-armv4-clang" => {
++        inherit_from     => [ "linux-armv4" ],
++        CC               => "clang",
++        CXX              => "clang++",
++    },
+     "linux-aarch64" => {
+         inherit_from     => [ "linux-generic64" ],
+         asm_arch         => 'aarch64',
+         perlasm_scheme   => "linux64",
+     },
++    "linux-aarch64-clang" => {
++        inherit_from     => [ "linux-aarch64" ],
++        CC               => "clang",
++        CXX              => "clang++",
++    },
+     "linux-arm64ilp32" => {  # https://wiki.linaro.org/Platform/arm64-ilp32
+         inherit_from     => [ "linux-generic32" ],
+         cflags           => add("-mabi=ilp32"),

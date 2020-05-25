@@ -22,6 +22,7 @@ Release:	%{?beta:0.%{beta}.}1
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
+Patch0:		openssl-3.0-additional-clang-targets.patch
 License:	Apache 2.0
 BuildRequires:	perl
 BuildRequires:	perl(Pod::Man)
@@ -194,6 +195,9 @@ riscv32)
 	;;
 riscv64)
 	TARGET=%{_target_os}-generic64
+	;;
+i*86|pentium*|athlon*)
+	TARGET=%{_target_os}-x86
 	;;
 *)
 	TARGET=%{_target_os}-%{_arch}
