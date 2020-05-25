@@ -200,8 +200,11 @@ riscv64)
 	;;
 esac
 echo %{__cc} |grep -q clang && TARGET="${TARGET}-clang"
-	
+
 %if %{with compat32}
+export CFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing"
+export LDFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing"
+
 mkdir build32
 cd build32
 ../Configure \
@@ -212,6 +215,9 @@ cd build32
 	threads shared zlib-dynamic sctp 386
 cd ..
 %endif
+
+export CFLAGS="%{optflags} -fno-strict-aliasing"
+export LDFLAGS="%{optflags} -fno-strict-aliasing"
 mkdir build
 cd build
 ../Configure ${TARGET} \
