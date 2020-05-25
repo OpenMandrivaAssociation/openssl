@@ -27,6 +27,7 @@ License:	Apache 2.0
 BuildRequires:	perl
 BuildRequires:	perl(Pod::Man)
 BuildRequires:	perl(Pod::Html)
+BuildRequires:	pkgconfig(libsctp)
 
 %description
 The OpenSSL cryptography and TLS library
