@@ -66,24 +66,6 @@ Perl based tools for working with OpenSSL
 %{_sysconfdir}/pki/tls/misc/CA.pl
 %{_sysconfdir}/pki/tls/misc/tsget.pl
 
-%package 32
-Summary:	Plugins for the 32-bit version of OpenSSL
-Group:		System/Libraries
-Requires:	%{lib32ssl} = %{EVRD}
-Requires:	%{lib32crypto} = %{EVRD}
-
-%description 32
-Plugins for the 32-bit version of OpenSSL
-
-%files 32
-%dir %{_prefix}/lib/engines-3
-%{_prefix}/lib/engines-3/afalg.so
-%{_prefix}/lib/engines-3/capi.so
-%{_prefix}/lib/engines-3/padlock.so
-%dir %{_prefix}/lib/ossl-modules
-%{_prefix}/lib/ossl-modules/legacy.so
-%{_prefix}/lib/ossl-modules/fips.so
-
 %package -n %{libssl}
 Summary:	The OpenSSL SSL/TLS library
 Group:		System/Libraries
@@ -184,6 +166,24 @@ Static libraries for OpenSSL
 %files -n %{static32}
 %{_prefix}/lib/libssl.a
 %{_prefix}/lib/libcrypto.a
+
+%package 32
+Summary:	Plugins for the 32-bit version of OpenSSL
+Group:		System/Libraries
+Requires:	%{lib32ssl} = %{EVRD}
+Requires:	%{lib32crypto} = %{EVRD}
+
+%description 32
+Plugins for the 32-bit version of OpenSSL
+
+%files 32
+%dir %{_prefix}/lib/engines-3
+%{_prefix}/lib/engines-3/afalg.so
+%{_prefix}/lib/engines-3/capi.so
+%{_prefix}/lib/engines-3/padlock.so
+%dir %{_prefix}/lib/ossl-modules
+%{_prefix}/lib/ossl-modules/legacy.so
+%{_prefix}/lib/ossl-modules/fips.so
 %endif
 
 %prep
