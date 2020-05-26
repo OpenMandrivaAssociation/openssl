@@ -226,7 +226,7 @@ export CFLAGS="%{optflags} -fno-strict-aliasing"
 export LDFLAGS="%{optflags} -fno-strict-aliasing"
 %ifarch %{ix86}
 export CFLAGS="${CFLAGS} -fPIC"
-export LDFLAGS="${LDFLAGS} -fPIC"
+export LDFLAGS="${LDFLAGS} -fPIC -Wl,-z,notext"
 %endif
 mkdir build
 cd build
