@@ -5,7 +5,7 @@
 %bcond_with compat32
 %endif
 
-%define beta alpha2
+%define beta alpha3
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
