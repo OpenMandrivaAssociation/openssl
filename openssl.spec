@@ -5,7 +5,7 @@
 %bcond_with compat32
 %endif
 
-%define beta alpha3
+%define beta alpha5
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -23,6 +23,7 @@ Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
 Patch0:		openssl-3.0-additional-clang-targets.patch
+Patch1:		openssl-3.0.0-alpha5-spelling.patch
 License:	Apache 2.0
 BuildRequires:	perl
 BuildRequires:	perl(Pod::Man)
@@ -36,10 +37,12 @@ The OpenSSL cryptography and TLS library
 %files
 %dir %{_sysconfdir}/pki
 %dir %{_sysconfdir}/pki/tls
+%dir %{_sysconfdir}/pki/tls/misc
 %{_sysconfdir}/pki/tls/ct_log_list.cnf
 %{_sysconfdir}/pki/tls/ct_log_list.cnf.dist
 %{_sysconfdir}/pki/tls/openssl.cnf
 %{_sysconfdir}/pki/tls/openssl.cnf.dist
+%{_sysconfdir}/pki/tls/misc/tsget
 %{_bindir}/c_rehash
 %{_bindir}/openssl
 %dir %{_libdir}/engines-3

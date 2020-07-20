@@ -1,0 +1,12 @@
+diff -up openssl-3.0.0-alpha5/include/openssl/ssl.h.omv~ openssl-3.0.0-alpha5/include/openssl/ssl.h
+--- openssl-3.0.0-alpha5/include/openssl/ssl.h.omv~	2020-07-20 20:48:35.448738498 +0200
++++ openssl-3.0.0-alpha5/include/openssl/ssl.h	2020-07-20 20:48:52.563888312 +0200
+@@ -1710,7 +1710,7 @@ __owur X509 *SSL_get0_peer_certificate(c
+ __owur X509 *SSL_get1_peer_certificate(const SSL *s);
+ /* Deprecated in 3.0.0 */
+ #  ifndef OPENSSL_NO_DEPRECATED_3_0
+-#   define SSL_get_peer_certificate SSL_get1_peer_certifiate
++#   define SSL_get_peer_certificate SSL_get1_peer_certificate
+ #  endif
+ # endif
+ 
