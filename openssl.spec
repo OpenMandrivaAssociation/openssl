@@ -5,7 +5,7 @@
 %bcond_with compat32
 %endif
 
-%define beta alpha5
+%define beta alpha6
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -23,7 +23,6 @@ Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
 Patch0:		openssl-3.0-additional-clang-targets.patch
-Patch1:		openssl-3.0.0-alpha5-spelling.patch
 License:	Apache 2.0
 BuildRequires:	perl
 BuildRequires:	perl(Pod::Man)
