@@ -18,7 +18,7 @@
 
 Name:		openssl
 Version:	3.0.0
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
@@ -41,7 +41,6 @@ The OpenSSL cryptography and TLS library
 %{_sysconfdir}/pki/tls/ct_log_list.cnf.dist
 %{_sysconfdir}/pki/tls/openssl.cnf
 %{_sysconfdir}/pki/tls/openssl.cnf.dist
-%{_sysconfdir}/pki/tls/misc/tsget
 %{_bindir}/c_rehash
 %{_bindir}/openssl
 %dir %{_libdir}/engines-3
@@ -67,6 +66,7 @@ Perl based tools for working with OpenSSL
 %dir %{_sysconfdir}/pki/tls/misc
 %{_sysconfdir}/pki/tls/misc/CA.pl
 %{_sysconfdir}/pki/tls/misc/tsget.pl
+%{_sysconfdir}/pki/tls/misc/tsget
 
 %package -n %{libssl}
 Summary:	The OpenSSL SSL/TLS library
