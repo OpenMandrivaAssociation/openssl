@@ -1,8 +1,13 @@
 # openssl is used by systemd, libsystemd is used by wine
 %ifarch %{x86_64}
-%bcond_without compat32
+%bcond_with compat32
 %else
 %bcond_with compat32
+%endif
+
+# (tpg) enable PGO build
+%ifnarch riscv64
+%bcond_without pgo
 %endif
 
 %define beta alpha9
@@ -18,7 +23,7 @@
 
 Name:		openssl
 Version:	3.0.0
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
@@ -31,7 +36,7 @@ BuildRequires:	pkgconfig(libsctp)
 BuildRequires:	pkgconfig(zlib)
 
 %description
-The OpenSSL cryptography and TLS library
+The OpenSSL cryptography and TLS library.
 
 %files
 %dir %{_sysconfdir}/pki
@@ -60,7 +65,7 @@ Group:		System/Libraries
 Requires:	%{name} = %{EVRD}
 
 %description perl
-Perl based tools for working with OpenSSL
+Perl based tools for working with OpenSSL.
 
 %files perl
 %dir %{_sysconfdir}/pki/tls/misc
@@ -73,7 +78,7 @@ Summary:	The OpenSSL SSL/TLS library
 Group:		System/Libraries
 
 %description -n %{libssl}
-The OpenSSL SSL/TLS library
+The OpenSSL SSL/TLS library.
 
 %files -n %{libssl}
 %{_libdir}/libssl.so.%{major}*
@@ -83,7 +88,7 @@ Summary:	The OpenSSL cryptography library
 Group:		System/Libraries
 
 %description -n %{libcrypto}
-The OpenSSL cryptography library
+The OpenSSL cryptography library.
 
 %files -n %{libcrypto}
 %{_libdir}/libcrypto.so.%{major}*
@@ -95,7 +100,7 @@ Requires:	%{libssl} = %{EVRD}
 Requires:	%{libcrypto} = %{EVRD}
 
 %description -n %{devel}
-Development files for OpenSSL
+Development files for OpenSSL.
 
 %files -n %{devel}
 %{_includedir}/openssl
@@ -113,7 +118,7 @@ Group:		Development/C
 Requires:	%{devel} = %{EVRD}
 
 %description -n %{static}
-Static libraries for OpenSSL
+Static libraries for OpenSSL.
 
 %files -n %{static}
 %{_libdir}/libssl.a
@@ -125,7 +130,7 @@ Summary:	The OpenSSL SSL/TLS library (32-bit)
 Group:		System/Libraries
 
 %description -n %{lib32ssl}
-The OpenSSL SSL/TLS library
+The OpenSSL SSL/TLS library.
 
 %files -n %{lib32ssl}
 %{_prefix}/lib/libssl.so.%{major}*
@@ -135,7 +140,7 @@ Summary:	The OpenSSL cryptography library (32-bit)
 Group:		System/Libraries
 
 %description -n %{lib32crypto}
-The OpenSSL cryptography library
+The OpenSSL cryptography library.
 
 %files -n %{lib32crypto}
 %{_prefix}/lib/libcrypto.so.%{major}*
@@ -148,7 +153,7 @@ Requires:	%{lib32ssl} = %{EVRD}
 Requires:	%{lib32crypto} = %{EVRD}
 
 %description -n %{devel32}
-Development files for OpenSSL
+Development files for OpenSSL.
 
 %files -n %{devel32}
 %{_prefix}/lib/libcrypto.so
@@ -163,7 +168,7 @@ Group:		Development/C
 Requires:	%{devel32} = %{EVRD}
 
 %description -n %{static32}
-Static libraries for OpenSSL
+Static libraries for OpenSSL.
 
 %files -n %{static32}
 %{_prefix}/lib/libssl.a
@@ -176,7 +181,7 @@ Requires:	%{lib32ssl} = %{EVRD}
 Requires:	%{lib32crypto} = %{EVRD}
 
 %description 32
-Plugins for the 32-bit version of OpenSSL
+Plugins for the 32-bit version of OpenSSL.
 
 %files 32
 %dir %{_prefix}/lib/engines-3
@@ -190,6 +195,8 @@ Plugins for the 32-bit version of OpenSSL
 
 %prep
 %autosetup -p1 -n %{name}-%{version}%{?beta:-%{beta}}
+
+%build
 case %{_arch} in
 arm*)
 	TARGET=%{_target_os}-armv4
@@ -221,6 +228,8 @@ cd build32
 	--libdir=%{_prefix}/lib \
 	--openssldir=%{_sysconfdir}/pki/tls \
 	threads shared zlib-dynamic sctp 386
+
+%make_build
 cd ..
 %endif
 
@@ -232,6 +241,15 @@ export LDFLAGS="${LDFLAGS} -fPIC -Wl,-z,notext"
 %endif
 mkdir build
 cd build
+
+%if %{with pgo}
+export LLVM_PROFILE_FILE=%{name}-%p.profile.d
+export LD_LIBRARY_PATH="$(pwd)"
+CFLAGS="$CFLAGS -fprofile-instr-generate" \
+CXXFLAGS="%{optflags} -fprofile-instr-generate" \
+FFLAGS="$CFLAGS" \
+FCFLAGS="$CFLAGS" \
+LDFLAGS="%{build_ldflags} -fprofile-instr-generate" \
 ../Configure ${TARGET} \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
@@ -241,11 +259,31 @@ cd build
 	386
 %endif
 
-%build
-%if %{with compat32}
-%make_build -C build32
+make depend
+make
+
+#apps/openssl speed
+LD_PRELOAD="./libcrypto.so ./libssl.so" apps/openssl speed rsa
+
+unset LD_LIBRARY_PATH
+unset LLVM_PROFILE_FILE
+llvm-profdata merge --output=%{name}.profile *.profile.d
+
+make clean
+CFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+CXXFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 %endif
-%make_build -C build
+../Configure ${TARGET} \
+	--prefix=%{_prefix} \
+	--libdir=%{_libdir} \
+	--openssldir=%{_sysconfdir}/pki/tls \
+	threads shared zlib-dynamic sctp \
+%ifarch %{x86_64} %{ix86}
+	386
+%endif
+
+%make_build
 
 %install
 %if %{with compat32}
