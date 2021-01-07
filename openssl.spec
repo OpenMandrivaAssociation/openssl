@@ -12,7 +12,7 @@
 
 %global optflags %{optflags} -O3
 
-%define beta alpha9
+%define beta alpha10
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -25,7 +25,7 @@
 
 Name:		openssl
 Version:	3.0.0
-Release:	%{?beta:0.%{beta}.}2
+Release:	%{?beta:0.%{beta}.}1
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
