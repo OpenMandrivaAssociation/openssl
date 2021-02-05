@@ -218,7 +218,12 @@ i*86|pentium*|athlon*)
 	TARGET=%{_target_os}-%{_arch}
 	;;
 esac
-echo %{__cc} |grep -q clang && TARGET="${TARGET}-clang"
+#echo %{__cc} |grep -q clang && TARGET="${TARGET}-gcc"
+
+export CC=gcc
+export CXX=g++
+%define __cc %{_bindir}/gcc
+%define __cxx %{_bindir}/g++
 
 %if %{with compat32}
 export CFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing"
