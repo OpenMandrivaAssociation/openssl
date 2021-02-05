@@ -7,10 +7,10 @@
 
 # (tpg) enable PGO build
 %ifnarch riscv64
-%bcond_without pgo
+%bcond_with pgo
 %endif
 
-%global optflags %{optflags} -O3
+%global optflags %{optflags} -Oz
 
 %define beta alpha11
 %define major 3
@@ -25,7 +25,7 @@
 
 Name:		openssl
 Version:	3.0.0
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
@@ -279,6 +279,7 @@ LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 ../Configure ${TARGET} \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
+	--debug \
 	--openssldir=%{_sysconfdir}/pki/tls \
 	threads shared zlib-dynamic sctp \
 %ifarch %{x86_64} %{ix86}
