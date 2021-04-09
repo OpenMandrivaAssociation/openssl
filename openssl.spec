@@ -130,6 +130,7 @@ Static libraries for OpenSSL.
 %package -n %{lib32ssl}
 Summary:	The OpenSSL SSL/TLS library (32-bit)
 Group:		System/Libraries
+BuildRequires:	cross-i686-openmandriva-linux-gnu-gcc
 
 %description -n %{lib32ssl}
 The OpenSSL SSL/TLS library.
