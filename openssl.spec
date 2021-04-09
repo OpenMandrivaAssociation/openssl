@@ -132,6 +132,7 @@ Summary:	The OpenSSL SSL/TLS library (32-bit)
 Group:		System/Libraries
 BuildRequires:	cross-i686-openmandriva-linux-gnu-binutils
 BuildRequires:	cross-i686-openmandriva-linux-gnu-gcc
+BuildRequires:	cross-i686-openmandriva-linux-gnu-libc
 
 %description -n %{lib32ssl}
 The OpenSSL SSL/TLS library.
