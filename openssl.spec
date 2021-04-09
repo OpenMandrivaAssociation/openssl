@@ -133,6 +133,7 @@ Group:		System/Libraries
 BuildRequires:	cross-i686-openmandriva-linux-gnu-binutils
 BuildRequires:	cross-i686-openmandriva-linux-gnu-gcc
 BuildRequires:	cross-i686-openmandriva-linux-gnu-libc
+BuildRequires:	libc6
 
 %description -n %{lib32ssl}
 The OpenSSL SSL/TLS library.
