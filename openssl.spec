@@ -187,7 +187,6 @@ Plugins for the 32-bit version of OpenSSL.
 
 %files 32
 %dir %{_prefix}/lib/engines-3
-%{_prefix}/lib/engines-3/afalg.so
 %{_prefix}/lib/engines-3/capi.so
 %{_prefix}/lib/engines-3/padlock.so
 %dir %{_prefix}/lib/ossl-modules
@@ -219,11 +218,12 @@ esac
 echo %{__cc} |grep -q clang && TARGET="${TARGET}-clang"
 
 %if %{with compat32}
-export CFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing"
+export CFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing -isystem %{_includedir}"
 export LDFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing"
 
 mkdir build32
 cd build32
+CROSS_COMPILE=i686-openmandriva-linux-gnu- \
 ../Configure \
 	linux-x86 \
 	--prefix=%{_prefix} \
