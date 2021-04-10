@@ -30,6 +30,7 @@ Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
 Patch0:		openssl-3.0-additional-clang-targets.patch
+Patch1:		openssl-3.0.0a14-fix-build-with-m32.patch
 License:	Apache 2.0
 BuildRequires:	perl
 BuildRequires:	perl(Pod::Man)
@@ -130,10 +131,6 @@ Static libraries for OpenSSL.
 %package -n %{lib32ssl}
 Summary:	The OpenSSL SSL/TLS library (32-bit)
 Group:		System/Libraries
-BuildRequires:	cross-i686-openmandriva-linux-gnu-binutils
-BuildRequires:	cross-i686-openmandriva-linux-gnu-gcc
-BuildRequires:	cross-i686-openmandriva-linux-gnu-libc
-BuildRequires:	libc6
 
 %description -n %{lib32ssl}
 The OpenSSL SSL/TLS library.
@@ -191,6 +188,7 @@ Plugins for the 32-bit version of OpenSSL.
 
 %files 32
 %dir %{_prefix}/lib/engines-3
+%{_prefix}/lib/engines-3/afalg.so
 %{_prefix}/lib/engines-3/capi.so
 %{_prefix}/lib/engines-3/padlock.so
 %dir %{_prefix}/lib/ossl-modules
@@ -222,12 +220,11 @@ esac
 echo %{__cc} |grep -q clang && TARGET="${TARGET}-clang"
 
 %if %{with compat32}
-export CFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing -isystem %{_includedir}"
-export LDFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing"
+export CFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing -m32 -isystem %{_includedir}"
+export LDFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing -m32"
 
 mkdir build32
 cd build32
-CROSS_COMPILE=i686-openmandriva-linux-gnu- \
 ../Configure \
 	linux-x86 \
 	--prefix=%{_prefix} \
