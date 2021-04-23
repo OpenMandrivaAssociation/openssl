@@ -12,7 +12,7 @@
 
 %global optflags %{optflags} -O3
 
-%define beta alpha14
+%define beta alpha15
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -30,7 +30,6 @@ Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
 Patch0:		openssl-3.0-additional-clang-targets.patch
-Patch1:		openssl-3.0.0a14-fix-build-with-m32.patch
 License:	Apache 2.0
 BuildRequires:	perl
 BuildRequires:	perl(Pod::Man)
