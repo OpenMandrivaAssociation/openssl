@@ -12,7 +12,7 @@
 
 %global optflags %{optflags} -O3
 
-%define beta alpha15
+%define beta alpha16
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -36,6 +36,7 @@ BuildRequires:	perl(Pod::Man)
 BuildRequires:	perl(Pod::Html)
 BuildRequires:	pkgconfig(libsctp)
 BuildRequires:	pkgconfig(zlib)
+BuildRequires:	atomic-devel
 
 %description
 The OpenSSL cryptography and TLS library.

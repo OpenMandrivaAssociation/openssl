@@ -1,9 +1,8 @@
-diff -up openssl-3.0.0-alpha2/Configurations/10-main.conf.omv~ openssl-3.0.0-alpha2/Configurations/10-main.conf
---- openssl-3.0.0-alpha2/Configurations/10-main.conf.omv~	2020-05-25 19:31:40.546705908 +0200
-+++ openssl-3.0.0-alpha2/Configurations/10-main.conf	2020-05-25 19:35:11.146512063 +0200
-@@ -697,10 +697,20 @@ my %targets = (
-         shared_ldflag    => sub { $disabled{pinshared} ? () : "-Wl,-znodelete" },
-         enable           => [ "afalgeng" ],
+--- openssl-3.0.0-alpha16/Configurations/10-main.conf.omv	2021-05-06 12:15:03.000000000 +0000
++++ openssl-3.0.0-alpha16/Configurations/10-main.conf	2021-05-19 12:20:08.852035151 +0000
+@@ -702,10 +702,20 @@
+         ex_libs          => add(threads("-latomic")),
+         bn_ops           => "BN_LLONG RC4_CHAR",
      },
 +    "linux-generic32-clang" => {
 +        inherit_from     => [ "linux-generic32" ],
@@ -11,7 +10,7 @@ diff -up openssl-3.0.0-alpha2/Configurations/10-main.conf.omv~ openssl-3.0.0-alp
 +        CXX              => "clang++",
 +    },
      "linux-generic64" => {
-         inherit_from     => [ "linux-generic32" ],
+         inherit_from     => [ "linux-generic" ],
          bn_ops           => "SIXTY_FOUR_BIT_LONG RC4_CHAR",
      },
 +    "linux-generic64-clang" => {
@@ -22,7 +21,7 @@ diff -up openssl-3.0.0-alpha2/Configurations/10-main.conf.omv~ openssl-3.0.0-alp
  
      "linux-ppc" => {
          inherit_from     => [ "linux-generic32" ],
-@@ -761,11 +771,21 @@ my %targets = (
+@@ -767,11 +777,21 @@
          asm_arch         => 'armv4',
          perlasm_scheme   => "linux32",
      },
