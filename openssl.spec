@@ -12,7 +12,7 @@
 
 %global optflags %{optflags} -O3
 
-%define beta alpha15
+%define beta alpha16
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -56,7 +56,6 @@ The OpenSSL cryptography and TLS library.
 %{_libdir}/engines-3/padlock.so
 %dir %{_libdir}/ossl-modules
 %{_libdir}/ossl-modules/legacy.so
-%{_libdir}/ossl-modules/fips.so
 %{_mandir}/man1/*
 %{_mandir}/man5/*
 %{_mandir}/man7/*
@@ -192,7 +191,6 @@ Plugins for the 32-bit version of OpenSSL.
 %{_prefix}/lib/engines-3/padlock.so
 %dir %{_prefix}/lib/ossl-modules
 %{_prefix}/lib/ossl-modules/legacy.so
-%{_prefix}/lib/ossl-modules/fips.so
 %endif
 
 %prep
@@ -229,7 +227,7 @@ cd build32
 	--prefix=%{_prefix} \
 	--libdir=%{_prefix}/lib \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp 386
+	threads shared zlib-dynamic sctp 386 enable-fips enable-ktls
 
 %make_build
 cd ..
@@ -256,7 +254,10 @@ LDFLAGS="%{build_ldflags} -fprofile-instr-generate" \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp \
+	threads shared zlib-dynamic sctp enable-fips enable-ktls \
+%ifarch %{x86_64} %{aarch64}
+	enable-ec_nistp_64_gcc_128 \
+%endif
 %ifarch %{x86_64} %{ix86}
 	386
 %endif
