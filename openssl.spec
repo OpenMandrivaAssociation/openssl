@@ -36,6 +36,7 @@ BuildRequires:	perl(Pod::Man)
 BuildRequires:	perl(Pod::Html)
 BuildRequires:	pkgconfig(libsctp)
 BuildRequires:	pkgconfig(zlib)
+BuildRequires:	atomic-devel
 
 %description
 The OpenSSL cryptography and TLS library.
@@ -56,6 +57,7 @@ The OpenSSL cryptography and TLS library.
 %{_libdir}/engines-3/padlock.so
 %dir %{_libdir}/ossl-modules
 %{_libdir}/ossl-modules/legacy.so
+%{_libdir}/ossl-modules/fips.so
 %{_mandir}/man1/*
 %{_mandir}/man5/*
 %{_mandir}/man7/*
@@ -191,6 +193,7 @@ Plugins for the 32-bit version of OpenSSL.
 %{_prefix}/lib/engines-3/padlock.so
 %dir %{_prefix}/lib/ossl-modules
 %{_prefix}/lib/ossl-modules/legacy.so
+%{_prefix}/lib/ossl-modules/fips.so
 %endif
 
 %prep

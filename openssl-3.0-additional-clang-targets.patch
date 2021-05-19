@@ -1,7 +1,6 @@
-diff -up openssl-3.0.0-alpha16/Configurations/10-main.conf.1~ openssl-3.0.0-alpha16/Configurations/10-main.conf
---- openssl-3.0.0-alpha16/Configurations/10-main.conf.1~	2021-05-06 14:15:03.000000000 +0200
-+++ openssl-3.0.0-alpha16/Configurations/10-main.conf	2021-05-06 23:14:22.616657682 +0200
-@@ -702,10 +702,20 @@ my %targets = (
+--- openssl-3.0.0-alpha16/Configurations/10-main.conf.omv	2021-05-06 12:15:03.000000000 +0000
++++ openssl-3.0.0-alpha16/Configurations/10-main.conf	2021-05-19 12:20:08.852035151 +0000
+@@ -702,10 +702,20 @@
          ex_libs          => add(threads("-latomic")),
          bn_ops           => "BN_LLONG RC4_CHAR",
      },
