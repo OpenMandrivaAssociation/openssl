@@ -284,7 +284,7 @@ LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp \
+	threads shared zlib-dynamic sctp enable-fips enable-ktls \
 %ifarch %{x86_64} %{ix86}
 	386
 %endif
