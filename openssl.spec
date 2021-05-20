@@ -231,7 +231,7 @@ cd build32
 	--prefix=%{_prefix} \
 	--libdir=%{_prefix}/lib \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp 386 enable-fips enable-ktls
+	threads shared zlib-dynamic sctp 386 enable-fips enable-ktls no-tests
 
 %make_build
 cd ..
@@ -258,13 +258,13 @@ LDFLAGS="%{build_ldflags} -fprofile-instr-generate" \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp enable-fips enable-ktls \
 %ifarch %{x86_64} %{aarch64}
 	enable-ec_nistp_64_gcc_128 \
 %endif
 %ifarch %{x86_64} %{ix86}
-	386
+	386 \
 %endif
+	threads shared zlib-dynamic sctp enable-fips enable-ktls no-tests
 
 make depend
 make
@@ -285,10 +285,13 @@ LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp enable-fips enable-ktls \
-%ifarch %{x86_64} %{ix86}
-	386
+%ifarch %{x86_64} %{aarch64}
+	enable-ec_nistp_64_gcc_128 \
 %endif
+%ifarch %{x86_64} %{ix86}
+	386 \
+%endif
+	threads shared zlib-dynamic sctp enable-fips enable-ktls no-tests
 
 %make_build
 
