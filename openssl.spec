@@ -231,7 +231,7 @@ cd build32
 	--prefix=%{_prefix} \
 	--libdir=%{_prefix}/lib \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp 386 enable-fips enable-ktls no-tests
+	threads shared zlib-dynamic sctp 386 no-tests
 
 %make_build
 cd ..
@@ -266,8 +266,7 @@ LDFLAGS="%{build_ldflags} -fprofile-instr-generate" \
 %endif
 	threads shared zlib-dynamic sctp enable-fips enable-ktls no-tests
 
-make depend
-make
+%make_build
 
 #apps/openssl speed
 LD_PRELOAD="./libcrypto.so ./libssl.so" apps/openssl speed rsa
@@ -297,6 +296,6 @@ LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 
 %install
 %if %{with compat32}
-%make_install -C build32
+%make_install install_sw -C build32
 %endif
-%make_install -C build
+%make_install install_sw install_fips install_man_docs -C build
