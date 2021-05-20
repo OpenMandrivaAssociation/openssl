@@ -12,7 +12,7 @@
 
 %global optflags %{optflags} -O3
 
-%define beta alpha13
+%define beta alpha16
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -229,7 +229,7 @@ cd build32
 	--prefix=%{_prefix} \
 	--libdir=%{_prefix}/lib \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp 386
+	threads shared zlib-dynamic sctp 386 no-tests
 
 %make_build
 cd ..
@@ -256,10 +256,10 @@ LDFLAGS="%{build_ldflags} -fprofile-instr-generate" \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp \
 %ifarch %{x86_64} %{ix86}
-	386
+	386 \
 %endif
+	threads shared zlib-dynamic sctp no-tests
 
 make depend
 make
@@ -280,10 +280,10 @@ LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp \
 %ifarch %{x86_64} %{ix86}
-	386
+	386 \
 %endif
+	threads shared zlib-dynamic sctp no-tests
 
 %make_build
 
