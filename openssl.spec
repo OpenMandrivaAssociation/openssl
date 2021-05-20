@@ -49,6 +49,7 @@ The OpenSSL cryptography and TLS library.
 %{_sysconfdir}/pki/tls/ct_log_list.cnf.dist
 %{_sysconfdir}/pki/tls/openssl.cnf
 %{_sysconfdir}/pki/tls/openssl.cnf.dist
+%{_sysconfdir}/pki/tls/fipsmodule.cnf
 %{_bindir}/c_rehash
 %{_bindir}/openssl
 %dir %{_libdir}/engines-3
