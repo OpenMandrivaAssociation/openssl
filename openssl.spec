@@ -12,7 +12,7 @@
 
 %global optflags %{optflags} -O3
 
-%define beta alpha16
+%define beta alpha17
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -231,7 +231,11 @@ cd build32
 	--prefix=%{_prefix} \
 	--libdir=%{_prefix}/lib \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp 386 no-tests
+	threads shared zlib-dynamic sctp 386 enable-fips enable-ktls no-tests
+cat >>Makefile <<EOF
+providers/fipsmodule.cnf:
+	./apps/openssl fipsinstall -module providers/fips.so >providers/fipsmodule.cnf
+EOF
 
 %make_build
 cd ..
@@ -291,6 +295,10 @@ LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 	386 \
 %endif
 	threads shared zlib-dynamic sctp enable-fips enable-ktls no-tests
+cat >>Makefile <<EOF
+providers/fipsmodule.cnf:
+	./apps/openssl fipsinstall -module providers/fips.so >providers/fipsmodule.cnf
+EOF
 
 %make_build
 
@@ -299,3 +307,13 @@ LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 %make_install install_sw -C build32
 %endif
 %make_install install_sw install_fips install_man_docs -C build
+
+# Replace bogus absolute symlinks pointing to the buildroot
+cd %{buildroot}%{_mandir}
+for i in *; do
+	cd "$i"
+	for j in *; do
+		[ -L "$j" ] && ln -sf "$(basename $(ls -l "$j" |cut -d'>' -f2-))" "$j"
+	done
+	cd ..
+done
