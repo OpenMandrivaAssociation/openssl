@@ -297,7 +297,7 @@ LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 	threads shared zlib-dynamic sctp enable-fips enable-ktls no-tests
 cat >>Makefile <<EOF
 providers/fipsmodule.cnf:
-	./apps/openssl fipsinstall -module providers/fips.so >providers/fipsmodule.cnf
+	LD_PRELOAD="./libcrypto.so ./libssl.so" ./apps/openssl fipsinstall -module providers/fips.so >providers/fipsmodule.cnf
 EOF
 
 %make_build
