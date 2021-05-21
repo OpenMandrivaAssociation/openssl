@@ -12,7 +12,7 @@
 
 %global optflags %{optflags} -O3
 
-%define beta alpha16
+%define beta alpha17
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -36,6 +36,7 @@ BuildRequires:	perl(Pod::Man)
 BuildRequires:	perl(Pod::Html)
 BuildRequires:	pkgconfig(libsctp)
 BuildRequires:	pkgconfig(zlib)
+BuildRequires:	atomic-devel
 
 %description
 The OpenSSL cryptography and TLS library.
@@ -48,6 +49,7 @@ The OpenSSL cryptography and TLS library.
 %{_sysconfdir}/pki/tls/ct_log_list.cnf.dist
 %{_sysconfdir}/pki/tls/openssl.cnf
 %{_sysconfdir}/pki/tls/openssl.cnf.dist
+%{_sysconfdir}/pki/tls/fipsmodule.cnf
 %{_bindir}/c_rehash
 %{_bindir}/openssl
 %dir %{_libdir}/engines-3
@@ -219,8 +221,8 @@ esac
 echo %{__cc} |grep -q clang && TARGET="${TARGET}-clang"
 
 %if %{with compat32}
-export CFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing"
-export LDFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing"
+export CFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing -m32 -isystem %{_includedir}"
+export LDFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing -m32"
 
 mkdir build32
 cd build32
@@ -229,7 +231,11 @@ cd build32
 	--prefix=%{_prefix} \
 	--libdir=%{_prefix}/lib \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp 386 no-tests
+	threads shared zlib-dynamic sctp 386 enable-fips enable-ktls no-tests
+cat >>Makefile <<EOF
+providers/fipsmodule.cnf:
+	LD_PRELOAD="./libcrypto.so ./libssl.so" ./apps/openssl fipsinstall -module providers/fips.so >providers/fipsmodule.cnf
+EOF
 
 %make_build
 cd ..
@@ -256,13 +262,15 @@ LDFLAGS="%{build_ldflags} -fprofile-instr-generate" \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
 	--openssldir=%{_sysconfdir}/pki/tls \
+%ifarch %{x86_64} %{aarch64}
+	enable-ec_nistp_64_gcc_128 \
+%endif
 %ifarch %{x86_64} %{ix86}
 	386 \
 %endif
-	threads shared zlib-dynamic sctp no-tests
+	threads shared zlib-dynamic sctp enable-fips enable-ktls no-tests
 
-make depend
-make
+%make_build
 
 #apps/openssl speed
 LD_PRELOAD="./libcrypto.so ./libssl.so" apps/openssl speed rsa
@@ -280,15 +288,32 @@ LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
 	--openssldir=%{_sysconfdir}/pki/tls \
+%ifarch %{x86_64} %{aarch64}
+	enable-ec_nistp_64_gcc_128 \
+%endif
 %ifarch %{x86_64} %{ix86}
 	386 \
 %endif
-	threads shared zlib-dynamic sctp no-tests
+	threads shared zlib-dynamic sctp enable-fips enable-ktls no-tests
+cat >>Makefile <<EOF
+providers/fipsmodule.cnf:
+	./apps/openssl fipsinstall -module providers/fips.so >providers/fipsmodule.cnf
+EOF
 
 %make_build
 
 %install
 %if %{with compat32}
-%make_install -C build32
+%make_install install_sw -C build32
 %endif
-%make_install -C build
+%make_install install_sw install_fips install_man_docs -C build
+
+# Replace bogus absolute symlinks pointing to the buildroot
+cd %{buildroot}%{_mandir}
+for i in *; do
+	cd "$i"
+	for j in *; do
+		[ -L "$j" ] && ln -sf "$(basename $(ls -l "$j" |cut -d'>' -f2-))" "$j"
+	done
+	cd ..
+done
