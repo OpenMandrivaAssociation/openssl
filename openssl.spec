@@ -12,7 +12,7 @@
 
 %global optflags %{optflags} -O3
 
-%define beta alpha17
+%define beta beta1
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -55,6 +55,7 @@ The OpenSSL cryptography and TLS library.
 %dir %{_libdir}/engines-3
 %{_libdir}/engines-3/afalg.so
 %{_libdir}/engines-3/capi.so
+%{_libdir}/engines-3/loader_attic.so
 %{_libdir}/engines-3/padlock.so
 %dir %{_libdir}/ossl-modules
 %{_libdir}/ossl-modules/legacy.so
@@ -191,6 +192,7 @@ Plugins for the 32-bit version of OpenSSL.
 %dir %{_prefix}/lib/engines-3
 %{_prefix}/lib/engines-3/afalg.so
 %{_prefix}/lib/engines-3/capi.so
+%{_prefix}/lib/engines-3/loader_attic.so
 %{_prefix}/lib/engines-3/padlock.so
 %dir %{_prefix}/lib/ossl-modules
 %{_prefix}/lib/ossl-modules/legacy.so
@@ -232,10 +234,6 @@ cd build32
 	--libdir=%{_prefix}/lib \
 	--openssldir=%{_sysconfdir}/pki/tls \
 	threads shared zlib-dynamic sctp 386 enable-fips enable-ktls no-tests
-cat >>Makefile <<EOF
-providers/fipsmodule.cnf:
-	LD_PRELOAD="./libcrypto.so ./libssl.so" ./apps/openssl fipsinstall -module providers/fips.so >providers/fipsmodule.cnf
-EOF
 
 %make_build
 cd ..
@@ -295,10 +293,6 @@ LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
 	386 \
 %endif
 	threads shared zlib-dynamic sctp enable-fips enable-ktls no-tests
-cat >>Makefile <<EOF
-providers/fipsmodule.cnf:
-	LD_PRELOAD="./libcrypto.so ./libssl.so" ./apps/openssl fipsinstall -module providers/fips.so >providers/fipsmodule.cnf
-EOF
 
 %make_build
 

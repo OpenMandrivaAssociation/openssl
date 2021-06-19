@@ -1,8 +1,9 @@
---- openssl-3.0.0-alpha16/Configurations/10-main.conf.omv	2021-05-06 12:15:03.000000000 +0000
-+++ openssl-3.0.0-alpha16/Configurations/10-main.conf	2021-05-19 12:20:08.852035151 +0000
-@@ -702,10 +702,20 @@
+diff -Naur openssl-3.0.0-beta1/Configurations/10-main.conf openssl-3.0.0-beta1.tpg/Configurations/10-main.conf
+--- openssl-3.0.0-beta1/Configurations/10-main.conf	2021-06-17 13:03:42.000000000 +0000
++++ openssl-3.0.0-beta1.tpg/Configurations/10-main.conf	2021-06-19 12:10:17.675525680 +0000
+@@ -703,10 +703,20 @@
+         inherit_from     => [ "linux-generic32" ],
          ex_libs          => add(threads("-latomic")),
-         bn_ops           => "BN_LLONG RC4_CHAR",
      },
 +    "linux-generic32-clang" => {
 +        inherit_from     => [ "linux-generic32" ],
@@ -10,7 +11,7 @@
 +        CXX              => "clang++",
 +    },
      "linux-generic64" => {
-         inherit_from     => [ "linux-generic" ],
+         inherit_from     => [ "linux-generic32" ],
          bn_ops           => "SIXTY_FOUR_BIT_LONG RC4_CHAR",
      },
 +    "linux-generic64-clang" => {
@@ -20,8 +21,8 @@
 +    },
  
      "linux-ppc" => {
-         inherit_from     => [ "linux-generic32" ],
-@@ -767,11 +777,21 @@ my %targets = (
+         inherit_from     => [ "linux-latomic" ],
+@@ -768,11 +778,21 @@
          asm_arch         => 'armv4',
          perlasm_scheme   => "linux32",
      },
