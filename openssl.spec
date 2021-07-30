@@ -12,7 +12,7 @@
 
 %global optflags %{optflags} -O3
 
-%define beta beta1
+%define beta beta2
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
