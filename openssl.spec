@@ -6,13 +6,13 @@
 %endif
 
 # (tpg) enable PGO build
-%ifnarch riscv64
-%bcond_without pgo
-%endif
+# FIXME re-enable by default once
+# https://bugs.llvm.org/show_bug.cgi?id=51624 is fixed
+%bcond_with pgo
 
 %global optflags %{optflags} -O3
 
-%define beta beta2
+#define beta beta2
 %define major 3
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
@@ -270,12 +270,17 @@ LDFLAGS="%{build_ldflags} -fprofile-instr-generate" \
 
 %make_build
 
-#apps/openssl speed
-LD_PRELOAD="./libcrypto.so ./libssl.so" apps/openssl speed rsa
+# Run benchmarks on relevant algorithms to generate profile data.
+# We consider "relevant":
+# - Anything used in TLS 1.3
+# - Anything used by OpenSSH
+LD_PRELOAD="./libcrypto.so ./libssl.so" apps/openssl speed sha1 sha256 sha512 aes-128-cbc ecdsa eddsa md5 rsa des-ede3
 
 unset LD_LIBRARY_PATH
 unset LLVM_PROFILE_FILE
-llvm-profdata merge --output=%{name}.profile *.profile.d
+# FIXME https://bugs.llvm.org/show_bug.cgi?id=51624
+#llvm-profdata merge --output=%{name}.profile *.profile.d
+mv *.profile.d %{name}.profile
 
 make clean
 CFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
