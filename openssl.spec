@@ -8,7 +8,7 @@
 # (tpg) enable PGO build
 # FIXME re-enable by default once
 # https://bugs.llvm.org/show_bug.cgi?id=51624 is fixed
-%bcond_with pgo
+%bcond_without pgo
 
 %global optflags %{optflags} -O3
 
@@ -25,7 +25,7 @@
 
 Name:		openssl
 Version:	3.0.0
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
@@ -60,9 +60,9 @@ The OpenSSL cryptography and TLS library.
 %dir %{_libdir}/ossl-modules
 %{_libdir}/ossl-modules/legacy.so
 %{_libdir}/ossl-modules/fips.so
-%{_mandir}/man1/*
-%{_mandir}/man5/*
-%{_mandir}/man7/*
+%doc %{_mandir}/man1/*
+%doc %{_mandir}/man5/*
+%doc %{_mandir}/man7/*
 
 %package perl
 Summary:	Perl based tools for working with OpenSSL
@@ -111,7 +111,7 @@ Development files for OpenSSL.
 %{_includedir}/openssl
 %{_libdir}/libcrypto.so
 %{_libdir}/libssl.so
-%{_mandir}/man3/*
+%doc %{_mandir}/man3/*
 %{_libdir}/pkgconfig/libcrypto.pc
 %{_libdir}/pkgconfig/libssl.pc
 %{_libdir}/pkgconfig/openssl.pc
@@ -249,13 +249,11 @@ mkdir build
 cd build
 
 %if %{with pgo}
-export LLVM_PROFILE_FILE=%{name}-%p.profile.d
 export LD_LIBRARY_PATH="$(pwd)"
-CFLAGS="$CFLAGS -fprofile-instr-generate" \
-CXXFLAGS="%{optflags} -fprofile-instr-generate" \
-FFLAGS="$CFLAGS" \
-FCFLAGS="$CFLAGS" \
-LDFLAGS="%{build_ldflags} -fprofile-instr-generate" \
+
+CFLAGS="$CFLAGS -fprofile-generate" \
+CXXFLAGS="%{optflags} -fprofile-generate" \
+LDFLAGS="$LDFLAGS -fprofile-generate" \
 ../Configure ${TARGET} \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
@@ -277,15 +275,15 @@ LDFLAGS="%{build_ldflags} -fprofile-instr-generate" \
 LD_PRELOAD="./libcrypto.so ./libssl.so" apps/openssl speed sha1 sha256 sha512 aes-128-cbc ecdsa eddsa md5 rsa des-ede3
 
 unset LD_LIBRARY_PATH
-unset LLVM_PROFILE_FILE
-# FIXME https://bugs.llvm.org/show_bug.cgi?id=51624
-#llvm-profdata merge --output=%{name}.profile *.profile.d
-mv *.profile.d %{name}.profile
+llvm-profdata merge --output=%{name}-llvm.profdata $(find . -name "*.profraw" -type f)
+PROFDATA="$(realpath %{name}-llvm.profdata)"
+rm -f *.profraw
 
 make clean
-CFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
-CXXFLAGS="%{optflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
-LDFLAGS="%{ldflags} -fprofile-instr-use=$(realpath %{name}.profile)" \
+
+CFLAGS="$CFLAGS -fprofile-use=$PROFDATA" \
+CXXFLAGS="%{optflags} -fprofile-use=$PROFDATA" \
+LDFLAGS="$LDFLAGS -fprofile-use=$PROFDATA" \
 %endif
 ../Configure ${TARGET} \
 	--prefix=%{_prefix} \
