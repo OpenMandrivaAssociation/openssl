@@ -6,8 +6,6 @@
 %endif
 
 # (tpg) enable PGO build
-# FIXME re-enable by default once
-# https://bugs.llvm.org/show_bug.cgi?id=51624 is fixed
 %bcond_without pgo
 
 %global optflags %{optflags} -O3
@@ -24,7 +22,7 @@
 %define static32 libopenssl-static-devel
 
 Name:		openssl
-Version:	3.0.4
+Version:	3.0.5
 Release:	%{?beta:0.%{beta}.}1
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
