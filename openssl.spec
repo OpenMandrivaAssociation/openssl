@@ -23,7 +23,7 @@
 
 Name:		openssl
 Version:	3.0.5
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
@@ -43,6 +43,7 @@ The OpenSSL cryptography and TLS library.
 %dir %{_sysconfdir}/pki
 %dir %{_sysconfdir}/pki/tls
 %dir %{_sysconfdir}/pki/tls/misc
+%dir %{_sysconfdir}/pki/tls/private
 %{_sysconfdir}/pki/tls/ct_log_list.cnf
 %{_sysconfdir}/pki/tls/ct_log_list.cnf.dist
 %{_sysconfdir}/pki/tls/openssl.cnf
@@ -314,3 +315,6 @@ for i in *; do
 	done
 	cd ..
 done
+
+# Used by e.g. %_create_ssl_certificate (rpm-helper)
+mkdir -p %{buildroot}%{_sysconfdir}/pki/tls/private
