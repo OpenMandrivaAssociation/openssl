@@ -23,7 +23,7 @@
 
 Name:		openssl
 Version:	3.0.5
-Release:	%{?beta:0.%{beta}.}2
+Release:	%{?beta:0.%{beta}.}3
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
@@ -40,7 +40,6 @@ BuildRequires:	atomic-devel
 The OpenSSL cryptography and TLS library.
 
 %files
-%dir %{_sysconfdir}/pki
 %dir %{_sysconfdir}/pki/tls
 %dir %{_sysconfdir}/pki/tls/misc
 %dir %{_sysconfdir}/pki/tls/private
