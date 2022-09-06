@@ -10,6 +10,10 @@
 
 %global optflags %{optflags} -O3
 
+# (tpg) use LLVM/polly for polyhedra optimization and automatic vector code generation
+%define pollyflags -mllvm -polly -mllvm -polly-run-dce -mllvm -polly-run-inliner -mllvm -polly-isl-arg=--no-schedule-serialize-sccs -mllvm -polly-ast-use-context -mllvm -polly-detect-keep-going -mllvm -polly-vectorizer=stripmine
+# "-mllvm -polly-invariant-load-hoisting" removed for now because of https://github.com/llvm/llvm-project/issues/57413
+
 #define beta beta2
 %define major 3
 %define libssl %mklibname ssl %{major}
@@ -23,7 +27,7 @@
 
 Name:		openssl
 Version:	3.0.5
-Release:	%{?beta:0.%{beta}.}3
+Release:	%{?beta:0.%{beta}.}4
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
@@ -35,6 +39,7 @@ BuildRequires:	perl(Pod::Html)
 BuildRequires:	pkgconfig(libsctp)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	atomic-devel
+BuildRequires:	llvm-polly
 
 %description
 The OpenSSL cryptography and TLS library.
@@ -251,8 +256,8 @@ cd build
 %if %{with pgo}
 export LD_LIBRARY_PATH="$(pwd)"
 
-CFLAGS="$CFLAGS -fprofile-generate" \
-CXXFLAGS="%{optflags} -fprofile-generate" \
+CFLAGS="$CFLAGS -fprofile-generate %{pollyflags}" \
+CXXFLAGS="%{optflags} -fprofile-generate %{pollyflags}" \
 LDFLAGS="$LDFLAGS -fprofile-generate" \
 ../Configure ${TARGET} \
 	--prefix=%{_prefix} \
@@ -281,8 +286,8 @@ rm -f *.profraw
 
 make clean
 
-CFLAGS="$CFLAGS -fprofile-use=$PROFDATA" \
-CXXFLAGS="%{optflags} -fprofile-use=$PROFDATA" \
+CFLAGS="$CFLAGS -fprofile-use=$PROFDATA %{pollyflags}" \
+CXXFLAGS="%{optflags} -fprofile-use=$PROFDATA %{pollyflags}" \
 LDFLAGS="$LDFLAGS -fprofile-use=$PROFDATA" \
 %endif
 ../Configure ${TARGET} \
