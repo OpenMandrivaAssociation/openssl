@@ -27,7 +27,7 @@
 
 Name:		openssl
 Version:	3.0.6
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
@@ -89,6 +89,7 @@ Group:		System/Libraries
 The OpenSSL SSL/TLS library.
 
 %files -n %{libssl}
+%{_modulesloaddir}/openssl-tls.conf
 %{_libdir}/libssl.so.%{major}*
 
 %package -n %{libcrypto}
@@ -313,12 +314,18 @@ LDFLAGS="$LDFLAGS -fprofile-use=$PROFDATA" \
 # Replace bogus absolute symlinks pointing to the buildroot
 cd %{buildroot}%{_mandir}
 for i in *; do
-	cd "$i"
+    cd "$i"
 	for j in *; do
-		[ -L "$j" ] && ln -sf "$(basename $(ls -l "$j" |cut -d'>' -f2-))" "$j"
+	    [ -L "$j" ] && ln -sf "$(basename $(ls -l "$j" |cut -d'>' -f2-))" "$j"
 	done
-	cd ..
+    cd ..
 done
 
 # Used by e.g. %_create_ssl_certificate (rpm-helper)
 mkdir -p %{buildroot}%{_sysconfdir}/pki/tls/private
+
+# enable kernel TLS offload support
+mkdir -p %{buildroot}%{_modulesloaddir}
+cat > %{buildroot}%{_modulesloaddir}/openssl-tls.conf << EOF
+tls
+EOF
