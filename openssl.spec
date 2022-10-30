@@ -27,7 +27,7 @@
 
 Name:		openssl
 Version:	3.0.6
-Release:	%{?beta:0.%{beta}.}2
+Release:	%{?beta:0.%{beta}.}3
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
@@ -138,6 +138,7 @@ Static libraries for OpenSSL.
 Summary:	The OpenSSL SSL/TLS library (32-bit)
 Group:		System/Libraries
 BuildRequires:	libc6
+BuildRequires:	devel(libz)
 Requires:	libc6
 
 %description -n %{lib32ssl}
@@ -239,7 +240,7 @@ cd build32
 	--prefix=%{_prefix} \
 	--libdir=%{_prefix}/lib \
 	--openssldir=%{_sysconfdir}/pki/tls \
-	threads shared zlib-dynamic sctp 386 enable-fips enable-ktls no-tests
+	threads shared zlib sctp 386 enable-fips enable-ktls no-tests
 
 %make_build
 cd ..
@@ -270,15 +271,12 @@ LDFLAGS="$LDFLAGS -fprofile-generate" \
 %ifarch %{x86_64} %{ix86}
 	386 \
 %endif
-	threads shared zlib-dynamic sctp enable-fips enable-ktls no-tests
+	threads shared zlib sctp enable-fips enable-ktls no-tests
 
 %make_build
 
-# Run benchmarks on relevant algorithms to generate profile data.
-# We consider "relevant":
-# - Anything used in TLS 1.3
-# - Anything used by OpenSSH
-LD_PRELOAD="./libcrypto.so ./libssl.so" apps/openssl speed sha1 sha256 sha512 aes-128-cbc ecdsa eddsa md5 rsa des-ede3
+# Run benchmarks on all algorithms to generate profile data.
+LD_PRELOAD="./libcrypto.so ./libssl.so" apps/openssl speed
 
 unset LD_LIBRARY_PATH
 llvm-profdata merge --output=%{name}-llvm.profdata $(find . -name "*.profraw" -type f)
@@ -301,7 +299,7 @@ LDFLAGS="$LDFLAGS -fprofile-use=$PROFDATA" \
 %ifarch %{x86_64} %{ix86}
 	386 \
 %endif
-	threads shared zlib-dynamic sctp enable-fips enable-ktls no-tests
+	threads shared zlib sctp enable-fips enable-ktls no-tests
 
 %make_build
 
