@@ -1,0 +1,25 @@
+From af07ef29ad16fdc44f31b3cbae116e7ca57c73cb Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Mon, 26 Aug 2019 13:14:19 -0400
+Subject: [PATCH 07/60] QUIC: Fix duplicate word in docs
+
+---
+ doc/man3/SSL_CTX_set_quic_method.pod | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/doc/man3/SSL_CTX_set_quic_method.pod b/doc/man3/SSL_CTX_set_quic_method.pod
+index d938eb4e30..60bf704944 100644
+--- a/doc/man3/SSL_CTX_set_quic_method.pod
++++ b/doc/man3/SSL_CTX_set_quic_method.pod
+@@ -59,7 +59,7 @@ containing the TransportParameters will be put in B<*out_params>, and its
+ length in B<*out_params_len>. This buffer will be valid for the lifetime of the
+ B<ssl>. If no params were received from the peer, B<*out_params_len> will be 0.
+ 
+-SSL_quic_max_handshake_flight_len() returns returns the maximum number of bytes
++SSL_quic_max_handshake_flight_len() returns the maximum number of bytes
+ that may be received at the given encryption level. This function should be
+ used to limit buffering in the QUIC implementation.
+ 
+-- 
+2.40.0.rc0
+

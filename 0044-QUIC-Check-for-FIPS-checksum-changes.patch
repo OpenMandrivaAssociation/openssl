@@ -1,0 +1,46 @@
+From 679492c736ccc08df75216afb44ec059a80ec693 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Fri, 9 Jul 2021 13:29:23 -0400
+Subject: [PATCH 44/60] QUIC: Check for FIPS checksum changes
+
+---
+ .github/workflows/fips-checksums.yml | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/.github/workflows/fips-checksums.yml b/.github/workflows/fips-checksums.yml
+index 1f62ed45b3..c88ed5033c 100644
+--- a/.github/workflows/fips-checksums.yml
++++ b/.github/workflows/fips-checksums.yml
+@@ -73,3 +73,29 @@ jobs:
+         with:
+           name: fips_checksum
+           path: artifact/
++  verify-checksums:
++    runs-on: ubuntu-latest
++    steps:
++      - name: install unifdef
++        run: |
++            sudo apt-get update
++            sudo apt-get -yq --no-install-suggests --no-install-recommends --force-yes install unifdef
++      - uses: actions/checkout@v2
++      - name: create build dirs
++        run: |
++          mkdir ./build
++      - name: config
++        run: ../config enable-fips && perl configdata.pm --dump
++        working-directory: ./build
++      - name: make build_generated
++        run: make -s build_generated
++        working-directory: ./build
++      - name: make fips-checksums
++        run: make fips-checksums
++        working-directory: ./build
++      - name: make fips-checksums
++        run: make fips-checksums
++        working-directory: ./build
++      - name: make diff-fips-checksums
++        run: make diff-fips-checksums
++        working-directory: ./build
+-- 
+2.40.0.rc0
+

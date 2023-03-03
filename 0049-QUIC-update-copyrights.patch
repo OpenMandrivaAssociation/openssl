@@ -1,0 +1,49 @@
+From d5a9726b44ad864bc79208a7bcaa8b51405a4029 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Tue, 7 Sep 2021 12:32:54 -0400
+Subject: [PATCH 49/60] QUIC: update copyrights
+
+---
+ doc/man3/SSL_CTX_set_quic_method.pod | 2 +-
+ ssl/ssl_quic.c                       | 2 +-
+ ssl/statem/statem_quic.c             | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/doc/man3/SSL_CTX_set_quic_method.pod b/doc/man3/SSL_CTX_set_quic_method.pod
+index e38f1d2124..b9191a0264 100644
+--- a/doc/man3/SSL_CTX_set_quic_method.pod
++++ b/doc/man3/SSL_CTX_set_quic_method.pod
+@@ -257,7 +257,7 @@ These functions were added in OpenSSL 3.0.0.
+ 
+ =head1 COPYRIGHT
+ 
+-Copyright 2019 The OpenSSL Project Authors. All Rights Reserved.
++Copyright 2019-2021 The OpenSSL Project Authors. All Rights Reserved.
+ 
+ Licensed under the Apache License 2.0 (the "License").  You may not use
+ this file except in compliance with the License.  You can obtain a copy
+diff --git a/ssl/ssl_quic.c b/ssl/ssl_quic.c
+index 6cbd47ad2d..987c1e740c 100644
+--- a/ssl/ssl_quic.c
++++ b/ssl/ssl_quic.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright 2019 The OpenSSL Project Authors. All Rights Reserved.
++ * Copyright 2019-2021 The OpenSSL Project Authors. All Rights Reserved.
+  *
+  * Licensed under the Apache License 2.0 (the "License").  You may not use
+  * this file except in compliance with the License.  You can obtain a copy
+diff --git a/ssl/statem/statem_quic.c b/ssl/statem/statem_quic.c
+index a51bfd74d8..7bd329c242 100644
+--- a/ssl/statem/statem_quic.c
++++ b/ssl/statem/statem_quic.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright 2019 The OpenSSL Project Authors. All Rights Reserved.
++ * Copyright 2019-2021 The OpenSSL Project Authors. All Rights Reserved.
+  *
+  * Licensed under the Apache License 2.0 (the "License").  You may not use
+  * this file except in compliance with the License.  You can obtain a copy
+-- 
+2.40.0.rc0
+

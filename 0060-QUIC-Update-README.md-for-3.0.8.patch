@@ -1,0 +1,25 @@
+From 183e548d93a6aeedab0fd6cb737923a93f807b83 Mon Sep 17 00:00:00 2001
+From: Todd Short <todd.short@me.com>
+Date: Tue, 7 Feb 2023 12:40:55 -0500
+Subject: [PATCH 60/60] QUIC: Update README.md for 3.0.8
+
+---
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/README.md b/README.md
+index 899a0f194b..ef1d8fcf48 100644
+--- a/README.md
++++ b/README.md
+@@ -4,7 +4,7 @@ What This Is
+ This is a fork of [OpenSSL](https://www.openssl.org) to enable QUIC. In addition
+ to the website, the official source distribution is at
+ <https://github.com/openssl/openssl>. The OpenSSL `README` can be found at
+-[README-OpenSSL.md](https://github.com/quictls/openssl/blob/openssl-3.0.7%2Bquic/README-OpenSSL.md)
++[README-OpenSSL.md](https://github.com/quictls/openssl/blob/openssl-3.0.8%2Bquic/README-OpenSSL.md)
+ 
+ This fork adds APIs that can be used by QUIC implementations for connection
+ handshakes. Quoting the IETF Working group
+-- 
+2.40.0.rc0
+

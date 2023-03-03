@@ -1,0 +1,42 @@
+From 97874c8dfe3a25f1060181f579c4cdaff85af014 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Wed, 3 Mar 2021 17:32:31 -0500
+Subject: [PATCH 32/60] QUIC: Fix 3.0.0 GitHub CI
+
+---
+ test/sslapitest.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/test/sslapitest.c b/test/sslapitest.c
+index fc60b2fd5a..a7a142c70c 100644
+--- a/test/sslapitest.c
++++ b/test/sslapitest.c
+@@ -10125,10 +10125,10 @@ static int test_quic_api_version(int clnt, int srvr)
+                                              &clientssl, NULL, NULL))
+             || !TEST_true(SSL_set_quic_transport_params(serverssl,
+                                                         (unsigned char*)server_str,
+-                                                        sizeof(server_str)))
++                                                        strlen(server_str)+1))
+             || !TEST_true(SSL_set_quic_transport_params(clientssl,
+                                                         (unsigned char*)client_str,
+-                                                        sizeof(client_str)))
++                                                        strlen(client_str)+1))
+             || !TEST_true(SSL_set_app_data(serverssl, clientssl))
+             || !TEST_true(SSL_set_app_data(clientssl, serverssl))
+             || !TEST_true(test_quic_api_set_versions(clientssl, clnt))
+@@ -10144,10 +10144,10 @@ static int test_quic_api_version(int clnt, int srvr)
+         goto end;
+ 
+     SSL_get_peer_quic_transport_params(serverssl, &peer_str, &peer_str_len);
+-    if (!TEST_mem_eq(peer_str, peer_str_len, client_str, sizeof(client_str)))
++    if (!TEST_mem_eq(peer_str, peer_str_len, client_str, strlen(client_str)+1))
+         goto end;
+     SSL_get_peer_quic_transport_params(clientssl, &peer_str, &peer_str_len);
+-    if (!TEST_mem_eq(peer_str, peer_str_len, server_str, sizeof(server_str)))
++    if (!TEST_mem_eq(peer_str, peer_str_len, server_str, strlen(server_str)+1))
+         goto end;
+ 
+     /* Deal with two NewSessionTickets */
+-- 
+2.40.0.rc0
+

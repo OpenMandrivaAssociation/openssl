@@ -1,0 +1,31 @@
+From 0174a41ea9eab4ca2b4fd12f2b77f828fec8535e Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Tue, 7 Jan 2020 10:59:08 -0500
+Subject: [PATCH 20/60] QUIC: Fall-through for 0RTT
+
+---
+ ssl/statem/statem_srvr.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/ssl/statem/statem_srvr.c b/ssl/statem/statem_srvr.c
+index 69126bd580..391e638c95 100644
+--- a/ssl/statem/statem_srvr.c
++++ b/ssl/statem/statem_srvr.c
+@@ -74,12 +74,9 @@ static int ossl_statem_server13_read_transition(SSL *s, int mt)
+                 return 1;
+             }
+             break;
+-        } else if (s->ext.early_data == SSL_EARLY_DATA_ACCEPTED) {
++        } else if (s->ext.early_data == SSL_EARLY_DATA_ACCEPTED
++                   && !SSL_IS_QUIC(s)) {
+             if (mt == SSL3_MT_END_OF_EARLY_DATA) {
+-#ifndef OPENSSL_NO_QUIC
+-                if (s->quic_method != NULL)
+-                    return 0;
+-#endif
+                 st->hand_state = TLS_ST_SR_END_OF_EARLY_DATA;
+                 return 1;
+             }
+-- 
+2.40.0.rc0
+
