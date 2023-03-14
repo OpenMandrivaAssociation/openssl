@@ -1,20 +1,7 @@
-From 0bd2acde8fe7f06cfdba0b6aaaaef9a0b92fcead Mon Sep 17 00:00:00 2001
-From: Benjamin Kaduk <bkaduk@akamai.com>
-Date: Mon, 11 May 2020 13:26:07 -0700
-Subject: [PATCH 23/60] QUIC: Test KeyUpdate rejection
-
-For now, just test that we don't generate any, since we don't really
-expose the mechanics for encrypting one and the QUIC API is not
-integrated into the TLSProxy setup.
----
- test/sslapitest.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/test/sslapitest.c b/test/sslapitest.c
-index 442928b664..be6b446532 100644
---- a/test/sslapitest.c
-+++ b/test/sslapitest.c
-@@ -10169,6 +10169,17 @@ static int test_quic_api(void)
+diff -up openssl-3.1.0/test/sslapitest.c.24~ openssl-3.1.0/test/sslapitest.c
+--- openssl-3.1.0/test/sslapitest.c.24~	2023-03-14 19:23:23.349243121 +0100
++++ openssl-3.1.0/test/sslapitest.c	2023-03-14 19:23:59.740431696 +0100
+@@ -10556,6 +10556,17 @@ static int test_quic_api(void)
              || !TEST_true(SSL_process_quic_post_handshake(clientssl)))
          goto end;
  
@@ -31,7 +18,4 @@ index 442928b664..be6b446532 100644
 +
      testresult = 1;
  
-  end:
--- 
-2.40.0.rc0
-
+ end:

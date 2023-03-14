@@ -1,31 +1,7 @@
-From bcafb4afd017a1e4e4e1a713377b224ac3210e63 Mon Sep 17 00:00:00 2001
-From: Todd Short <tshort@akamai.com>
-Date: Sat, 12 Dec 2020 17:27:46 +0900
-Subject: [PATCH 26/60] QUIC: add v1 quic_transport_parameters
-
----
- crypto/err/openssl.txt               |   2 +
- doc/man3/SSL_CTX_set_quic_method.pod |  25 +++++-
- include/openssl/ssl.h.in             |  13 ++++
- include/openssl/sslerr.h             |   1 +
- include/openssl/tls1.h               |   3 +-
- ssl/ssl_err.c                        |   2 +
- ssl/ssl_lib.c                        |   1 +
- ssl/ssl_local.h                      |  11 +++
- ssl/ssl_quic.c                       |  41 +++++++++-
- ssl/statem/extensions.c              |  39 ++++++++++
- ssl/statem/extensions_clnt.c         |  44 ++++++++++-
- ssl/statem/extensions_srvr.c         |  46 ++++++++++-
- ssl/statem/statem_local.h            |  17 +++++
- test/sslapitest.c                    | 110 +++++++++++++++++++++------
- util/libssl.num                      |   4 +
- 15 files changed, 322 insertions(+), 37 deletions(-)
-
-diff --git a/crypto/err/openssl.txt b/crypto/err/openssl.txt
-index 29e532ec99..50642161d6 100644
---- a/crypto/err/openssl.txt
-+++ b/crypto/err/openssl.txt
-@@ -1382,6 +1382,8 @@ SSL_R_MISSING_ECDSA_SIGNING_CERT:381:missing ecdsa signing cert
+diff -up openssl-3.1.0/crypto/err/openssl.txt.27~ openssl-3.1.0/crypto/err/openssl.txt
+--- openssl-3.1.0/crypto/err/openssl.txt.27~	2023-03-14 19:24:15.613515110 +0100
++++ openssl-3.1.0/crypto/err/openssl.txt	2023-03-14 19:24:16.564520129 +0100
+@@ -1398,6 +1398,8 @@ SSL_R_MISSING_ECDSA_SIGNING_CERT:381:mis
  SSL_R_MISSING_FATAL:256:missing fatal
  SSL_R_MISSING_PARAMETERS:290:missing parameters
  SSL_R_MISSING_PSK_KEX_MODES_EXTENSION:310:missing psk kex modes extension
@@ -34,10 +10,9 @@ index 29e532ec99..50642161d6 100644
  SSL_R_MISSING_RSA_CERTIFICATE:168:missing rsa certificate
  SSL_R_MISSING_RSA_ENCRYPTING_CERT:169:missing rsa encrypting cert
  SSL_R_MISSING_RSA_SIGNING_CERT:170:missing rsa signing cert
-diff --git a/doc/man3/SSL_CTX_set_quic_method.pod b/doc/man3/SSL_CTX_set_quic_method.pod
-index 3d7bf7e682..39ff3a8da4 100644
---- a/doc/man3/SSL_CTX_set_quic_method.pod
-+++ b/doc/man3/SSL_CTX_set_quic_method.pod
+diff -up openssl-3.1.0/doc/man3/SSL_CTX_set_quic_method.pod.27~ openssl-3.1.0/doc/man3/SSL_CTX_set_quic_method.pod
+--- openssl-3.1.0/doc/man3/SSL_CTX_set_quic_method.pod.27~	2023-03-14 19:24:16.366519084 +0100
++++ openssl-3.1.0/doc/man3/SSL_CTX_set_quic_method.pod	2023-03-14 19:24:16.564520129 +0100
 @@ -13,7 +13,11 @@ SSL_quic_read_level,
  SSL_quic_write_level,
  SSL_provide_quic_data,
@@ -84,11 +59,21 @@ index 3d7bf7e682..39ff3a8da4 100644
  =head1 NOTES
  
  These APIs are implementations of BoringSSL's QUIC APIs.
-diff --git a/include/openssl/ssl.h.in b/include/openssl/ssl.h.in
-index 582e45f31b..89d82406c2 100644
---- a/include/openssl/ssl.h.in
-+++ b/include/openssl/ssl.h.in
-@@ -2562,6 +2562,19 @@ __owur int SSL_process_quic_post_handshake(SSL *ssl);
+diff -up openssl-3.1.0/include/openssl/sslerr.h.27~ openssl-3.1.0/include/openssl/sslerr.h
+--- openssl-3.1.0/include/openssl/sslerr.h.27~	2023-03-14 19:24:15.614515115 +0100
++++ openssl-3.1.0/include/openssl/sslerr.h	2023-03-14 19:24:16.565520134 +0100
+@@ -162,6 +162,7 @@
+ # define SSL_R_MISSING_FATAL                              256
+ # define SSL_R_MISSING_PARAMETERS                         290
+ # define SSL_R_MISSING_PSK_KEX_MODES_EXTENSION            310
++# define SSL_R_MISSING_QUIC_TRANSPORT_PARAMETERS_EXTENSION 801
+ # define SSL_R_MISSING_RSA_CERTIFICATE                    168
+ # define SSL_R_MISSING_RSA_ENCRYPTING_CERT                169
+ # define SSL_R_MISSING_RSA_SIGNING_CERT                   170
+diff -up openssl-3.1.0/include/openssl/ssl.h.in.27~ openssl-3.1.0/include/openssl/ssl.h.in
+--- openssl-3.1.0/include/openssl/ssl.h.in.27~	2023-03-14 19:24:16.366519084 +0100
++++ openssl-3.1.0/include/openssl/ssl.h.in	2023-03-14 19:24:16.564520129 +0100
+@@ -2565,6 +2565,19 @@ __owur int SSL_process_quic_post_handsha
  
  __owur int SSL_is_quic(SSL *ssl);
  
@@ -108,22 +93,9 @@ index 582e45f31b..89d82406c2 100644
  int SSL_CIPHER_get_prf_nid(const SSL_CIPHER *c);
  
  #  endif
-diff --git a/include/openssl/sslerr.h b/include/openssl/sslerr.h
-index a60076ee93..05cb3d5173 100644
---- a/include/openssl/sslerr.h
-+++ b/include/openssl/sslerr.h
-@@ -162,6 +162,7 @@
- # define SSL_R_MISSING_FATAL                              256
- # define SSL_R_MISSING_PARAMETERS                         290
- # define SSL_R_MISSING_PSK_KEX_MODES_EXTENSION            310
-+# define SSL_R_MISSING_QUIC_TRANSPORT_PARAMETERS_EXTENSION 801
- # define SSL_R_MISSING_RSA_CERTIFICATE                    168
- # define SSL_R_MISSING_RSA_ENCRYPTING_CERT                169
- # define SSL_R_MISSING_RSA_SIGNING_CERT                   170
-diff --git a/include/openssl/tls1.h b/include/openssl/tls1.h
-index 20e39fb571..2669203a28 100644
---- a/include/openssl/tls1.h
-+++ b/include/openssl/tls1.h
+diff -up openssl-3.1.0/include/openssl/tls1.h.27~ openssl-3.1.0/include/openssl/tls1.h
+--- openssl-3.1.0/include/openssl/tls1.h.27~	2023-03-14 19:24:16.367519089 +0100
++++ openssl-3.1.0/include/openssl/tls1.h	2023-03-14 19:24:16.565520134 +0100
 @@ -152,7 +152,8 @@ extern "C" {
  # define TLSEXT_TYPE_renegotiate                 0xff01
  
@@ -134,11 +106,10 @@ index 20e39fb571..2669203a28 100644
  
  # ifndef OPENSSL_NO_NEXTPROTONEG
  /* This is not an IANA defined extension number */
-diff --git a/ssl/ssl_err.c b/ssl/ssl_err.c
-index 0210a73ad5..486cc57993 100644
---- a/ssl/ssl_err.c
-+++ b/ssl/ssl_err.c
-@@ -242,6 +242,8 @@ static const ERR_STRING_DATA SSL_str_reasons[] = {
+diff -up openssl-3.1.0/ssl/ssl_err.c.27~ openssl-3.1.0/ssl/ssl_err.c
+--- openssl-3.1.0/ssl/ssl_err.c.27~	2023-03-14 19:24:15.616515126 +0100
++++ openssl-3.1.0/ssl/ssl_err.c	2023-03-14 19:24:16.565520134 +0100
+@@ -242,6 +242,8 @@ static const ERR_STRING_DATA SSL_str_rea
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_MISSING_PARAMETERS), "missing parameters"},
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_MISSING_PSK_KEX_MODES_EXTENSION),
      "missing psk kex modes extension"},
@@ -147,11 +118,10 @@ index 0210a73ad5..486cc57993 100644
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_MISSING_RSA_CERTIFICATE),
      "missing rsa certificate"},
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_MISSING_RSA_ENCRYPTING_CERT),
-diff --git a/ssl/ssl_lib.c b/ssl/ssl_lib.c
-index 4dc54859fa..e1de94059c 100644
---- a/ssl/ssl_lib.c
-+++ b/ssl/ssl_lib.c
-@@ -1246,6 +1246,7 @@ void SSL_free(SSL *s)
+diff -up openssl-3.1.0/ssl/ssl_lib.c.27~ openssl-3.1.0/ssl/ssl_lib.c
+--- openssl-3.1.0/ssl/ssl_lib.c.27~	2023-03-14 19:24:16.494519760 +0100
++++ openssl-3.1.0/ssl/ssl_lib.c	2023-03-14 19:24:16.565520134 +0100
+@@ -1247,6 +1247,7 @@ void SSL_free(SSL *s)
  
  #ifndef OPENSSL_NO_QUIC
      OPENSSL_free(s->ext.quic_transport_params);
@@ -159,10 +129,9 @@ index 4dc54859fa..e1de94059c 100644
      OPENSSL_free(s->ext.peer_quic_transport_params);
      BUF_MEM_free(s->quic_buf);
      while (s->quic_input_data_head != NULL) {
-diff --git a/ssl/ssl_local.h b/ssl/ssl_local.h
-index 0e68bbcc2f..839e7b69a2 100644
---- a/ssl/ssl_local.h
-+++ b/ssl/ssl_local.h
+diff -up openssl-3.1.0/ssl/ssl_local.h.27~ openssl-3.1.0/ssl/ssl_local.h
+--- openssl-3.1.0/ssl/ssl_local.h.27~	2023-03-14 19:24:16.522519907 +0100
++++ openssl-3.1.0/ssl/ssl_local.h	2023-03-14 19:24:16.566520140 +0100
 @@ -773,6 +773,7 @@ typedef enum tlsext_index_en {
      TLSEXT_IDX_cryptopro_bug,
      TLSEXT_IDX_early_data,
@@ -195,11 +164,10 @@ index 0e68bbcc2f..839e7b69a2 100644
      QUIC_DATA *quic_input_data_head;
      QUIC_DATA *quic_input_data_tail;
      size_t quic_next_record_start;
-diff --git a/ssl/ssl_quic.c b/ssl/ssl_quic.c
-index 136d2b8460..971af0f4c5 100644
---- a/ssl/ssl_quic.c
-+++ b/ssl/ssl_quic.c
-@@ -35,8 +35,45 @@ void SSL_get_peer_quic_transport_params(const SSL *ssl,
+diff -up openssl-3.1.0/ssl/ssl_quic.c.27~ openssl-3.1.0/ssl/ssl_quic.c
+--- openssl-3.1.0/ssl/ssl_quic.c.27~	2023-03-14 19:24:16.523519913 +0100
++++ openssl-3.1.0/ssl/ssl_quic.c	2023-03-14 19:24:16.566520140 +0100
+@@ -35,8 +35,45 @@ void SSL_get_peer_quic_transport_params(
                                          const uint8_t **out_params,
                                          size_t *out_params_len)
  {
@@ -247,11 +215,10 @@ index 136d2b8460..971af0f4c5 100644
  }
  
  size_t SSL_quic_max_handshake_flight_len(const SSL *ssl, OSSL_ENCRYPTION_LEVEL level)
-diff --git a/ssl/statem/extensions.c b/ssl/statem/extensions.c
-index 9a7245eb79..0d245516d4 100644
---- a/ssl/statem/extensions.c
-+++ b/ssl/statem/extensions.c
-@@ -61,6 +61,7 @@ static int init_post_handshake_auth(SSL *s, unsigned int context);
+diff -up openssl-3.1.0/ssl/statem/extensions.c.27~ openssl-3.1.0/ssl/statem/extensions.c
+--- openssl-3.1.0/ssl/statem/extensions.c.27~	2023-03-14 19:24:15.730515727 +0100
++++ openssl-3.1.0/ssl/statem/extensions.c	2023-03-14 19:24:16.566520140 +0100
+@@ -60,6 +60,7 @@ static int init_post_handshake_auth(SSL
  static int final_psk(SSL *s, unsigned int context, int sent);
  #ifndef OPENSSL_NO_QUIC
  static int init_quic_transport_params(SSL *s, unsigned int context);
@@ -259,11 +226,10 @@ index 9a7245eb79..0d245516d4 100644
  static int final_quic_transport_params(SSL *s, unsigned int context, int sent);
  #endif
  
-@@ -375,6 +376,15 @@ static const EXTENSION_DEFINITION ext_defs[] = {
-         tls_construct_certificate_authorities, NULL,
+@@ -375,6 +376,15 @@ static const EXTENSION_DEFINITION ext_de
      },
  #ifndef OPENSSL_NO_QUIC
-+    {
+     {
 +        TLSEXT_TYPE_quic_transport_parameters_draft,
 +        SSL_EXT_CLIENT_HELLO | SSL_EXT_TLS1_3_ENCRYPTED_EXTENSIONS
 +        | SSL_EXT_TLS_IMPLEMENTATION_ONLY | SSL_EXT_TLS1_3_ONLY,
@@ -272,10 +238,11 @@ index 9a7245eb79..0d245516d4 100644
 +        tls_construct_stoc_quic_transport_params_draft, tls_construct_ctos_quic_transport_params_draft,
 +        final_quic_transport_params_draft,
 +    },
-     {
++    {
          TLSEXT_TYPE_quic_transport_parameters,
          SSL_EXT_CLIENT_HELLO | SSL_EXT_TLS1_3_ENCRYPTED_EXTENSIONS
-@@ -1748,8 +1758,37 @@ static int init_quic_transport_params(SSL *s, unsigned int context)
+         | SSL_EXT_TLS_IMPLEMENTATION_ONLY | SSL_EXT_TLS1_3_ONLY,
+@@ -1744,8 +1754,37 @@ static int init_quic_transport_params(SS
      return 1;
  }
  
@@ -313,11 +280,10 @@ index 9a7245eb79..0d245516d4 100644
      return 1;
  }
  #endif
-diff --git a/ssl/statem/extensions_clnt.c b/ssl/statem/extensions_clnt.c
-index 06ccd855a0..6da3cc560f 100644
---- a/ssl/statem/extensions_clnt.c
-+++ b/ssl/statem/extensions_clnt.c
-@@ -1197,13 +1197,33 @@ EXT_RETURN tls_construct_ctos_post_handshake_auth(SSL *s, WPACKET *pkt,
+diff -up openssl-3.1.0/ssl/statem/extensions_clnt.c.27~ openssl-3.1.0/ssl/statem/extensions_clnt.c
+--- openssl-3.1.0/ssl/statem/extensions_clnt.c.27~	2023-03-14 19:24:16.368519094 +0100
++++ openssl-3.1.0/ssl/statem/extensions_clnt.c	2023-03-14 19:24:16.566520140 +0100
+@@ -1197,13 +1197,33 @@ EXT_RETURN tls_construct_ctos_post_hands
  }
  
  #ifndef OPENSSL_NO_QUIC
@@ -354,7 +320,7 @@ index 06ccd855a0..6da3cc560f 100644
          return EXT_RETURN_NOT_SENT;
      }
  
-@@ -2013,7 +2033,23 @@ int tls_parse_stoc_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
+@@ -2013,7 +2033,23 @@ int tls_parse_stoc_psk(SSL *s, PACKET *p
      return 1;
  }
  #ifndef OPENSSL_NO_QUIC
@@ -379,11 +345,10 @@ index 06ccd855a0..6da3cc560f 100644
  int tls_parse_stoc_quic_transport_params(SSL *s, PACKET *pkt, unsigned int context,
                                           X509 *x, size_t chainidx)
  {
-diff --git a/ssl/statem/extensions_srvr.c b/ssl/statem/extensions_srvr.c
-index 3d9df5ecd8..bb16bb9436 100644
---- a/ssl/statem/extensions_srvr.c
-+++ b/ssl/statem/extensions_srvr.c
-@@ -1233,7 +1233,22 @@ int tls_parse_ctos_post_handshake_auth(SSL *s, PACKET *pkt,
+diff -up openssl-3.1.0/ssl/statem/extensions_srvr.c.27~ openssl-3.1.0/ssl/statem/extensions_srvr.c
+--- openssl-3.1.0/ssl/statem/extensions_srvr.c.27~	2023-03-14 19:24:16.368519094 +0100
++++ openssl-3.1.0/ssl/statem/extensions_srvr.c	2023-03-14 19:24:16.566520140 +0100
+@@ -1233,7 +1233,22 @@ int tls_parse_ctos_post_handshake_auth(S
  }
  
  #ifndef OPENSSL_NO_QUIC
@@ -407,7 +372,7 @@ index 3d9df5ecd8..bb16bb9436 100644
  int tls_parse_ctos_quic_transport_params(SSL *s, PACKET *pkt, unsigned int context,
                                           X509 *x, size_t chainidx)
  {
-@@ -1943,13 +1958,36 @@ EXT_RETURN tls_construct_stoc_psk(SSL *s, WPACKET *pkt, unsigned int context,
+@@ -1943,13 +1958,36 @@ EXT_RETURN tls_construct_stoc_psk(SSL *s
  }
  
  #ifndef OPENSSL_NO_QUIC
@@ -447,11 +412,10 @@ index 3d9df5ecd8..bb16bb9436 100644
          return EXT_RETURN_NOT_SENT;
      }
  
-diff --git a/ssl/statem/statem_local.h b/ssl/statem/statem_local.h
-index 6d5820e2cf..0065db1744 100644
---- a/ssl/statem/statem_local.h
-+++ b/ssl/statem/statem_local.h
-@@ -255,6 +255,10 @@ int tls_parse_ctos_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
+diff -up openssl-3.1.0/ssl/statem/statem_local.h.27~ openssl-3.1.0/ssl/statem/statem_local.h
+--- openssl-3.1.0/ssl/statem/statem_local.h.27~	2023-03-14 19:24:16.369519100 +0100
++++ openssl-3.1.0/ssl/statem/statem_local.h	2023-03-14 19:24:16.566520140 +0100
+@@ -255,6 +255,10 @@ int tls_parse_ctos_psk(SSL *s, PACKET *p
  int tls_parse_ctos_post_handshake_auth(SSL *, PACKET *pkt, unsigned int context,
                                         X509 *x, size_t chainidx);
  #ifndef OPENSSL_NO_QUIC
@@ -462,7 +426,7 @@ index 6d5820e2cf..0065db1744 100644
  int tls_parse_ctos_quic_transport_params(SSL *s, PACKET *pkt, unsigned int context,
                                           X509 *x, size_t chainidx);
  #endif
-@@ -319,6 +323,11 @@ EXT_RETURN tls_construct_stoc_cryptopro_bug(SSL *s, WPACKET *pkt,
+@@ -319,6 +323,11 @@ EXT_RETURN tls_construct_stoc_cryptopro_
  EXT_RETURN tls_construct_stoc_psk(SSL *s, WPACKET *pkt, unsigned int context,
                                    X509 *x, size_t chainidx);
  #ifndef OPENSSL_NO_QUIC
@@ -474,7 +438,7 @@ index 6d5820e2cf..0065db1744 100644
  EXT_RETURN tls_construct_stoc_quic_transport_params(SSL *s, WPACKET *pkt,
                                                      unsigned int context, X509 *x,
                                                      size_t chainidx);
-@@ -393,6 +402,10 @@ EXT_RETURN tls_construct_ctos_psk(SSL *s, WPACKET *pkt, unsigned int context,
+@@ -393,6 +402,10 @@ EXT_RETURN tls_construct_ctos_psk(SSL *s
  EXT_RETURN tls_construct_ctos_post_handshake_auth(SSL *s, WPACKET *pkt, unsigned int context,
                                                    X509 *x, size_t chainidx);
  #ifndef OPENSSL_NO_QUIC
@@ -485,7 +449,7 @@ index 6d5820e2cf..0065db1744 100644
  EXT_RETURN tls_construct_ctos_quic_transport_params(SSL *s, WPACKET *pkt,
                                                      unsigned int context, X509 *x,
                                                      size_t chainidx);
-@@ -441,6 +454,10 @@ int tls_parse_stoc_cookie(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
+@@ -441,6 +454,10 @@ int tls_parse_stoc_cookie(SSL *s, PACKET
  int tls_parse_stoc_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
                         size_t chainidx);
  #ifndef OPENSSL_NO_QUIC
@@ -496,11 +460,10 @@ index 6d5820e2cf..0065db1744 100644
  int tls_parse_stoc_quic_transport_params(SSL *s, PACKET *pkt, unsigned int context,
                                           X509 *x, size_t chainidx);
  #endif
-diff --git a/test/sslapitest.c b/test/sslapitest.c
-index be6b446532..fc60b2fd5a 100644
---- a/test/sslapitest.c
-+++ b/test/sslapitest.c
-@@ -10095,7 +10095,13 @@ static SSL_QUIC_METHOD quic_method = {
+diff -up openssl-3.1.0/test/sslapitest.c.27~ openssl-3.1.0/test/sslapitest.c
+--- openssl-3.1.0/test/sslapitest.c.27~	2023-03-14 19:24:16.448519517 +0100
++++ openssl-3.1.0/test/sslapitest.c	2023-03-14 19:25:20.991865565 +0100
+@@ -10482,7 +10482,13 @@ static SSL_QUIC_METHOD quic_method = {
      test_quic_send_alert,
  };
  
@@ -515,7 +478,7 @@ index be6b446532..fc60b2fd5a 100644
  {
      SSL_CTX *cctx = NULL, *sctx = NULL;
      SSL *clientssl = NULL, *serverssl = NULL;
-@@ -10106,29 +10112,7 @@ static int test_quic_api(void)
+@@ -10493,29 +10499,7 @@ static int test_quic_api(void)
      const uint8_t *peer_str;
      size_t peer_str_len;
  
@@ -546,7 +509,7 @@ index be6b446532..fc60b2fd5a 100644
  
      if (!TEST_true(create_ssl_ctx_pair(libctx,
                                         TLS_server_method(),
-@@ -10147,6 +10131,8 @@ static int test_quic_api(void)
+@@ -10534,6 +10518,8 @@ static int test_quic_api(void)
                                                          sizeof(client_str)))
              || !TEST_true(SSL_set_app_data(serverssl, clientssl))
              || !TEST_true(SSL_set_app_data(clientssl, serverssl))
@@ -555,27 +518,7 @@ index be6b446532..fc60b2fd5a 100644
              || !TEST_true(create_ssl_connection(serverssl, clientssl,
                                                  SSL_ERROR_NONE))
              || !TEST_true(SSL_version(serverssl) == TLS1_3_VERSION)
-@@ -10180,6 +10166,19 @@ static int test_quic_api(void)
-             || !TEST_int_le(SSL_do_handshake(serverssl), 0))
-         goto end;
- 
-+    TEST_info("original clnt=0x%X, srvr=0x%X\n", clnt, srvr);
-+    if (srvr == 0 && clnt == 0)
-+        srvr = clnt = TLSEXT_TYPE_quic_transport_parameters;
-+    else if (srvr == 0)
-+        srvr = clnt;
-+    else if (clnt == 0)
-+        clnt = srvr;
-+    TEST_info("expected clnt=0x%X, srvr=0x%X\n", clnt, srvr);
-+    if (!TEST_int_eq(SSL_get_peer_quic_transport_version(serverssl), clnt))
-+        goto end;
-+    if (!TEST_int_eq(SSL_get_peer_quic_transport_version(clientssl), srvr))
-+        goto end;
-+
-     testresult = 1;
- 
-  end:
-@@ -10190,6 +10189,67 @@ static int test_quic_api(void)
+@@ -10577,6 +10563,80 @@ end:
  
      return testresult;
  }
@@ -631,6 +574,19 @@ index be6b446532..fc60b2fd5a 100644
 +    if (!TEST_int_eq(test_quic_api_version(clnt_params[tst], srvr_params[tst]), results[tst]))
 +        goto end;
 +
++    TEST_info("original clnt=0x%X, srvr=0x%X\n", clnt, srvr);
++    if (srvr == 0 && clnt == 0)
++        srvr = clnt = TLSEXT_TYPE_quic_transport_parameters;
++    else if (srvr == 0)
++        srvr = clnt;
++    else if (clnt == 0)
++        clnt = srvr;
++    TEST_info("expected clnt=0x%X, srvr=0x%X\n", clnt, srvr);
++    if (!TEST_int_eq(SSL_get_peer_quic_transport_version(serverssl), clnt))
++        goto end;
++    if (!TEST_int_eq(SSL_get_peer_quic_transport_version(clientssl), srvr))
++        goto end;
++
 +    testresult = 1;
 +
 +end:
@@ -643,8 +599,8 @@ index be6b446532..fc60b2fd5a 100644
  #endif /* OPENSSL_NO_QUIC */
  
  OPT_TEST_DECLARE_USAGE("certfile privkeyfile srpvfile tmpfile provider config dhfile\n")
-@@ -10461,7 +10521,7 @@ int setup_tests(void)
-     ADD_ALL_TESTS(test_serverinfo_custom, 4);
+@@ -10876,7 +10936,7 @@ int setup_tests(void)
+     ADD_ALL_TESTS(test_pipelining, 6);
  #endif
  #ifndef OPENSSL_NO_QUIC
 -    ADD_TEST(test_quic_api);
@@ -652,11 +608,10 @@ index be6b446532..fc60b2fd5a 100644
  #endif
      return 1;
  
-diff --git a/util/libssl.num b/util/libssl.num
-index da35cf2970..41ebba40b2 100644
---- a/util/libssl.num
-+++ b/util/libssl.num
-@@ -531,3 +531,7 @@ SSL_set_quic_method                     20007	3_0_0	EXIST::FUNCTION:QUIC
+diff -up openssl-3.1.0/util/libssl.num.27~ openssl-3.1.0/util/libssl.num
+--- openssl-3.1.0/util/libssl.num.27~	2023-03-14 19:24:16.371519110 +0100
++++ openssl-3.1.0/util/libssl.num	2023-03-14 19:24:16.568520150 +0100
+@@ -531,3 +531,7 @@ SSL_set_quic_method
  SSL_quic_max_handshake_flight_len       20008	3_0_0	EXIST::FUNCTION:QUIC
  SSL_process_quic_post_handshake         20009	3_0_0	EXIST::FUNCTION:QUIC
  SSL_provide_quic_data                   20010	3_0_0	EXIST::FUNCTION:QUIC
@@ -664,6 +619,3 @@ index da35cf2970..41ebba40b2 100644
 +SSL_set_quic_transport_version          20012	3_0_0	EXIST::FUNCTION:QUIC
 +SSL_get_peer_quic_transport_version     20013	3_0_0	EXIST::FUNCTION:QUIC
 +SSL_get_quic_transport_version          20014	3_0_0	EXIST::FUNCTION:QUIC
--- 
-2.40.0.rc0
-
