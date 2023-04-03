@@ -6,7 +6,11 @@
 %endif
 
 # (tpg) enable PGO build
+%if %{cross_compiling}
+%bcond_with pgo
+%else
 %bcond_without pgo
+%endif
 
 %global optflags %{optflags} -O3
 
@@ -342,6 +346,8 @@ CFLAGS="$CFLAGS -fprofile-use=$PROFDATA %{pollyflags}" \
 CXXFLAGS="%{optflags} -fprofile-use=$PROFDATA %{pollyflags}" \
 LDFLAGS="$LDFLAGS -fprofile-use=$PROFDATA" \
 %endif
+CC="%{__cc}" \
+CXX="%{__cxx}" \
 ../Configure ${TARGET} \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
