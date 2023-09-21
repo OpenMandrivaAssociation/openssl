@@ -1,7 +1,7 @@
-From 1378131a36509f21d9b3d3921feed357484f6826 Mon Sep 17 00:00:00 2001
+From 117b887a7a132b25425c74613fc9621dd660fecb Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Thu, 24 Jun 2021 15:11:24 -0400
-Subject: [PATCH 42/60] QUIC: Fix make doc-nits
+Subject: [PATCH 42/63] QUIC: Fix make doc-nits
 
 ---
  doc/man1/openssl-info.pod.in | 5 +++++
@@ -31,5 +31,5 @@ index 0e91bb28ee..fe7abee486 100644
  
  =head1 HISTORY
 -- 
-2.40.0.rc0
+2.42.0
 

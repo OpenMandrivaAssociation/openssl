@@ -1,7 +1,7 @@
-From 771922e697c926aa72dc91bc3c85d17318d959e0 Mon Sep 17 00:00:00 2001
+From c3240737e2e41f0a3a3e01a49022ac3207302305 Mon Sep 17 00:00:00 2001
 From: Tatsuhiro Tsujikawa <404610+tatsuhiro-t@users.noreply.github.com>
 Date: Fri, 12 Mar 2021 00:39:20 +0900
-Subject: [PATCH 36/60] QUIC: Make SSL_provide_quic_data accept 0 length data
+Subject: [PATCH 36/63] QUIC: Make SSL_provide_quic_data accept 0 length data
  (#13)
 
 This commit makes SSL_provide_quic_data accept 0 length data, which
@@ -27,5 +27,5 @@ index 9d4c801411..49a4f3ab5c 100644
          BUF_MEM *buf;
          if ((buf = BUF_MEM_new()) == NULL) {
 -- 
-2.40.0.rc0
+2.42.0
 

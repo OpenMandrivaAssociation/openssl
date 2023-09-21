@@ -1,7 +1,7 @@
-From 2f5ad1095f7ff7a5a848b04168857df89cbbb95b Mon Sep 17 00:00:00 2001
+From 27215416c0b1de14648f137edc158b3d9645a193 Mon Sep 17 00:00:00 2001
 From: Benjamin Kaduk <bkaduk@akamai.com>
 Date: Mon, 31 Aug 2020 12:27:33 -0700
-Subject: [PATCH 24/60] QUIC: Buffer all provided quic data
+Subject: [PATCH 24/63] QUIC: Buffer all provided quic data
 
 Make all data supplied via SSL_provide_quic_data() pass through an
 internal buffer, so that we can handle data supplied with arbitrary
@@ -27,10 +27,10 @@ of the TLS handshake messages themselves.
  4 files changed, 49 insertions(+), 43 deletions(-)
 
 diff --git a/ssl/ssl_lib.c b/ssl/ssl_lib.c
-index b560619b81..4dc54859fa 100644
+index 9ab43d1573..a78ebd55af 100644
 --- a/ssl/ssl_lib.c
 +++ b/ssl/ssl_lib.c
-@@ -1247,6 +1247,7 @@ void SSL_free(SSL *s)
+@@ -1248,6 +1248,7 @@ void SSL_free(SSL *s)
  #ifndef OPENSSL_NO_QUIC
      OPENSSL_free(s->ext.quic_transport_params);
      OPENSSL_free(s->ext.peer_quic_transport_params);
@@ -39,7 +39,7 @@ index b560619b81..4dc54859fa 100644
          QUIC_DATA *qd;
  
 diff --git a/ssl/ssl_local.h b/ssl/ssl_local.h
-index a5eff6726c..a4e546197d 100644
+index c4033b4688..44395fb365 100644
 --- a/ssl/ssl_local.h
 +++ b/ssl/ssl_local.h
 @@ -1225,9 +1225,8 @@ typedef struct cert_pkey_st CERT_PKEY;
@@ -215,5 +215,5 @@ index df38afbc79..a371eeaedb 100644
      /*
       * If receiving Finished, record MAC of prior handshake messages for
 -- 
-2.40.0.rc0
+2.42.0
 

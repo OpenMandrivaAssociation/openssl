@@ -1,7 +1,7 @@
-From fd4825691d95c35821d2b723a11e63b847071c72 Mon Sep 17 00:00:00 2001
+From 3e46358deb409f4d288fb28c03a287c9fec67f7d Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Thu, 29 Aug 2019 11:53:41 -0400
-Subject: [PATCH 09/60] QUIC: Reset init state in
+Subject: [PATCH 09/63] QUIC: Reset init state in
  SSL_process_quic_post_handshake()
 
 ---
@@ -35,5 +35,5 @@ index 0959bcf2cf..ad6696d964 100644
  }
  
 -- 
-2.40.0.rc0
+2.42.0
 

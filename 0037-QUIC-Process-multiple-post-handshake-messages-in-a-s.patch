@@ -1,7 +1,7 @@
-From eae3931570b5deae16ce1fea80324bc732cf6b81 Mon Sep 17 00:00:00 2001
+From 8ec778771466e27485ff4e48414ff34c06af4935 Mon Sep 17 00:00:00 2001
 From: Tatsuhiro Tsujikawa <404610+tatsuhiro-t@users.noreply.github.com>
 Date: Sat, 13 Mar 2021 05:37:34 +0900
-Subject: [PATCH 37/60] QUIC: Process multiple post-handshake messages in a
+Subject: [PATCH 37/63] QUIC: Process multiple post-handshake messages in a
  single call (#16)
 
 ---
@@ -48,10 +48,10 @@ index 49a4f3ab5c..6cbd47ad2d 100644
  }
  
 diff --git a/test/sslapitest.c b/test/sslapitest.c
-index e56191b257..dbfe58a940 100644
+index b8e1078670..e351a0b4e6 100644
 --- a/test/sslapitest.c
 +++ b/test/sslapitest.c
-@@ -10151,8 +10151,7 @@ static int test_quic_api_version(int clnt, int srvr)
+@@ -10238,8 +10238,7 @@ static int test_quic_api_version(int clnt, int srvr)
          goto end;
  
      /* Deal with two NewSessionTickets */
@@ -61,7 +61,7 @@ index e56191b257..dbfe58a940 100644
          goto end;
  
      /* Dummy handshake call should succeed */
-@@ -10344,8 +10343,7 @@ static int quic_setupearly_data_test(SSL_CTX **cctx, SSL_CTX **sctx,
+@@ -10431,8 +10430,7 @@ static int quic_setupearly_data_test(SSL_CTX **cctx, SSL_CTX **sctx,
          return 0;
  
      /* Deal with two NewSessionTickets */
@@ -72,5 +72,5 @@ index e56191b257..dbfe58a940 100644
  
      *sess = SSL_get1_session(*clientssl);
 -- 
-2.40.0.rc0
+2.42.0
 

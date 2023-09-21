@@ -1,14 +1,14 @@
-From 0174a41ea9eab4ca2b4fd12f2b77f828fec8535e Mon Sep 17 00:00:00 2001
+From 98f16af8ea10b5bcb8243e438795c4f83e64339f Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Tue, 7 Jan 2020 10:59:08 -0500
-Subject: [PATCH 20/60] QUIC: Fall-through for 0RTT
+Subject: [PATCH 20/63] QUIC: Fall-through for 0RTT
 
 ---
  ssl/statem/statem_srvr.c | 7 ++-----
  1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/ssl/statem/statem_srvr.c b/ssl/statem/statem_srvr.c
-index 69126bd580..391e638c95 100644
+index 1c4b7124e4..aba18e8c76 100644
 --- a/ssl/statem/statem_srvr.c
 +++ b/ssl/statem/statem_srvr.c
 @@ -74,12 +74,9 @@ static int ossl_statem_server13_read_transition(SSL *s, int mt)
@@ -27,5 +27,5 @@ index 69126bd580..391e638c95 100644
                  return 1;
              }
 -- 
-2.40.0.rc0
+2.42.0
 

@@ -1,7 +1,7 @@
-From 7daed1fd48defb5ed8805919fb4d2ddd31bf93e7 Mon Sep 17 00:00:00 2001
+From 0533f66777e89e43091d03806c0bc3380f29ce11 Mon Sep 17 00:00:00 2001
 From: Benjamin Kaduk <bkaduk@akamai.com>
 Date: Tue, 1 Sep 2020 15:10:41 -0700
-Subject: [PATCH 25/60] QUIC: Enforce consistent encryption level for handshake
+Subject: [PATCH 25/63] QUIC: Enforce consistent encryption level for handshake
  messages
 
 The QUIC-TLS spec requires that TLS handshake messages do not cross
@@ -12,7 +12,7 @@ encryption level boundaries, but we were not previously enforcing this.
  2 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/ssl/ssl_local.h b/ssl/ssl_local.h
-index a4e546197d..0e68bbcc2f 100644
+index 44395fb365..d99b751bfc 100644
 --- a/ssl/ssl_local.h
 +++ b/ssl/ssl_local.h
 @@ -1720,6 +1720,7 @@ struct ssl_st {
@@ -54,5 +54,5 @@ index e396720551..136d2b8460 100644
      if (!BUF_MEM_grow(ssl->quic_buf, offset + len)) {
          SSLerr(SSL_F_SSL_PROVIDE_QUIC_DATA, ERR_R_INTERNAL_ERROR);
 -- 
-2.40.0.rc0
+2.42.0
 

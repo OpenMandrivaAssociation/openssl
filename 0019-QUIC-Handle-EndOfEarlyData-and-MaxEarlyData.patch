@@ -1,7 +1,7 @@
-From 82e13c8bb89fe2638939be6902bf89c6b3eca17e Mon Sep 17 00:00:00 2001
+From c60ebaf44ca48a2bfa9cd3bbd2edff3d2bde308e Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Wed, 13 Nov 2019 12:11:00 -0500
-Subject: [PATCH 19/60] QUIC: Handle EndOfEarlyData and MaxEarlyData
+Subject: [PATCH 19/63] QUIC: Handle EndOfEarlyData and MaxEarlyData
 
 ---
  ssl/statem/extensions_clnt.c | 11 +++++++++++
@@ -33,7 +33,7 @@ index 3ae28e68dc..3e76361199 100644
  
          return 1;
 diff --git a/ssl/statem/extensions_srvr.c b/ssl/statem/extensions_srvr.c
-index f525d9e897..2a3936e8c1 100644
+index 2fad8f3788..344dca1292 100644
 --- a/ssl/statem/extensions_srvr.c
 +++ b/ssl/statem/extensions_srvr.c
 @@ -1890,12 +1890,20 @@ EXT_RETURN tls_construct_stoc_early_data(SSL *s, WPACKET *pkt,
@@ -79,7 +79,7 @@ index 3cd1ee2d3d..36cbba2a50 100644
          *mt = SSL3_MT_END_OF_EARLY_DATA;
          break;
 diff --git a/ssl/statem/statem_srvr.c b/ssl/statem/statem_srvr.c
-index a9e67f9d32..69126bd580 100644
+index 5d59d53563..1c4b7124e4 100644
 --- a/ssl/statem/statem_srvr.c
 +++ b/ssl/statem/statem_srvr.c
 @@ -76,6 +76,10 @@ static int ossl_statem_server13_read_transition(SSL *s, int mt)
@@ -94,5 +94,5 @@ index a9e67f9d32..69126bd580 100644
                  return 1;
              }
 -- 
-2.40.0.rc0
+2.42.0
 

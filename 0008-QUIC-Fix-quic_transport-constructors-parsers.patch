@@ -1,7 +1,7 @@
-From 7c5db04d783ac054d96e178fae33fecbb3671b60 Mon Sep 17 00:00:00 2001
+From 70010beb14597a438e1a633df18990aa176687a7 Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Mon, 26 Aug 2019 13:29:17 -0400
-Subject: [PATCH 08/60] QUIC: Fix quic_transport constructors/parsers
+Subject: [PATCH 08/63] QUIC: Fix quic_transport constructors/parsers
 
 ---
  ssl/statem/extensions_clnt.c | 16 +++-------------
@@ -47,7 +47,7 @@ index 52742dc36a..3ae28e68dc 100644
                         &s->ext.peer_quic_transport_params_len)) {
          SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
 diff --git a/ssl/statem/extensions_srvr.c b/ssl/statem/extensions_srvr.c
-index 6b58b9b9e4..f525d9e897 100644
+index 929e272cd9..2fad8f3788 100644
 --- a/ssl/statem/extensions_srvr.c
 +++ b/ssl/statem/extensions_srvr.c
 @@ -1237,19 +1237,11 @@ int tls_parse_ctos_post_handshake_auth(SSL *s, PACKET *pkt,
@@ -85,5 +85,5 @@ index 6b58b9b9e4..f525d9e897 100644
          return EXT_RETURN_FAIL;
      }
 -- 
-2.40.0.rc0
+2.42.0
 

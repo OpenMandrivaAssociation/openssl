@@ -1,7 +1,7 @@
-From 43d4465c026ef81007ad43950dbceefab8e15d4a Mon Sep 17 00:00:00 2001
+From 3ff0ba16566c029c1f5cf4d6bf5584e95b0661bb Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Tue, 5 Jan 2021 13:50:21 -0500
-Subject: [PATCH 27/60] QUIC: return success when no post-handshake data
+Subject: [PATCH 27/63] QUIC: return success when no post-handshake data
 
 ---
  ssl/ssl_quic.c | 4 ++++
@@ -23,5 +23,5 @@ index 971af0f4c5..477a386da3 100644
       * This is always safe (we are sure to be at a record boundary) because
       * SSL_read()/SSL_write() are never used for QUIC connections -- the
 -- 
-2.40.0.rc0
+2.42.0
 

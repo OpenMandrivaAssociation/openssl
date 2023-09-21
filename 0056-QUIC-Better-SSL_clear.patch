@@ -1,7 +1,7 @@
-From 5d574cd3680068abd0a5a5c5f04090976524ec41 Mon Sep 17 00:00:00 2001
+From b90c5da95a0074369b390abce0f1522006c5d632 Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Fri, 29 Oct 2021 14:15:06 -0400
-Subject: [PATCH 56/60] QUIC: Better SSL_clear()
+Subject: [PATCH 56/63] QUIC: Better SSL_clear()
 
 Undo SSL_clear() changes in test
 Break apart SSL_clear() into SSL_clear_quic() and SSL_clear_not_quic()
@@ -16,10 +16,10 @@ Don't make the new functions public.
  4 files changed, 63 insertions(+), 45 deletions(-)
 
 diff --git a/ssl/ssl_lib.c b/ssl/ssl_lib.c
-index a030b077c4..a00e1fe362 100644
+index 3d1734b7cd..e636383e76 100644
 --- a/ssl/ssl_lib.c
 +++ b/ssl/ssl_lib.c
-@@ -566,7 +566,56 @@ static void clear_ciphers(SSL *s)
+@@ -567,7 +567,56 @@ static void clear_ciphers(SSL *s)
      ssl_clear_hash_ctx(&s->write_hash);
  }
  
@@ -76,7 +76,7 @@ index a030b077c4..a00e1fe362 100644
  {
      if (s->method == NULL) {
          ERR_raise(ERR_LIB_SSL, SSL_R_NO_METHOD_SPECIFIED);
-@@ -625,38 +674,6 @@ int SSL_clear(SSL *s)
+@@ -626,38 +675,6 @@ int SSL_clear(SSL *s)
      s->shared_sigalgs = NULL;
      s->shared_sigalgslen = 0;
  
@@ -116,7 +116,7 @@ index a030b077c4..a00e1fe362 100644
       * Check to see if we were changed into a different method, if so, revert
       * back.
 diff --git a/ssl/ssl_local.h b/ssl/ssl_local.h
-index 839e7b69a2..74b4319df4 100644
+index 9bbc528dd9..3fb1f0956f 100644
 --- a/ssl/ssl_local.h
 +++ b/ssl/ssl_local.h
 @@ -2867,6 +2867,11 @@ void custom_exts_free(custom_ext_methods *exts);
@@ -150,10 +150,10 @@ index e67ee26e87..d80d4da203 100644
  #ifndef OPENSSL_NO_SCTP
      if (SSL_IS_DTLS(s) && BIO_dgram_is_sctp(SSL_get_wbio(s))) {
 diff --git a/test/sslapitest.c b/test/sslapitest.c
-index 07c2ee61e8..615ec4e077 100644
+index 977eee0d4b..5d2a754043 100644
 --- a/test/sslapitest.c
 +++ b/test/sslapitest.c
-@@ -10111,7 +10111,6 @@ static int test_quic_api_version(int clnt, int srvr)
+@@ -10198,7 +10198,6 @@ static int test_quic_api_version(int clnt, int srvr)
      static const char *client_str = "CLIENT";
      const uint8_t *peer_str;
      size_t peer_str_len;
@@ -161,7 +161,7 @@ index 07c2ee61e8..615ec4e077 100644
  
      TEST_info("original clnt=0x%X, srvr=0x%X\n", clnt, srvr);
  
-@@ -10134,10 +10133,8 @@ static int test_quic_api_version(int clnt, int srvr)
+@@ -10221,10 +10220,8 @@ static int test_quic_api_version(int clnt, int srvr)
              || !TEST_true(SSL_set_app_data(clientssl, serverssl))
              || !TEST_true(test_quic_api_set_versions(clientssl, clnt))
              || !TEST_true(test_quic_api_set_versions(serverssl, srvr))
@@ -173,7 +173,7 @@ index 07c2ee61e8..615ec4e077 100644
              || !TEST_true(SSL_version(serverssl) == TLS1_3_VERSION)
              || !TEST_true(SSL_version(clientssl) == TLS1_3_VERSION)
              || !(TEST_int_eq(SSL_quic_read_level(clientssl), ssl_encryption_application))
-@@ -10264,7 +10261,6 @@ static int quic_setupearly_data_test(SSL_CTX **cctx, SSL_CTX **sctx,
+@@ -10351,7 +10348,6 @@ static int quic_setupearly_data_test(SSL_CTX **cctx, SSL_CTX **sctx,
  {
      static const char *server_str = "SERVER";
      static const char *client_str = "CLIENT";
@@ -181,7 +181,7 @@ index 07c2ee61e8..615ec4e077 100644
  
      if (*sctx == NULL
              && (!TEST_true(create_ssl_ctx_pair(libctx, TLS_server_method(),
-@@ -10342,10 +10338,8 @@ static int quic_setupearly_data_test(SSL_CTX **cctx, SSL_CTX **sctx,
+@@ -10429,10 +10425,8 @@ static int quic_setupearly_data_test(SSL_CTX **cctx, SSL_CTX **sctx,
      if (sess == NULL)
          return 1;
  
@@ -194,7 +194,7 @@ index 07c2ee61e8..615ec4e077 100644
          return 0;
  
      /* Deal with two NewSessionTickets */
-@@ -10384,15 +10378,12 @@ static int test_quic_early_data(int tst)
+@@ -10471,15 +10465,12 @@ static int test_quic_early_data(int tst)
      SSL *clientssl = NULL, *serverssl = NULL;
      int testresult = 0;
      SSL_SESSION *sess = NULL;
@@ -212,5 +212,5 @@ index 07c2ee61e8..615ec4e077 100644
          goto end;
  
 -- 
-2.40.0.rc0
+2.42.0
 

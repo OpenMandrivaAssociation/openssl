@@ -1,7 +1,7 @@
-From d5a9726b44ad864bc79208a7bcaa8b51405a4029 Mon Sep 17 00:00:00 2001
+From 5164990766f47f47af1f546fe3c0f0acbff2b7e2 Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Tue, 7 Sep 2021 12:32:54 -0400
-Subject: [PATCH 49/60] QUIC: update copyrights
+Subject: [PATCH 49/63] QUIC: update copyrights
 
 ---
  doc/man3/SSL_CTX_set_quic_method.pod | 2 +-
@@ -45,5 +45,5 @@ index a51bfd74d8..7bd329c242 100644
   * Licensed under the Apache License 2.0 (the "License").  You may not use
   * this file except in compliance with the License.  You can obtain a copy
 -- 
-2.40.0.rc0
+2.42.0
 

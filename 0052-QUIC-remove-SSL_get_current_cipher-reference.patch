@@ -1,7 +1,7 @@
-From 923d462f5eb514b34d26412da43af375ebe499e0 Mon Sep 17 00:00:00 2001
+From fae17dc5d279bc6de0ad045c87a6e224a62b3730 Mon Sep 17 00:00:00 2001
 From: Benjamin Kaduk <bkaduk@akamai.com>
 Date: Tue, 7 Sep 2021 09:20:44 -0700
-Subject: [PATCH 52/60] QUIC: remove SSL_get_current_cipher() reference
+Subject: [PATCH 52/63] QUIC: remove SSL_get_current_cipher() reference
 
 The QUIC APIs have no need to interact with TLS ciphers, since
 QUIC records use different cryptographic protections than TLS ciphers.
@@ -24,5 +24,5 @@ index 1ed076c301..f12aa8662b 100644
  encryption level. It returns one on success and zero on error.
  
 -- 
-2.40.0.rc0
+2.42.0
 

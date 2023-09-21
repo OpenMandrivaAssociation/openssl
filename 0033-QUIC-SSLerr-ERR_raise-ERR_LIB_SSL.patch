@@ -1,7 +1,7 @@
-From 4b52daeddfe11640275d90268a298cdc186b416f Mon Sep 17 00:00:00 2001
+From c94831f012a90483021a5c6bd8ab58797104b467 Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Wed, 3 Mar 2021 17:43:46 -0500
-Subject: [PATCH 33/60] QUIC: SSLerr() -> ERR_raise(ERR_LIB_SSL)
+Subject: [PATCH 33/63] QUIC: SSLerr() -> ERR_raise(ERR_LIB_SSL)
 
 ---
  ssl/s3_msg.c            |  2 +-
@@ -25,10 +25,10 @@ index 667c5385e8..dd2fe040e0 100644
          }
          i = 1;
 diff --git a/ssl/ssl_lib.c b/ssl/ssl_lib.c
-index e1de94059c..09aec125c8 100644
+index 1aaef74ef0..517104a4df 100644
 --- a/ssl/ssl_lib.c
 +++ b/ssl/ssl_lib.c
-@@ -1853,7 +1853,7 @@ int ssl_read_internal(SSL *s, void *buf, size_t num, size_t *readbytes)
+@@ -1854,7 +1854,7 @@ int ssl_read_internal(SSL *s, void *buf, size_t num, size_t *readbytes)
  {
  #ifndef OPENSSL_NO_QUIC
      if (SSL_IS_QUIC(s)) {
@@ -37,7 +37,7 @@ index e1de94059c..09aec125c8 100644
          return -1;
      }
  #endif
-@@ -1990,7 +1990,7 @@ static int ssl_peek_internal(SSL *s, void *buf, size_t num, size_t *readbytes)
+@@ -1991,7 +1991,7 @@ static int ssl_peek_internal(SSL *s, void *buf, size_t num, size_t *readbytes)
  {
  #ifndef OPENSSL_NO_QUIC
      if (SSL_IS_QUIC(s)) {
@@ -46,7 +46,7 @@ index e1de94059c..09aec125c8 100644
          return -1;
      }
  #endif
-@@ -2056,7 +2056,7 @@ int ssl_write_internal(SSL *s, const void *buf, size_t num, size_t *written)
+@@ -2057,7 +2057,7 @@ int ssl_write_internal(SSL *s, const void *buf, size_t num, size_t *written)
  {
  #ifndef OPENSSL_NO_QUIC
      if (SSL_IS_QUIC(s)) {
@@ -140,7 +140,7 @@ index b040d14cd2..df542579d0 100644
          }
      } else
 diff --git a/ssl/statem/statem_lib.c b/ssl/statem/statem_lib.c
-index 49b911d5d6..8053bbc86b 100644
+index 9c9ac0eda6..877ffa5cb9 100644
 --- a/ssl/statem/statem_lib.c
 +++ b/ssl/statem/statem_lib.c
 @@ -54,14 +54,14 @@ int ssl3_do_write(SSL *s, int type)
@@ -161,5 +161,5 @@ index 49b911d5d6..8053bbc86b 100644
      } else
  #endif
 -- 
-2.40.0.rc0
+2.42.0
 

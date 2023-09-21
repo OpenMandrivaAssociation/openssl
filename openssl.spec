@@ -30,7 +30,7 @@
 %define static32 libopenssl-static-devel
 
 Name:		openssl
-Version:	3.1.2
+Version:	3.1.3
 Release:	%{?beta:0.%{beta}.}1
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
@@ -89,6 +89,7 @@ Patch1053:	0054-QUIC-Error-when-non-empty-session_id-in-CH-fixes-29.patch
 Patch1054:	0055-QUIC-Update-SSL_clear-to-clear-quic-data.patch
 Patch1055:	0056-QUIC-Better-SSL_clear.patch
 Patch1058:	0059-QUIC-Fix-extension-test.patch
+Patch1062:	0063-QUIC-Fix-use-of-create_a_psk.patch
 License:	Apache 2.0
 BuildRequires:	perl
 BuildRequires:	perl(Pod::Man)

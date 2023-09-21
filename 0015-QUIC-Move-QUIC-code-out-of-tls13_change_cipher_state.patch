@@ -1,7 +1,21 @@
-diff -up openssl-3.1.0-beta1/ssl/ssl_quic.c.16~ openssl-3.1.0-beta1/ssl/ssl_quic.c
---- openssl-3.1.0-beta1/ssl/ssl_quic.c.16~	2023-03-02 22:50:17.796276444 +0100
-+++ openssl-3.1.0-beta1/ssl/ssl_quic.c	2023-03-02 22:50:17.800276473 +0100
-@@ -199,7 +199,6 @@ int quic_set_encryption_secrets(SSL *ssl
+From c0e8778136a689d8d11aec0f061ca6a1d37550b6 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Fri, 30 Aug 2019 11:17:58 -0400
+Subject: [PATCH 15/63] QUIC: Move QUIC code out of tls13_change_cipher_state()
+
+Create quic_change_cipher_state() that does the minimal required
+to generate the QUIC secrets. (e.g. encryption contexts are not
+initialized).
+---
+ ssl/ssl_quic.c  |   7 --
+ ssl/tls13_enc.c | 216 +++++++++++++++++++++++++++++++-----------------
+ 2 files changed, 139 insertions(+), 84 deletions(-)
+
+diff --git a/ssl/ssl_quic.c b/ssl/ssl_quic.c
+index a76c24eac6..670deea5ab 100644
+--- a/ssl/ssl_quic.c
++++ b/ssl/ssl_quic.c
+@@ -199,7 +199,6 @@ int quic_set_encryption_secrets(SSL *ssl, OSSL_ENCRYPTION_LEVEL level)
      uint8_t *s2c_secret = NULL;
      size_t len;
      const EVP_MD *md;
@@ -9,7 +23,7 @@ diff -up openssl-3.1.0-beta1/ssl/ssl_quic.c.16~ openssl-3.1.0-beta1/ssl/ssl_quic
  
      if (!SSL_IS_QUIC(ssl))
          return 1;
-@@ -240,12 +239,6 @@ int quic_set_encryption_secrets(SSL *ssl
+@@ -240,12 +239,6 @@ int quic_set_encryption_secrets(SSL *ssl, OSSL_ENCRYPTION_LEVEL level)
          return 0;
      }
  
@@ -22,30 +36,33 @@ diff -up openssl-3.1.0-beta1/ssl/ssl_quic.c.16~ openssl-3.1.0-beta1/ssl/ssl_quic
      if (ssl->server) {
          if (!ssl->quic_method->set_encryption_secrets(ssl, level, c2s_secret,
                                                        s2c_secret, len)) {
-diff -up openssl-3.1.0-beta1/ssl/tls13_enc.c.16~ openssl-3.1.0-beta1/ssl/tls13_enc.c
---- openssl-3.1.0-beta1/ssl/tls13_enc.c.16~	2023-03-02 22:50:17.789276393 +0100
-+++ openssl-3.1.0-beta1/ssl/tls13_enc.c	2023-03-02 22:53:05.180497676 +0100
-@@ -385,24 +385,143 @@ static int derive_secret_key_and_iv(SSL
+diff --git a/ssl/tls13_enc.c b/ssl/tls13_enc.c
+index 4d89eb314e..1f7b27d4f4 100644
+--- a/ssl/tls13_enc.c
++++ b/ssl/tls13_enc.c
+@@ -385,24 +385,144 @@ static int derive_secret_key_and_iv(SSL *s, int sending, const EVP_MD *md,
      return 1;
  }
  
-+/* ASCII: "c e traffic", in hex for EBCDIC compatibility */
-+static const unsigned char client_early_traffic[] = "\x63\x20\x65\x20\x74\x72\x61\x66\x66\x69\x63";
-+/* ASCII: "c hs traffic", in hex for EBCDIC compatibility */
-+static const unsigned char client_handshake_traffic[] = "\x63\x20\x68\x73\x20\x74\x72\x61\x66\x66\x69\x63";
-+/* ASCII: "c ap traffic", in hex for EBCDIC compatibility */
-+static const unsigned char client_application_traffic[] = "\x63\x20\x61\x70\x20\x74\x72\x61\x66\x66\x69\x63";
-+/* ASCII: "s hs traffic", in hex for EBCDIC compatibility */
-+static const unsigned char server_handshake_traffic[] = "\x73\x20\x68\x73\x20\x74\x72\x61\x66\x66\x69\x63";
-+/* ASCII: "s ap traffic", in hex for EBCDIC compatibility */
-+static const unsigned char server_application_traffic[] = "\x73\x20\x61\x70\x20\x74\x72\x61\x66\x66\x69\x63";
-+/* ASCII: "exp master", in hex for EBCDIC compatibility */
-+static const unsigned char exporter_master_secret[] = "\x65\x78\x70\x20\x6D\x61\x73\x74\x65\x72";
-+/* ASCII: "res master", in hex for EBCDIC compatibility */
-+static const unsigned char resumption_master_secret[] = "\x72\x65\x73\x20\x6D\x61\x73\x74\x65\x72";
-+/* ASCII: "e exp master", in hex for EBCDIC compatibility */
-+static const unsigned char early_exporter_master_secret[] = "\x65\x20\x65\x78\x70\x20\x6D\x61\x73\x74\x65\x72";
-+
++#ifdef CHARSET_EBCDIC
++static const unsigned char client_early_traffic[]       = {0x63, 0x20, 0x65, 0x20,       /*traffic*/0x74, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x00};
++static const unsigned char client_handshake_traffic[]   = {0x63, 0x20, 0x68, 0x73, 0x20, /*traffic*/0x74, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x00};
++static const unsigned char client_application_traffic[] = {0x63, 0x20, 0x61, 0x70, 0x20, /*traffic*/0x74, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x00};
++static const unsigned char server_handshake_traffic[]   = {0x73, 0x20, 0x68, 0x73, 0x20, /*traffic*/0x74, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x00};
++static const unsigned char server_application_traffic[] = {0x73, 0x20, 0x61, 0x70, 0x20, /*traffic*/0x74, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x00};
++static const unsigned char exporter_master_secret[] = {0x65, 0x78, 0x70, 0x20,                    /* master*/  0x6D, 0x61, 0x73, 0x74, 0x65, 0x72, 0x00};
++static const unsigned char resumption_master_secret[] = {0x72, 0x65, 0x73, 0x20,                  /* master*/  0x6D, 0x61, 0x73, 0x74, 0x65, 0x72, 0x00};
++static const unsigned char early_exporter_master_secret[] = {0x65, 0x20, 0x65, 0x78, 0x70, 0x20,  /* master*/  0x6D, 0x61, 0x73, 0x74, 0x65, 0x72, 0x00};
++#else
++static const unsigned char client_early_traffic[] = "c e traffic";
++static const unsigned char client_handshake_traffic[] = "c hs traffic";
++static const unsigned char client_application_traffic[] = "c ap traffic";
++static const unsigned char server_handshake_traffic[] = "s hs traffic";
++static const unsigned char server_application_traffic[] = "s ap traffic";
++static const unsigned char exporter_master_secret[] = "exp master";
++static const unsigned char resumption_master_secret[] = "res master";
++static const unsigned char early_exporter_master_secret[] = "e exp master";
++#endif
 +#ifndef OPENSSL_NO_QUIC
 +static int quic_change_cipher_state(SSL *s, int which)
 +{
@@ -163,7 +180,6 @@ diff -up openssl-3.1.0-beta1/ssl/tls13_enc.c.16~ openssl-3.1.0-beta1/ssl/tls13_e
 +    return ret;
 +}
 +#endif /* OPENSSL_NO_QUIC */
-+
  int tls13_change_cipher_state(SSL *s, int which)
  {
 -    /* ASCII: "c e traffic", in hex for EBCDIC compatibility */
@@ -185,7 +201,7 @@ diff -up openssl-3.1.0-beta1/ssl/tls13_enc.c.16~ openssl-3.1.0-beta1/ssl/tls13_e
      unsigned char *iv;
      unsigned char key[EVP_MAX_KEY_LENGTH];
      unsigned char secret[EVP_MAX_MD_SIZE];
-@@ -422,8 +541,10 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -422,8 +542,10 @@ int tls13_change_cipher_state(SSL *s, int which)
      ktls_crypto_info_t crypto_info;
      BIO *bio;
  #endif
@@ -197,7 +213,7 @@ diff -up openssl-3.1.0-beta1/ssl/tls13_enc.c.16~ openssl-3.1.0-beta1/ssl/tls13_e
  #endif
  
      if (which & SSL3_CC_READ) {
-@@ -470,9 +591,6 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -470,9 +592,6 @@ int tls13_change_cipher_state(SSL *s, int which)
              label = client_early_traffic;
              labellen = sizeof(client_early_traffic) - 1;
              log_label = CLIENT_EARLY_LABEL;
@@ -207,7 +223,7 @@ diff -up openssl-3.1.0-beta1/ssl/tls13_enc.c.16~ openssl-3.1.0-beta1/ssl/tls13_e
  
              handlen = BIO_get_mem_data(s->s3.handshake_buffer, &hdata);
              if (handlen <= 0) {
-@@ -549,14 +667,6 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -549,14 +668,6 @@ int tls13_change_cipher_state(SSL *s, int which)
                  /* SSLfatal() already called */
                  goto err;
              }
@@ -222,7 +238,7 @@ diff -up openssl-3.1.0-beta1/ssl/tls13_enc.c.16~ openssl-3.1.0-beta1/ssl/tls13_e
          } else if (which & SSL3_CC_HANDSHAKE) {
              insecret = s->handshake_secret;
              finsecret = s->client_finished_secret;
-@@ -564,15 +674,6 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -564,15 +675,6 @@ int tls13_change_cipher_state(SSL *s, int which)
              label = client_handshake_traffic;
              labellen = sizeof(client_handshake_traffic) - 1;
              log_label = CLIENT_HANDSHAKE_LABEL;
@@ -238,7 +254,7 @@ diff -up openssl-3.1.0-beta1/ssl/tls13_enc.c.16~ openssl-3.1.0-beta1/ssl/tls13_e
              /*
               * The handshake hash used for the server read/client write handshake
               * traffic secret is the same as the hash for the server
-@@ -595,15 +696,6 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -595,15 +697,6 @@ int tls13_change_cipher_state(SSL *s, int which)
               * previously saved value.
               */
              hash = s->server_finished_hash;
@@ -254,7 +270,7 @@ diff -up openssl-3.1.0-beta1/ssl/tls13_enc.c.16~ openssl-3.1.0-beta1/ssl/tls13_e
          }
      } else {
          /* Early data never applies to client-read/server-write */
-@@ -614,29 +706,11 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -614,29 +707,11 @@ int tls13_change_cipher_state(SSL *s, int which)
              label = server_handshake_traffic;
              labellen = sizeof(server_handshake_traffic) - 1;
              log_label = SERVER_HANDSHAKE_LABEL;
@@ -284,7 +300,7 @@ diff -up openssl-3.1.0-beta1/ssl/tls13_enc.c.16~ openssl-3.1.0-beta1/ssl/tls13_e
          }
      }
  
-@@ -705,14 +779,6 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -705,14 +780,6 @@ int tls13_change_cipher_state(SSL *s, int which)
          }
      } else if (label == client_application_traffic)
          memcpy(s->client_app_traffic_secret, secret, hashlen);
@@ -299,7 +315,7 @@ diff -up openssl-3.1.0-beta1/ssl/tls13_enc.c.16~ openssl-3.1.0-beta1/ssl/tls13_e
  
      if (!ssl_log_secret(s, log_label, secret, hashlen)) {
          /* SSLfatal() already called */
-@@ -773,11 +839,6 @@ skip_ktls:
+@@ -773,11 +840,6 @@ skip_ktls:
  # endif
  #endif
  
@@ -311,3 +327,6 @@ diff -up openssl-3.1.0-beta1/ssl/tls13_enc.c.16~ openssl-3.1.0-beta1/ssl/tls13_e
      ret = 1;
   err:
      if ((which & SSL3_CC_EARLY) != 0) {
+-- 
+2.42.0
+

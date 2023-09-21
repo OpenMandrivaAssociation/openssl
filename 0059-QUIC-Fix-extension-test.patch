@@ -1,7 +1,7 @@
-From 736a01dc37f9d3eae60f175eb571111303feddcd Mon Sep 17 00:00:00 2001
+From d1ac5c28b113f9faebea2eadca9520bac580f931 Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Tue, 1 Nov 2022 12:55:46 -0400
-Subject: [PATCH 59/60] QUIC: Fix extension test
+Subject: [PATCH 59/63] QUIC: Fix extension test
 
 ---
  ssl/ssl_local.h          | 4 ++--
@@ -9,7 +9,7 @@ Subject: [PATCH 59/60] QUIC: Fix extension test
  2 files changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/ssl/ssl_local.h b/ssl/ssl_local.h
-index 74b4319df4..51c4a77a9e 100644
+index 3fb1f0956f..93f77f9612 100644
 --- a/ssl/ssl_local.h
 +++ b/ssl/ssl_local.h
 @@ -773,8 +773,8 @@ typedef enum tlsext_index_en {
@@ -42,5 +42,5 @@ index dec6ee61ef..769b25391d 100644
      EXT_ENTRY(psk),
      EXT_END(num_builtins)
 -- 
-2.40.0.rc0
+2.42.0
 

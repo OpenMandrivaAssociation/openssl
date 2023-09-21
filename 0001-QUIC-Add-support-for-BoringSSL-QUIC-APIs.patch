@@ -1,6 +1,78 @@
-diff -up openssl-3.1.2/Configure.2~ openssl-3.1.2/Configure
---- openssl-3.1.2/Configure.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/Configure	2023-08-02 16:23:10.043104323 +0200
+From bcf0f1690bd031c2945e2875d03b7617a9dfafc7 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Fri, 12 Apr 2019 11:13:25 -0400
+Subject: [PATCH 01/63] QUIC: Add support for BoringSSL QUIC APIs
+
+This adds a compatible API for BoringSSL's QUIC support, based
+on the current |draft-ietf-quic-tls|.
+
+Based on BoringSSL commit 3c034b2cf386b3131f75520705491871a2e0cafe
+Based on BoringSSL commit c8e0f90f83b9ec38ea833deb86b5a41360b62b6a
+Based on BoringSSL commit 3cbb0299a28a8bd0136257251a78b91a96c5eec8
+Based on BoringSSL commit cc9d935256539af2d3b7f831abf57c0d685ffd81
+Based on BoringSSL commit e6eef1ca16a022e476bbaedffef044597cfc8f4b
+Based on BoringSSL commit 6f733791148cf8a076bf0e95498235aadbe5926d
+Based on BoringSSL commit 384d0eaf1930af1ebc47eda751f0c78dfcba1c03
+Based on BoringSSL commit a0373182eb5cc7b81d49f434596b473c7801c942
+Based on BoringSSL commit b1b76aee3cb43ce11889403c5334283d951ebd37
+---
+ CHANGES.md                           |   6 +
+ Configure                            |   2 +
+ INSTALL.md                           |   4 +
+ crypto/err/openssl.txt               |   2 +
+ doc/man3/SSL_CIPHER_get_name.pod     |  13 ++
+ doc/man3/SSL_CTX_set_quic_method.pod | 232 +++++++++++++++++++++++++
+ include/openssl/evp.h                |   5 +
+ include/openssl/ssl.h.in             |  45 +++++
+ include/openssl/sslerr.h             |   2 +
+ include/openssl/tls1.h               |   3 +
+ include/openssl/types.h              |   2 +
+ ssl/build.info                       |   2 +
+ ssl/s3_msg.c                         |  10 ++
+ ssl/ssl_ciph.c                       |  32 ++++
+ ssl/ssl_err.c                        |   3 +
+ ssl/ssl_lib.c                        |  41 ++++-
+ ssl/ssl_local.h                      |  37 ++++
+ ssl/ssl_quic.c                       | 248 +++++++++++++++++++++++++++
+ ssl/statem/extensions.c              |  29 ++++
+ ssl/statem/extensions_clnt.c         |  48 ++++++
+ ssl/statem/extensions_srvr.c         |  51 ++++++
+ ssl/statem/statem.c                  |  20 ++-
+ ssl/statem/statem_lib.c              |  19 +-
+ ssl/statem/statem_local.h            |  19 ++
+ ssl/statem/statem_quic.c             | 106 ++++++++++++
+ ssl/tls13_enc.c                      |  59 +++++++
+ test/helpers/ssltestlib.c            |   5 +
+ test/sslapitest.c                    | 140 +++++++++++++++
+ test/tls13secretstest.c              |   7 +
+ util/libssl.num                      |  11 ++
+ util/other.syms                      |   2 +
+ 31 files changed, 1199 insertions(+), 6 deletions(-)
+ create mode 100644 doc/man3/SSL_CTX_set_quic_method.pod
+ create mode 100644 ssl/ssl_quic.c
+ create mode 100644 ssl/statem/statem_quic.c
+
+diff --git a/CHANGES.md b/CHANGES.md
+index 4fcb606ee3..be8707649d 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -264,6 +264,12 @@ breaking changes, and mappings for the large list of deprecated functions.
+ 
+ [Migration guide]: https://github.com/openssl/openssl/tree/master/doc/man7/migration_guide.pod
+ 
++### Changes between 3.0.8 and 3.0.8+quic [7 Feb 2023]
++
++ * Add QUIC API support from BoringSSL.
++
++   *Todd Short*
++
+ ### Changes between 3.0.7 and 3.0.8 [7 Feb 2023]
+ 
+  * Fixed NULL dereference during PKCS7 data verification.
+diff --git a/Configure b/Configure
+index 227e5daea2..bd4e0943bf 100755
+--- a/Configure
++++ b/Configure
 @@ -467,6 +467,7 @@ my @disablables = (
      "poly1305",
      "posix-io",
@@ -17,9 +89,10 @@ diff -up openssl-3.1.2/Configure.2~ openssl-3.1.2/Configure
  
      "fips"              => [ "fips-securitychecks", "acvp-tests" ],
  
-diff -up openssl-3.1.2/INSTALL.md.2~ openssl-3.1.2/INSTALL.md
---- openssl-3.1.2/INSTALL.md.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/INSTALL.md	2023-08-02 16:23:10.044104332 +0200
+diff --git a/INSTALL.md b/INSTALL.md
+index d13517873c..8268ae86b0 100644
+--- a/INSTALL.md
++++ b/INSTALL.md
 @@ -823,6 +823,10 @@ Don't use POSIX IO capabilities.
  
  Don't build support for Pre-Shared Key based ciphersuites.
@@ -31,10 +104,11 @@ diff -up openssl-3.1.2/INSTALL.md.2~ openssl-3.1.2/INSTALL.md
  ### no-rdrand
  
  Don't use hardware RDRAND capabilities.
-diff -up openssl-3.1.2/crypto/err/openssl.txt.2~ openssl-3.1.2/crypto/err/openssl.txt
---- openssl-3.1.2/crypto/err/openssl.txt.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/crypto/err/openssl.txt	2023-08-02 16:23:10.043104323 +0200
-@@ -1262,6 +1262,7 @@ SSL_R_AT_LEAST_TLS_1_2_NEEDED_IN_SUITEB_
+diff --git a/crypto/err/openssl.txt b/crypto/err/openssl.txt
+index fe4fdd4bf2..b2f90a413a 100644
+--- a/crypto/err/openssl.txt
++++ b/crypto/err/openssl.txt
+@@ -1262,6 +1262,7 @@ SSL_R_AT_LEAST_TLS_1_2_NEEDED_IN_SUITEB_MODE:158:\
  SSL_R_BAD_CHANGE_CIPHER_SPEC:103:bad change cipher spec
  SSL_R_BAD_CIPHER:186:bad cipher
  SSL_R_BAD_DATA:390:bad data
@@ -42,7 +116,7 @@ diff -up openssl-3.1.2/crypto/err/openssl.txt.2~ openssl-3.1.2/crypto/err/openss
  SSL_R_BAD_DATA_RETURNED_BY_CALLBACK:106:bad data returned by callback
  SSL_R_BAD_DECOMPRESSION:107:bad decompression
  SSL_R_BAD_DH_VALUE:102:bad dh value
-@@ -1549,6 +1550,7 @@ SSL_R_VERSION_TOO_LOW:396:version too lo
+@@ -1549,6 +1550,7 @@ SSL_R_VERSION_TOO_LOW:396:version too low
  SSL_R_WRONG_CERTIFICATE_TYPE:383:wrong certificate type
  SSL_R_WRONG_CIPHER_RETURNED:261:wrong cipher returned
  SSL_R_WRONG_CURVE:378:wrong curve
@@ -50,9 +124,10 @@ diff -up openssl-3.1.2/crypto/err/openssl.txt.2~ openssl-3.1.2/crypto/err/openss
  SSL_R_WRONG_SIGNATURE_LENGTH:264:wrong signature length
  SSL_R_WRONG_SIGNATURE_SIZE:265:wrong signature size
  SSL_R_WRONG_SIGNATURE_TYPE:370:wrong signature type
-diff -up openssl-3.1.2/doc/man3/SSL_CIPHER_get_name.pod.2~ openssl-3.1.2/doc/man3/SSL_CIPHER_get_name.pod
---- openssl-3.1.2/doc/man3/SSL_CIPHER_get_name.pod.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/doc/man3/SSL_CIPHER_get_name.pod	2023-08-02 16:23:10.043104323 +0200
+diff --git a/doc/man3/SSL_CIPHER_get_name.pod b/doc/man3/SSL_CIPHER_get_name.pod
+index e22a85a063..7f00f09d67 100644
+--- a/doc/man3/SSL_CIPHER_get_name.pod
++++ b/doc/man3/SSL_CIPHER_get_name.pod
 @@ -13,6 +13,7 @@ SSL_CIPHER_get_digest_nid,
  SSL_CIPHER_get_handshake_digest,
  SSL_CIPHER_get_kx_nid,
@@ -69,7 +144,7 @@ diff -up openssl-3.1.2/doc/man3/SSL_CIPHER_get_name.pod.2~ openssl-3.1.2/doc/man
   int SSL_CIPHER_is_aead(const SSL_CIPHER *c);
   const SSL_CIPHER *SSL_CIPHER_find(SSL *ssl, const unsigned char *ptr);
   uint32_t SSL_CIPHER_get_id(const SSL_CIPHER *c);
-@@ -91,6 +93,15 @@ TLS 1.3 cipher suites) B<NID_auth_any> i
+@@ -91,6 +93,15 @@ TLS 1.3 cipher suites) B<NID_auth_any> is returned. Examples (not comprehensive)
   NID_auth_ecdsa
   NID_auth_psk
  
@@ -94,9 +169,11 @@ diff -up openssl-3.1.2/doc/man3/SSL_CIPHER_get_name.pod.2~ openssl-3.1.2/doc/man
  =head1 COPYRIGHT
  
  Copyright 2000-2021 The OpenSSL Project Authors. All Rights Reserved.
-diff -up openssl-3.1.2/doc/man3/SSL_CTX_set_quic_method.pod.2~ openssl-3.1.2/doc/man3/SSL_CTX_set_quic_method.pod
---- openssl-3.1.2/doc/man3/SSL_CTX_set_quic_method.pod.2~	2023-08-02 16:23:10.043104323 +0200
-+++ openssl-3.1.2/doc/man3/SSL_CTX_set_quic_method.pod	2023-08-02 16:23:10.043104323 +0200
+diff --git a/doc/man3/SSL_CTX_set_quic_method.pod b/doc/man3/SSL_CTX_set_quic_method.pod
+new file mode 100644
+index 0000000000..d938eb4e30
+--- /dev/null
++++ b/doc/man3/SSL_CTX_set_quic_method.pod
 @@ -0,0 +1,232 @@
 +=pod
 +
@@ -330,10 +407,11 @@ diff -up openssl-3.1.2/doc/man3/SSL_CTX_set_quic_method.pod.2~ openssl-3.1.2/doc
 +L<https://www.openssl.org/source/license.html>.
 +
 +=cut
-diff -up openssl-3.1.2/include/openssl/evp.h.2~ openssl-3.1.2/include/openssl/evp.h
---- openssl-3.1.2/include/openssl/evp.h.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/include/openssl/evp.h	2023-08-02 16:23:10.043104323 +0200
-@@ -1742,6 +1742,11 @@ int EVP_PKEY_CTX_set_mac_key(EVP_PKEY_CT
+diff --git a/include/openssl/evp.h b/include/openssl/evp.h
+index 86f4e22c70..8479f665f5 100644
+--- a/include/openssl/evp.h
++++ b/include/openssl/evp.h
+@@ -1742,6 +1742,11 @@ int EVP_PKEY_CTX_set_mac_key(EVP_PKEY_CTX *ctx, const unsigned char *key,
   * Method handles all operations: don't assume any digest related defaults.
   */
  # define EVP_PKEY_FLAG_SIGCTX_CUSTOM     4
@@ -345,9 +423,10 @@ diff -up openssl-3.1.2/include/openssl/evp.h.2~ openssl-3.1.2/include/openssl/ev
  # ifndef OPENSSL_NO_DEPRECATED_3_0
  OSSL_DEPRECATEDIN_3_0 const EVP_PKEY_METHOD *EVP_PKEY_meth_find(int type);
  OSSL_DEPRECATEDIN_3_0 EVP_PKEY_METHOD *EVP_PKEY_meth_new(int id, int flags);
-diff -up openssl-3.1.2/include/openssl/ssl.h.in.2~ openssl-3.1.2/include/openssl/ssl.h.in
---- openssl-3.1.2/include/openssl/ssl.h.in.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/include/openssl/ssl.h.in	2023-08-02 16:23:10.044104332 +0200
+diff --git a/include/openssl/ssl.h.in b/include/openssl/ssl.h.in
+index f03f52fbd8..e2e31bce9b 100644
+--- a/include/openssl/ssl.h.in
++++ b/include/openssl/ssl.h.in
 @@ -2524,6 +2524,51 @@ void SSL_set_allow_early_data_cb(SSL *s,
  const char *OSSL_default_cipher_list(void);
  const char *OSSL_default_ciphersuites(void);
@@ -400,9 +479,10 @@ diff -up openssl-3.1.2/include/openssl/ssl.h.in.2~ openssl-3.1.2/include/openssl
  # ifdef  __cplusplus
  }
  # endif
-diff -up openssl-3.1.2/include/openssl/sslerr.h.2~ openssl-3.1.2/include/openssl/sslerr.h
---- openssl-3.1.2/include/openssl/sslerr.h.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/include/openssl/sslerr.h	2023-08-02 16:23:10.044104332 +0200
+diff --git a/include/openssl/sslerr.h b/include/openssl/sslerr.h
+index f1882558ba..d60c892037 100644
+--- a/include/openssl/sslerr.h
++++ b/include/openssl/sslerr.h
 @@ -28,6 +28,7 @@
  # define SSL_R_BAD_CHANGE_CIPHER_SPEC                     103
  # define SSL_R_BAD_CIPHER                                 186
@@ -419,9 +499,10 @@ diff -up openssl-3.1.2/include/openssl/sslerr.h.2~ openssl-3.1.2/include/openssl
  # define SSL_R_WRONG_SIGNATURE_LENGTH                     264
  # define SSL_R_WRONG_SIGNATURE_SIZE                       265
  # define SSL_R_WRONG_SIGNATURE_TYPE                       370
-diff -up openssl-3.1.2/include/openssl/tls1.h.2~ openssl-3.1.2/include/openssl/tls1.h
---- openssl-3.1.2/include/openssl/tls1.h.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/include/openssl/tls1.h	2023-08-02 16:23:10.044104332 +0200
+diff --git a/include/openssl/tls1.h b/include/openssl/tls1.h
+index 793155e186..c4f80dc332 100644
+--- a/include/openssl/tls1.h
++++ b/include/openssl/tls1.h
 @@ -151,6 +151,9 @@ extern "C" {
  /* Temporary extension type */
  # define TLSEXT_TYPE_renegotiate                 0xff01
@@ -432,10 +513,11 @@ diff -up openssl-3.1.2/include/openssl/tls1.h.2~ openssl-3.1.2/include/openssl/t
  # ifndef OPENSSL_NO_NEXTPROTONEG
  /* This is not an IANA defined extension number */
  #  define TLSEXT_TYPE_next_proto_neg              13172
-diff -up openssl-3.1.2/include/openssl/types.h.2~ openssl-3.1.2/include/openssl/types.h
---- openssl-3.1.2/include/openssl/types.h.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/include/openssl/types.h	2023-08-02 16:23:10.044104332 +0200
-@@ -232,6 +232,8 @@ typedef struct ossl_decoder_ctx_st OSSL_
+diff --git a/include/openssl/types.h b/include/openssl/types.h
+index 5f9d8c23ea..31d8c18746 100644
+--- a/include/openssl/types.h
++++ b/include/openssl/types.h
+@@ -232,6 +232,8 @@ typedef struct ossl_decoder_ctx_st OSSL_DECODER_CTX;
  
  typedef struct ossl_self_test_st OSSL_SELF_TEST;
  
@@ -444,9 +526,10 @@ diff -up openssl-3.1.2/include/openssl/types.h.2~ openssl-3.1.2/include/openssl/
  #ifdef  __cplusplus
  }
  #endif
-diff -up openssl-3.1.2/ssl/build.info.2~ openssl-3.1.2/ssl/build.info
---- openssl-3.1.2/ssl/build.info.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/build.info	2023-08-02 16:23:10.044104332 +0200
+diff --git a/ssl/build.info b/ssl/build.info
+index 0851357f81..ac87437906 100644
+--- a/ssl/build.info
++++ b/ssl/build.info
 @@ -38,6 +38,8 @@ IF[{- !$disabled{'deprecated-3.0'} -}]
    SOURCE[../libssl]=ssl_rsa_legacy.c
  ENDIF
@@ -456,9 +539,10 @@ diff -up openssl-3.1.2/ssl/build.info.2~ openssl-3.1.2/ssl/build.info
  DEFINE[../libssl]=$AESDEF
  
  SOURCE[../providers/libcommon.a]=record/tls_pad.c
-diff -up openssl-3.1.2/ssl/s3_msg.c.2~ openssl-3.1.2/ssl/s3_msg.c
---- openssl-3.1.2/ssl/s3_msg.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/s3_msg.c	2023-08-02 16:23:10.045104341 +0200
+diff --git a/ssl/s3_msg.c b/ssl/s3_msg.c
+index c0f0dbc17d..667c5385e8 100644
+--- a/ssl/s3_msg.c
++++ b/ssl/s3_msg.c
 @@ -81,6 +81,16 @@ int ssl3_dispatch_alert(SSL *s)
  
      s->s3.alert_dispatch = 0;
@@ -476,10 +560,11 @@ diff -up openssl-3.1.2/ssl/s3_msg.c.2~ openssl-3.1.2/ssl/s3_msg.c
      i = do_ssl3_write(s, SSL3_RT_ALERT, &s->s3.send_alert[0], &alertlen, 1, 0,
                        &written);
      if (i <= 0) {
-diff -up openssl-3.1.2/ssl/ssl_ciph.c.2~ openssl-3.1.2/ssl/ssl_ciph.c
---- openssl-3.1.2/ssl/ssl_ciph.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/ssl_ciph.c	2023-08-02 16:23:10.045104341 +0200
-@@ -2244,3 +2244,35 @@ const char *OSSL_default_ciphersuites(vo
+diff --git a/ssl/ssl_ciph.c b/ssl/ssl_ciph.c
+index 93de9cf8fd..deb68b4062 100644
+--- a/ssl/ssl_ciph.c
++++ b/ssl/ssl_ciph.c
+@@ -2244,3 +2244,35 @@ const char *OSSL_default_ciphersuites(void)
             "TLS_CHACHA20_POLY1305_SHA256:"
             "TLS_AES_128_GCM_SHA256";
  }
@@ -515,10 +600,11 @@ diff -up openssl-3.1.2/ssl/ssl_ciph.c.2~ openssl-3.1.2/ssl/ssl_ciph.c
 +    }
 +    return NID_undef;
 +}
-diff -up openssl-3.1.2/ssl/ssl_err.c.2~ openssl-3.1.2/ssl/ssl_err.c
---- openssl-3.1.2/ssl/ssl_err.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/ssl_err.c	2023-08-02 16:23:10.045104341 +0200
-@@ -27,6 +27,7 @@ static const ERR_STRING_DATA SSL_str_rea
+diff --git a/ssl/ssl_err.c b/ssl/ssl_err.c
+index 84ee821c3c..0c4d1c1332 100644
+--- a/ssl/ssl_err.c
++++ b/ssl/ssl_err.c
+@@ -27,6 +27,7 @@ static const ERR_STRING_DATA SSL_str_reasons[] = {
      "bad change cipher spec"},
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_BAD_CIPHER), "bad cipher"},
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_BAD_DATA), "bad data"},
@@ -526,7 +612,7 @@ diff -up openssl-3.1.2/ssl/ssl_err.c.2~ openssl-3.1.2/ssl/ssl_err.c
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_BAD_DATA_RETURNED_BY_CALLBACK),
      "bad data returned by callback"},
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_BAD_DECOMPRESSION), "bad decompression"},
-@@ -544,6 +545,8 @@ static const ERR_STRING_DATA SSL_str_rea
+@@ -544,6 +545,8 @@ static const ERR_STRING_DATA SSL_str_reasons[] = {
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_WRONG_CIPHER_RETURNED),
      "wrong cipher returned"},
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_WRONG_CURVE), "wrong curve"},
@@ -535,9 +621,10 @@ diff -up openssl-3.1.2/ssl/ssl_err.c.2~ openssl-3.1.2/ssl/ssl_err.c
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_WRONG_SIGNATURE_LENGTH),
      "wrong signature length"},
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_WRONG_SIGNATURE_SIZE),
-diff -up openssl-3.1.2/ssl/ssl_lib.c.2~ openssl-3.1.2/ssl/ssl_lib.c
---- openssl-3.1.2/ssl/ssl_lib.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/ssl_lib.c	2023-08-02 16:23:10.046104350 +0200
+diff --git a/ssl/ssl_lib.c b/ssl/ssl_lib.c
+index f12ad6d034..6b7633e8a5 100644
+--- a/ssl/ssl_lib.c
++++ b/ssl/ssl_lib.c
 @@ -842,6 +842,10 @@ SSL *SSL_new(SSL_CTX *ctx)
  
      s->job = NULL;
@@ -581,7 +668,7 @@ diff -up openssl-3.1.2/ssl/ssl_lib.c.2~ openssl-3.1.2/ssl/ssl_lib.c
      if (s->handshake_func == NULL) {
          ERR_raise(ERR_LIB_SSL, SSL_R_UNINITIALIZED);
          return -1;
-@@ -1965,6 +1987,12 @@ int SSL_get_early_data_status(const SSL
+@@ -1965,6 +1987,12 @@ int SSL_get_early_data_status(const SSL *s)
  
  static int ssl_peek_internal(SSL *s, void *buf, size_t num, size_t *readbytes)
  {
@@ -594,7 +681,7 @@ diff -up openssl-3.1.2/ssl/ssl_lib.c.2~ openssl-3.1.2/ssl/ssl_lib.c
      if (s->handshake_func == NULL) {
          ERR_raise(ERR_LIB_SSL, SSL_R_UNINITIALIZED);
          return -1;
-@@ -2025,6 +2053,12 @@ int SSL_peek_ex(SSL *s, void *buf, size_
+@@ -2025,6 +2053,12 @@ int SSL_peek_ex(SSL *s, void *buf, size_t num, size_t *readbytes)
  
  int ssl_write_internal(SSL *s, const void *buf, size_t num, size_t *written)
  {
@@ -619,7 +706,7 @@ diff -up openssl-3.1.2/ssl/ssl_lib.c.2~ openssl-3.1.2/ssl/ssl_lib.c
          bio = SSL_get_rbio(s);
          if (BIO_should_read(bio))
              return SSL_ERROR_WANT_READ;
-@@ -4206,7 +4245,7 @@ EVP_PKEY *SSL_CTX_get0_privatekey(const
+@@ -4206,7 +4245,7 @@ EVP_PKEY *SSL_CTX_get0_privatekey(const SSL_CTX *ctx)
  
  const SSL_CIPHER *SSL_get_current_cipher(const SSL *s)
  {
@@ -628,9 +715,10 @@ diff -up openssl-3.1.2/ssl/ssl_lib.c.2~ openssl-3.1.2/ssl/ssl_lib.c
          return s->session->cipher;
      return NULL;
  }
-diff -up openssl-3.1.2/ssl/ssl_local.h.2~ openssl-3.1.2/ssl/ssl_local.h
---- openssl-3.1.2/ssl/ssl_local.h.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/ssl_local.h	2023-08-02 16:23:10.046104350 +0200
+diff --git a/ssl/ssl_local.h b/ssl/ssl_local.h
+index 845329a809..3e67b36990 100644
+--- a/ssl/ssl_local.h
++++ b/ssl/ssl_local.h
 @@ -337,6 +337,13 @@
  /* Flag used on OpenSSL ciphersuite ids to indicate they are for SSLv3+ */
  # define SSL3_CK_CIPHERSUITE_FLAG                0x03000000
@@ -702,9 +790,11 @@ diff -up openssl-3.1.2/ssl/ssl_local.h.2~ openssl-3.1.2/ssl/ssl_local.h
      /*
       * Parsed form of the ClientHello, kept around across client_hello_cb
       * calls.
-diff -up openssl-3.1.2/ssl/ssl_quic.c.2~ openssl-3.1.2/ssl/ssl_quic.c
---- openssl-3.1.2/ssl/ssl_quic.c.2~	2023-08-02 16:23:10.046104350 +0200
-+++ openssl-3.1.2/ssl/ssl_quic.c	2023-08-02 16:23:10.046104350 +0200
+diff --git a/ssl/ssl_quic.c b/ssl/ssl_quic.c
+new file mode 100644
+index 0000000000..a39e4419c9
+--- /dev/null
++++ b/ssl/ssl_quic.c
 @@ -0,0 +1,248 @@
 +/*
 + * Copyright 2019 The OpenSSL Project Authors. All Rights Reserved.
@@ -954,10 +1044,11 @@ diff -up openssl-3.1.2/ssl/ssl_quic.c.2~ openssl-3.1.2/ssl/ssl_quic.c
 +}
 +
 +#endif
-diff -up openssl-3.1.2/ssl/statem/extensions.c.2~ openssl-3.1.2/ssl/statem/extensions.c
---- openssl-3.1.2/ssl/statem/extensions.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/statem/extensions.c	2023-08-02 16:23:10.046104350 +0200
-@@ -58,6 +58,10 @@ static int final_early_data(SSL *s, unsi
+diff --git a/ssl/statem/extensions.c b/ssl/statem/extensions.c
+index e182b5abac..d8fa8e6913 100644
+--- a/ssl/statem/extensions.c
++++ b/ssl/statem/extensions.c
+@@ -58,6 +58,10 @@ static int final_early_data(SSL *s, unsigned int context, int sent);
  static int final_maxfragmentlen(SSL *s, unsigned int context, int sent);
  static int init_post_handshake_auth(SSL *s, unsigned int context);
  static int final_psk(SSL *s, unsigned int context, int sent);
@@ -968,7 +1059,7 @@ diff -up openssl-3.1.2/ssl/statem/extensions.c.2~ openssl-3.1.2/ssl/statem/exten
  
  /* Structure to define a built-in extension */
  typedef struct extensions_definition_st {
-@@ -369,6 +373,19 @@ static const EXTENSION_DEFINITION ext_de
+@@ -369,6 +373,19 @@ static const EXTENSION_DEFINITION ext_defs[] = {
          tls_construct_certificate_authorities,
          tls_construct_certificate_authorities, NULL,
      },
@@ -988,7 +1079,7 @@ diff -up openssl-3.1.2/ssl/statem/extensions.c.2~ openssl-3.1.2/ssl/statem/exten
      {
          /* Must be immediately before pre_shared_key */
          TLSEXT_TYPE_padding,
-@@ -1724,3 +1741,15 @@ static int final_psk(SSL *s, unsigned in
+@@ -1724,3 +1741,15 @@ static int final_psk(SSL *s, unsigned int context, int sent)
  
      return 1;
  }
@@ -1004,10 +1095,11 @@ diff -up openssl-3.1.2/ssl/statem/extensions.c.2~ openssl-3.1.2/ssl/statem/exten
 +    return 1;
 +}
 +#endif
-diff -up openssl-3.1.2/ssl/statem/extensions_clnt.c.2~ openssl-3.1.2/ssl/statem/extensions_clnt.c
---- openssl-3.1.2/ssl/statem/extensions_clnt.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/statem/extensions_clnt.c	2023-08-02 16:23:10.046104350 +0200
-@@ -1196,7 +1196,29 @@ EXT_RETURN tls_construct_ctos_post_hands
+diff --git a/ssl/statem/extensions_clnt.c b/ssl/statem/extensions_clnt.c
+index 842be0722b..52742dc36a 100644
+--- a/ssl/statem/extensions_clnt.c
++++ b/ssl/statem/extensions_clnt.c
+@@ -1196,7 +1196,29 @@ EXT_RETURN tls_construct_ctos_post_handshake_auth(SSL *s, WPACKET *pkt,
  #endif
  }
  
@@ -1021,7 +1113,7 @@ diff -up openssl-3.1.2/ssl/statem/extensions_clnt.c.2~ openssl-3.1.2/ssl/statem/
 +        || s->ext.quic_transport_params_len == 0) {
 +        return EXT_RETURN_NOT_SENT;
 +    }
-+
+ 
 +    if (!WPACKET_put_bytes_u16(pkt, TLSEXT_TYPE_quic_transport_parameters)
 +            || !WPACKET_start_sub_packet_u16(pkt)
 +            || !WPACKET_sub_memcpy_u16(pkt, s->ext.quic_transport_params,
@@ -1030,14 +1122,14 @@ diff -up openssl-3.1.2/ssl/statem/extensions_clnt.c.2~ openssl-3.1.2/ssl/statem/
 +        SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
 +        return EXT_RETURN_FAIL;
 +    }
- 
++
 +    return EXT_RETURN_SENT;
 +}
 +#endif
  /*
   * Parse the server's renegotiation binding and abort if it's not right
   */
-@@ -1981,3 +2003,29 @@ int tls_parse_stoc_psk(SSL *s, PACKET *p
+@@ -1981,3 +2003,29 @@ int tls_parse_stoc_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
  
      return 1;
  }
@@ -1067,10 +1159,11 @@ diff -up openssl-3.1.2/ssl/statem/extensions_clnt.c.2~ openssl-3.1.2/ssl/statem/
 +    return 1;
 +}
 +#endif
-diff -up openssl-3.1.2/ssl/statem/extensions_srvr.c.2~ openssl-3.1.2/ssl/statem/extensions_srvr.c
---- openssl-3.1.2/ssl/statem/extensions_srvr.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/statem/extensions_srvr.c	2023-08-02 16:23:10.047104358 +0200
-@@ -1232,6 +1232,33 @@ int tls_parse_ctos_post_handshake_auth(S
+diff --git a/ssl/statem/extensions_srvr.c b/ssl/statem/extensions_srvr.c
+index 00b1ee531e..929e272cd9 100644
+--- a/ssl/statem/extensions_srvr.c
++++ b/ssl/statem/extensions_srvr.c
+@@ -1232,6 +1232,33 @@ int tls_parse_ctos_post_handshake_auth(SSL *s, PACKET *pkt,
      return 1;
  }
  
@@ -1104,7 +1197,7 @@ diff -up openssl-3.1.2/ssl/statem/extensions_srvr.c.2~ openssl-3.1.2/ssl/statem/
  /*
   * Add the server's renegotiation binding
   */
-@@ -1914,3 +1941,27 @@ EXT_RETURN tls_construct_stoc_psk(SSL *s
+@@ -1914,3 +1941,27 @@ EXT_RETURN tls_construct_stoc_psk(SSL *s, WPACKET *pkt, unsigned int context,
  
      return EXT_RETURN_SENT;
  }
@@ -1132,10 +1225,11 @@ diff -up openssl-3.1.2/ssl/statem/extensions_srvr.c.2~ openssl-3.1.2/ssl/statem/
 +    return EXT_RETURN_SENT;
 +}
 +#endif
-diff -up openssl-3.1.2/ssl/statem/statem.c.2~ openssl-3.1.2/ssl/statem/statem.c
---- openssl-3.1.2/ssl/statem/statem.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/statem/statem.c	2023-08-02 16:23:10.047104358 +0200
-@@ -583,6 +583,10 @@ static SUB_STATE_RETURN read_state_machi
+diff --git a/ssl/statem/statem.c b/ssl/statem/statem.c
+index 553546d93a..f6caa64e4c 100644
+--- a/ssl/statem/statem.c
++++ b/ssl/statem/statem.c
+@@ -583,6 +583,10 @@ static SUB_STATE_RETURN read_state_machine(SSL *s)
                   * In DTLS we get the whole message in one go - header and body
                   */
                  ret = dtls_get_message(s, &mt);
@@ -1146,7 +1240,7 @@ diff -up openssl-3.1.2/ssl/statem/statem.c.2~ openssl-3.1.2/ssl/statem/statem.c
              } else {
                  ret = tls_get_message_header(s, &mt);
              }
-@@ -612,8 +616,8 @@ static SUB_STATE_RETURN read_state_machi
+@@ -612,8 +616,8 @@ static SUB_STATE_RETURN read_state_machine(SSL *s)
                  return SUB_STATE_ERROR;
              }
  
@@ -1157,7 +1251,7 @@ diff -up openssl-3.1.2/ssl/statem/statem.c.2~ openssl-3.1.2/ssl/statem/statem.c
                      && s->s3.tmp.message_size > 0
                      && !grow_init_buf(s, s->s3.tmp.message_size
                                           + SSL3_HM_HEADER_LENGTH)) {
-@@ -631,7 +635,8 @@ static SUB_STATE_RETURN read_state_machi
+@@ -631,7 +635,8 @@ static SUB_STATE_RETURN read_state_machine(SSL *s)
                   * opportunity to do any further processing.
                   */
                  ret = dtls_get_message_body(s, &len);
@@ -1167,7 +1261,7 @@ diff -up openssl-3.1.2/ssl/statem/statem.c.2~ openssl-3.1.2/ssl/statem/statem.c
                  ret = tls_get_message_body(s, &len);
              }
              if (ret == 0) {
-@@ -921,6 +926,15 @@ static SUB_STATE_RETURN write_state_mach
+@@ -921,6 +926,15 @@ static SUB_STATE_RETURN write_state_machine(SSL *s)
  int statem_flush(SSL *s)
  {
      s->rwstate = SSL_WRITING;
@@ -1183,15 +1277,14 @@ diff -up openssl-3.1.2/ssl/statem/statem.c.2~ openssl-3.1.2/ssl/statem/statem.c
      if (BIO_flush(s->wbio) <= 0) {
          return 0;
      }
-diff -up openssl-3.1.2/ssl/statem/statem_lib.c.2~ openssl-3.1.2/ssl/statem/statem_lib.c
---- openssl-3.1.2/ssl/statem/statem_lib.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/statem/statem_lib.c	2023-08-02 16:28:14.290739614 +0200
-@@ -45,8 +45,23 @@ int ssl3_do_write(SSL *s, int type)
+diff --git a/ssl/statem/statem_lib.c b/ssl/statem/statem_lib.c
+index 25055df15c..65899e6b83 100644
+--- a/ssl/statem/statem_lib.c
++++ b/ssl/statem/statem_lib.c
+@@ -44,9 +44,23 @@ int ssl3_do_write(SSL *s, int type)
+ {
      int ret;
      size_t written = 0;
- 
--    ret = ssl3_write_bytes(s, type, &s->init_buf->data[s->init_off],
--                           s->init_num, &written);
 +#ifndef OPENSSL_NO_QUIC
 +    if (SSL_IS_QUIC(s) && type == SSL3_RT_HANDSHAKE) {
 +        ret = s->quic_method->add_handshake_data(s, s->quic_write_level,
@@ -1208,11 +1301,13 @@ diff -up openssl-3.1.2/ssl/statem/statem_lib.c.2~ openssl-3.1.2/ssl/statem/state
 +#endif
 +        ret = ssl3_write_bytes(s, type, &s->init_buf->data[s->init_off],
 +                               s->init_num, &written);
-+
+ 
+-    ret = ssl3_write_bytes(s, type, &s->init_buf->data[s->init_off],
+-                           s->init_num, &written);
      if (ret <= 0)
          return -1;
      if (type == SSL3_RT_HANDSHAKE)
-@@ -1163,6 +1178,7 @@ int tls_get_message_header(SSL *s, int *
+@@ -1163,6 +1177,7 @@ int tls_get_message_header(SSL *s, int *mt)
  
      do {
          while (s->init_num < SSL3_HM_HEADER_LENGTH) {
@@ -1220,10 +1315,11 @@ diff -up openssl-3.1.2/ssl/statem/statem_lib.c.2~ openssl-3.1.2/ssl/statem/state
              i = s->method->ssl_read_bytes(s, SSL3_RT_HANDSHAKE, &recvd_type,
                                            &p[s->init_num],
                                            SSL3_HM_HEADER_LENGTH - s->init_num,
-diff -up openssl-3.1.2/ssl/statem/statem_local.h.2~ openssl-3.1.2/ssl/statem/statem_local.h
---- openssl-3.1.2/ssl/statem/statem_local.h.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/statem/statem_local.h	2023-08-02 16:23:10.047104358 +0200
-@@ -104,6 +104,7 @@ __owur int tls_get_message_header(SSL *s
+diff --git a/ssl/statem/statem_local.h b/ssl/statem/statem_local.h
+index ad4d93b1e2..57e314512b 100644
+--- a/ssl/statem/statem_local.h
++++ b/ssl/statem/statem_local.h
+@@ -104,6 +104,7 @@ __owur int tls_get_message_header(SSL *s, int *mt);
  __owur int tls_get_message_body(SSL *s, size_t *len);
  __owur int dtls_get_message(SSL *s, int *mt);
  __owur int dtls_get_message_body(SSL *s, size_t *len);
@@ -1231,7 +1327,7 @@ diff -up openssl-3.1.2/ssl/statem/statem_local.h.2~ openssl-3.1.2/ssl/statem/sta
  
  /* Message construction and processing functions */
  __owur int tls_process_initial_server_flight(SSL *s);
-@@ -251,6 +252,10 @@ int tls_parse_ctos_psk(SSL *s, PACKET *p
+@@ -251,6 +252,10 @@ int tls_parse_ctos_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
                         size_t chainidx);
  int tls_parse_ctos_post_handshake_auth(SSL *, PACKET *pkt, unsigned int context,
                                         X509 *x, size_t chainidx);
@@ -1242,7 +1338,7 @@ diff -up openssl-3.1.2/ssl/statem/statem_local.h.2~ openssl-3.1.2/ssl/statem/sta
  
  EXT_RETURN tls_construct_stoc_renegotiate(SSL *s, WPACKET *pkt,
                                            unsigned int context, X509 *x,
-@@ -311,6 +316,11 @@ EXT_RETURN tls_construct_stoc_cryptopro_
+@@ -311,6 +316,11 @@ EXT_RETURN tls_construct_stoc_cryptopro_bug(SSL *s, WPACKET *pkt,
                                              size_t chainidx);
  EXT_RETURN tls_construct_stoc_psk(SSL *s, WPACKET *pkt, unsigned int context,
                                    X509 *x, size_t chainidx);
@@ -1254,7 +1350,7 @@ diff -up openssl-3.1.2/ssl/statem/statem_local.h.2~ openssl-3.1.2/ssl/statem/sta
  
  /* Client Extension processing */
  EXT_RETURN tls_construct_ctos_renegotiate(SSL *s, WPACKET *pkt, unsigned int context,
-@@ -380,6 +390,11 @@ EXT_RETURN tls_construct_ctos_psk(SSL *s
+@@ -380,6 +390,11 @@ EXT_RETURN tls_construct_ctos_psk(SSL *s, WPACKET *pkt, unsigned int context,
                                    X509 *x, size_t chainidx);
  EXT_RETURN tls_construct_ctos_post_handshake_auth(SSL *s, WPACKET *pkt, unsigned int context,
                                                    X509 *x, size_t chainidx);
@@ -1266,7 +1362,7 @@ diff -up openssl-3.1.2/ssl/statem/statem_local.h.2~ openssl-3.1.2/ssl/statem/sta
  
  int tls_parse_stoc_renegotiate(SSL *s, PACKET *pkt, unsigned int context,
                                 X509 *x, size_t chainidx);
-@@ -423,6 +438,10 @@ int tls_parse_stoc_cookie(SSL *s, PACKET
+@@ -423,6 +438,10 @@ int tls_parse_stoc_cookie(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
                         size_t chainidx);
  int tls_parse_stoc_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
                         size_t chainidx);
@@ -1277,9 +1373,11 @@ diff -up openssl-3.1.2/ssl/statem/statem_local.h.2~ openssl-3.1.2/ssl/statem/sta
  
  int tls_handle_alpn(SSL *s);
  
-diff -up openssl-3.1.2/ssl/statem/statem_quic.c.2~ openssl-3.1.2/ssl/statem/statem_quic.c
---- openssl-3.1.2/ssl/statem/statem_quic.c.2~	2023-08-02 16:23:10.048104367 +0200
-+++ openssl-3.1.2/ssl/statem/statem_quic.c	2023-08-02 16:23:10.048104367 +0200
+diff --git a/ssl/statem/statem_quic.c b/ssl/statem/statem_quic.c
+new file mode 100644
+index 0000000000..66acc30d6d
+--- /dev/null
++++ b/ssl/statem/statem_quic.c
 @@ -0,0 +1,106 @@
 +/*
 + * Copyright 2019 The OpenSSL Project Authors. All Rights Reserved.
@@ -1387,10 +1485,11 @@ diff -up openssl-3.1.2/ssl/statem/statem_quic.c.2~ openssl-3.1.2/ssl/statem/stat
 +}
 +
 +#endif
-diff -up openssl-3.1.2/ssl/tls13_enc.c.2~ openssl-3.1.2/ssl/tls13_enc.c
---- openssl-3.1.2/ssl/tls13_enc.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/ssl/tls13_enc.c	2023-08-02 16:23:10.048104367 +0200
-@@ -422,6 +422,9 @@ int tls13_change_cipher_state(SSL *s, in
+diff --git a/ssl/tls13_enc.c b/ssl/tls13_enc.c
+index 9ae2126e3c..b828b509f4 100644
+--- a/ssl/tls13_enc.c
++++ b/ssl/tls13_enc.c
+@@ -422,6 +422,9 @@ int tls13_change_cipher_state(SSL *s, int which)
      ktls_crypto_info_t crypto_info;
      BIO *bio;
  #endif
@@ -1400,7 +1499,7 @@ diff -up openssl-3.1.2/ssl/tls13_enc.c.2~ openssl-3.1.2/ssl/tls13_enc.c
  
      if (which & SSL3_CC_READ) {
          if (s->enc_read_ctx != NULL) {
-@@ -467,6 +470,9 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -467,6 +470,9 @@ int tls13_change_cipher_state(SSL *s, int which)
              label = client_early_traffic;
              labellen = sizeof(client_early_traffic) - 1;
              log_label = CLIENT_EARLY_LABEL;
@@ -1410,7 +1509,7 @@ diff -up openssl-3.1.2/ssl/tls13_enc.c.2~ openssl-3.1.2/ssl/tls13_enc.c
  
              handlen = BIO_get_mem_data(s->s3.handshake_buffer, &hdata);
              if (handlen <= 0) {
-@@ -526,6 +532,9 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -526,6 +532,9 @@ int tls13_change_cipher_state(SSL *s, int which)
                  goto err;
              }
              hashlen = hashlenui;
@@ -1420,7 +1519,7 @@ diff -up openssl-3.1.2/ssl/tls13_enc.c.2~ openssl-3.1.2/ssl/tls13_enc.c
              EVP_MD_CTX_free(mdctx);
  
              if (!tls13_hkdf_expand(s, md, insecret,
-@@ -543,6 +552,14 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -543,6 +552,14 @@ int tls13_change_cipher_state(SSL *s, int which)
                  /* SSLfatal() already called */
                  goto err;
              }
@@ -1435,7 +1534,7 @@ diff -up openssl-3.1.2/ssl/tls13_enc.c.2~ openssl-3.1.2/ssl/tls13_enc.c
          } else if (which & SSL3_CC_HANDSHAKE) {
              insecret = s->handshake_secret;
              finsecret = s->client_finished_secret;
-@@ -550,6 +567,15 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -550,6 +567,15 @@ int tls13_change_cipher_state(SSL *s, int which)
              label = client_handshake_traffic;
              labellen = sizeof(client_handshake_traffic) - 1;
              log_label = CLIENT_HANDSHAKE_LABEL;
@@ -1451,7 +1550,7 @@ diff -up openssl-3.1.2/ssl/tls13_enc.c.2~ openssl-3.1.2/ssl/tls13_enc.c
              /*
               * The handshake hash used for the server read/client write handshake
               * traffic secret is the same as the hash for the server
-@@ -572,6 +598,15 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -572,6 +598,15 @@ int tls13_change_cipher_state(SSL *s, int which)
               * previously saved value.
               */
              hash = s->server_finished_hash;
@@ -1467,7 +1566,7 @@ diff -up openssl-3.1.2/ssl/tls13_enc.c.2~ openssl-3.1.2/ssl/tls13_enc.c
          }
      } else {
          /* Early data never applies to client-read/server-write */
-@@ -582,11 +617,29 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -582,11 +617,29 @@ int tls13_change_cipher_state(SSL *s, int which)
              label = server_handshake_traffic;
              labellen = sizeof(server_handshake_traffic) - 1;
              log_label = SERVER_HANDSHAKE_LABEL;
@@ -1497,7 +1596,7 @@ diff -up openssl-3.1.2/ssl/tls13_enc.c.2~ openssl-3.1.2/ssl/tls13_enc.c
          }
      }
  
-@@ -714,6 +767,12 @@ int tls13_change_cipher_state(SSL *s, in
+@@ -714,6 +767,12 @@ int tls13_change_cipher_state(SSL *s, int which)
  skip_ktls:
  # endif
  #endif
@@ -1510,10 +1609,11 @@ diff -up openssl-3.1.2/ssl/tls13_enc.c.2~ openssl-3.1.2/ssl/tls13_enc.c
      ret = 1;
   err:
      if ((which & SSL3_CC_EARLY) != 0) {
-diff -up openssl-3.1.2/test/helpers/ssltestlib.c.2~ openssl-3.1.2/test/helpers/ssltestlib.c
---- openssl-3.1.2/test/helpers/ssltestlib.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/test/helpers/ssltestlib.c	2023-08-02 16:23:10.048104367 +0200
-@@ -1157,6 +1157,11 @@ int create_ssl_connection(SSL *serverssl
+diff --git a/test/helpers/ssltestlib.c b/test/helpers/ssltestlib.c
+index f0dccfa54c..c317e03d8e 100644
+--- a/test/helpers/ssltestlib.c
++++ b/test/helpers/ssltestlib.c
+@@ -1157,6 +1157,11 @@ int create_ssl_connection(SSL *serverssl, SSL *clientssl, int want)
      if (!create_bare_ssl_connection(serverssl, clientssl, want, 1))
          return 0;
  
@@ -1525,10 +1625,11 @@ diff -up openssl-3.1.2/test/helpers/ssltestlib.c.2~ openssl-3.1.2/test/helpers/s
      /*
       * We attempt to read some data on the client side which we expect to fail.
       * This will ensure we have received the NewSessionTicket in TLSv1.3 where
-diff -up openssl-3.1.2/test/sslapitest.c.2~ openssl-3.1.2/test/sslapitest.c
---- openssl-3.1.2/test/sslapitest.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/test/sslapitest.c	2023-08-02 16:33:09.523262533 +0200
-@@ -10095,6 +10095,7 @@ static int test_inherit_verify_param(voi
+diff --git a/test/sslapitest.c b/test/sslapitest.c
+index 45286653b9..b0bafe7549 100644
+--- a/test/sslapitest.c
++++ b/test/sslapitest.c
+@@ -10095,6 +10095,7 @@ static int test_inherit_verify_param(void)
      return testresult;
  }
  
@@ -1536,8 +1637,8 @@ diff -up openssl-3.1.2/test/sslapitest.c.2~ openssl-3.1.2/test/sslapitest.c
  static int test_load_dhfile(void)
  {
  #ifndef OPENSSL_NO_DH
-@@ -10605,6 +10606,140 @@ end:
-     return testresult;
+@@ -10130,9 +10131,144 @@ end:
+ #endif
  }
  
 +#ifndef OPENSSL_NO_QUIC
@@ -1593,7 +1694,7 @@ diff -up openssl-3.1.2/test/sslapitest.c.2~ openssl-3.1.2/test/sslapitest.c
 +    SSL_CTX *cctx = NULL, *sctx = NULL;
 +    SSL *clientssl = NULL, *serverssl = NULL;
 +    int testresult = 0;
-+
++	
 +    static const char *server_str = "SERVER";
 +    static const char *client_str = "CLIENT";
 +    const uint8_t *peer_str;
@@ -1664,8 +1765,8 @@ diff -up openssl-3.1.2/test/sslapitest.c.2~ openssl-3.1.2/test/sslapitest.c
 +
 +    testresult = 1;
 +
-+end:
-+    SSL_free(serverssl);
++ end:
++	SSL_free(serverssl);
 +    SSL_free(clientssl);
 +    SSL_CTX_free(sctx);
 +    SSL_CTX_free(cctx);
@@ -1674,10 +1775,22 @@ diff -up openssl-3.1.2/test/sslapitest.c.2~ openssl-3.1.2/test/sslapitest.c
 +}
 +#endif /* OPENSSL_NO_QUIC */
 +
- OPT_TEST_DECLARE_USAGE("certfile privkeyfile srpvfile tmpfile provider config dhfile\n")
+ #ifndef OSSL_NO_USABLE_TLS1_3
+ /* Test that read_ahead works across a key change */
+ static int test_read_ahead_key_change(void)
++
+ {
+     SSL_CTX *cctx = NULL, *sctx = NULL;
+     SSL *clientssl = NULL, *serverssl = NULL;
+@@ -10192,6 +10328,7 @@ end:
+     SSL_free(clientssl);
+     SSL_CTX_free(sctx);
+     SSL_CTX_free(cctx);
++
+     return testresult;
+ }
  
- int setup_tests(void)
-@@ -10902,6 +11037,9 @@ int setup_tests(void)
+@@ -10902,6 +11039,9 @@ int setup_tests(void)
      ADD_ALL_TESTS(test_pipelining, 6);
  #endif
      ADD_ALL_TESTS(test_handshake_retry, 16);
@@ -1687,9 +1800,10 @@ diff -up openssl-3.1.2/test/sslapitest.c.2~ openssl-3.1.2/test/sslapitest.c
      return 1;
  
   err:
-diff -up openssl-3.1.2/test/tls13secretstest.c.2~ openssl-3.1.2/test/tls13secretstest.c
---- openssl-3.1.2/test/tls13secretstest.c.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/test/tls13secretstest.c	2023-08-02 16:23:10.049104376 +0200
+diff --git a/test/tls13secretstest.c b/test/tls13secretstest.c
+index bf214d3d5b..8323b23778 100644
+--- a/test/tls13secretstest.c
++++ b/test/tls13secretstest.c
 @@ -224,6 +224,13 @@ void ssl_evp_md_free(const EVP_MD *md)
  {
  }
@@ -1704,10 +1818,11 @@ diff -up openssl-3.1.2/test/tls13secretstest.c.2~ openssl-3.1.2/test/tls13secret
  /* End of mocked out code */
  
  static int test_secret(SSL *s, unsigned char *prk,
-diff -up openssl-3.1.2/util/libssl.num.2~ openssl-3.1.2/util/libssl.num
---- openssl-3.1.2/util/libssl.num.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/util/libssl.num	2023-08-02 16:23:10.050104384 +0200
-@@ -520,3 +520,14 @@ SSL_load_client_CA_file_ex
+diff --git a/util/libssl.num b/util/libssl.num
+index f055c967bf..72ee0bedc6 100644
+--- a/util/libssl.num
++++ b/util/libssl.num
+@@ -520,3 +520,14 @@ SSL_load_client_CA_file_ex              520	3_0_0	EXIST::FUNCTION:
  SSL_set0_tmp_dh_pkey                    521	3_0_0	EXIST::FUNCTION:
  SSL_CTX_set0_tmp_dh_pkey                522	3_0_0	EXIST::FUNCTION:
  SSL_group_to_name                       523	3_0_0	EXIST::FUNCTION:
@@ -1722,10 +1837,11 @@ diff -up openssl-3.1.2/util/libssl.num.2~ openssl-3.1.2/util/libssl.num
 +SSL_quic_max_handshake_flight_len       20008	3_0_0	EXIST::FUNCTION:QUIC
 +SSL_process_quic_post_handshake         20009	3_0_0	EXIST::FUNCTION:QUIC
 +SSL_provide_quic_data                   20010	3_0_0	EXIST::FUNCTION:QUIC
-diff -up openssl-3.1.2/util/other.syms.2~ openssl-3.1.2/util/other.syms
---- openssl-3.1.2/util/other.syms.2~	2023-08-01 15:36:55.000000000 +0200
-+++ openssl-3.1.2/util/other.syms	2023-08-02 16:23:10.050104384 +0200
-@@ -142,6 +142,8 @@ custom_ext_free_cb
+diff --git a/util/other.syms b/util/other.syms
+index cdd62e81d0..baba363337 100644
+--- a/util/other.syms
++++ b/util/other.syms
+@@ -142,6 +142,8 @@ custom_ext_free_cb                      datatype
  custom_ext_parse_cb                     datatype
  pem_password_cb                         datatype
  ssl_ct_validation_cb                    datatype
@@ -1734,3 +1850,6 @@ diff -up openssl-3.1.2/util/other.syms.2~ openssl-3.1.2/util/other.syms
  #
  ASN1_BIT_STRING_digest                  define
  BIO_append_filename                     define
+-- 
+2.42.0
+

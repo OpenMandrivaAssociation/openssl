@@ -1,17 +1,17 @@
-From ec643afc2c88c7cd16dbf0bae22a48d79df18b8d Mon Sep 17 00:00:00 2001
+From fd4b090efe5e7034742d2a326de313b2f7cedf28 Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Fri, 30 Aug 2019 11:38:56 -0400
-Subject: [PATCH 16/60] QUIC: Tweeks to quic_change_cipher_state()
+Subject: [PATCH 16/63] QUIC: Tweeks to quic_change_cipher_state()
 
 ---
  ssl/tls13_enc.c | 69 +++++++++++++++++--------------------------------
  1 file changed, 24 insertions(+), 45 deletions(-)
 
 diff --git a/ssl/tls13_enc.c b/ssl/tls13_enc.c
-index 3c41e514b6..56652e0dff 100644
+index 1f7b27d4f4..5e472044b0 100644
 --- a/ssl/tls13_enc.c
 +++ b/ssl/tls13_enc.c
-@@ -448,33 +448,18 @@ static int quic_change_cipher_state(SSL *s, int which)
+@@ -433,33 +433,18 @@ static int quic_change_cipher_state(SSL *s, int which)
      }
      hashlen = (size_t)hashleni;
  
@@ -51,7 +51,7 @@ index 3c41e514b6..56652e0dff 100644
                  /* SSLfatal() already called */
                  goto err;
              }
-@@ -483,26 +468,20 @@ static int quic_change_cipher_state(SSL *s, int which)
+@@ -468,26 +453,20 @@ static int quic_change_cipher_state(SSL *s, int which)
  
              if (!tls13_hkdf_expand(s, md, s->master_secret, client_application_traffic,
                                     sizeof(client_application_traffic)-1, hash, hashlen,
@@ -88,7 +88,7 @@ index 3c41e514b6..56652e0dff 100644
          if (s->server)
              s->quic_write_level = level;
          else
-@@ -513,24 +492,24 @@ static int quic_change_cipher_state(SSL *s, int which)
+@@ -498,24 +477,24 @@ static int quic_change_cipher_state(SSL *s, int which)
  
              if (!tls13_hkdf_expand(s, md, s->early_secret, client_early_traffic,
                                     sizeof(client_early_traffic)-1, hash, hashlen,
@@ -122,5 +122,5 @@ index 3c41e514b6..56652e0dff 100644
   err:
      return ret;
 -- 
-2.40.0.rc0
+2.42.0
 

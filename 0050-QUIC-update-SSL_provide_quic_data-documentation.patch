@@ -1,7 +1,7 @@
-From 4183e946ab37e709e5dcd11028359ec95ff457d8 Mon Sep 17 00:00:00 2001
+From 49c1562e8d9ecba4239405abb1426bdfe11b82f7 Mon Sep 17 00:00:00 2001
 From: Benjamin Kaduk <bkaduk@akamai.com>
 Date: Tue, 7 Sep 2021 09:17:39 -0700
-Subject: [PATCH 50/60] QUIC: update SSL_provide_quic_data() documentation
+Subject: [PATCH 50/63] QUIC: update SSL_provide_quic_data() documentation
 
 We now let you call this function outside of the handshake, to provide
 post-handshake QUIC data.
@@ -30,5 +30,5 @@ index b9191a0264..b2d78872ca 100644
  SSL_process_quic_post_handshake() processes any data that QUIC has provided
  after the handshake has completed. This includes NewSessionTicket messages
 -- 
-2.40.0.rc0
+2.42.0
 

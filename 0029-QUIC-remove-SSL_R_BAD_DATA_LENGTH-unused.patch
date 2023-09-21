@@ -1,7 +1,7 @@
-From 67b6fddc568aa5e4ad241267eb66b49db7fa26e0 Mon Sep 17 00:00:00 2001
+From 43a80891c0e95614481d6f25e21922813d76f0b7 Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Fri, 19 Feb 2021 10:12:15 -0500
-Subject: [PATCH 29/60] QUIC: remove SSL_R_BAD_DATA_LENGTH (unused)
+Subject: [PATCH 29/63] QUIC: remove SSL_R_BAD_DATA_LENGTH (unused)
 
 ---
  crypto/err/openssl.txt   | 1 -
@@ -10,10 +10,10 @@ Subject: [PATCH 29/60] QUIC: remove SSL_R_BAD_DATA_LENGTH (unused)
  3 files changed, 3 deletions(-)
 
 diff --git a/crypto/err/openssl.txt b/crypto/err/openssl.txt
-index 50642161d6..b1e997e950 100644
+index 0394c10077..3ad6ccf87c 100644
 --- a/crypto/err/openssl.txt
 +++ b/crypto/err/openssl.txt
-@@ -1244,7 +1244,6 @@ SSL_R_AT_LEAST_TLS_1_2_NEEDED_IN_SUITEB_MODE:158:\
+@@ -1262,7 +1262,6 @@ SSL_R_AT_LEAST_TLS_1_2_NEEDED_IN_SUITEB_MODE:158:\
  SSL_R_BAD_CHANGE_CIPHER_SPEC:103:bad change cipher spec
  SSL_R_BAD_CIPHER:186:bad cipher
  SSL_R_BAD_DATA:390:bad data
@@ -22,7 +22,7 @@ index 50642161d6..b1e997e950 100644
  SSL_R_BAD_DECOMPRESSION:107:bad decompression
  SSL_R_BAD_DH_VALUE:102:bad dh value
 diff --git a/include/openssl/sslerr.h b/include/openssl/sslerr.h
-index 05cb3d5173..3d07ecc813 100644
+index 058ef308d8..2281d68bb3 100644
 --- a/include/openssl/sslerr.h
 +++ b/include/openssl/sslerr.h
 @@ -28,7 +28,6 @@
@@ -34,7 +34,7 @@ index 05cb3d5173..3d07ecc813 100644
  # define SSL_R_BAD_DECOMPRESSION                          107
  # define SSL_R_BAD_DH_VALUE                               102
 diff --git a/ssl/ssl_err.c b/ssl/ssl_err.c
-index 486cc57993..79c2ed95c1 100644
+index ca981ac62b..4635c82fd1 100644
 --- a/ssl/ssl_err.c
 +++ b/ssl/ssl_err.c
 @@ -27,7 +27,6 @@ static const ERR_STRING_DATA SSL_str_reasons[] = {
@@ -46,5 +46,5 @@ index 486cc57993..79c2ed95c1 100644
      "bad data returned by callback"},
      {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_BAD_DECOMPRESSION), "bad decompression"},
 -- 
-2.40.0.rc0
+2.42.0
 

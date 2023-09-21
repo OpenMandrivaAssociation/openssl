@@ -1,7 +1,7 @@
-From 15f6122829f7666eec2121ffefd2c2b73c230b6e Mon Sep 17 00:00:00 2001
+From 12f5f6d298f043d13f552725bc101c3de859c227 Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Tue, 7 Sep 2021 12:26:10 -0400
-Subject: [PATCH 47/60] QUIC: Update RFC references
+Subject: [PATCH 47/63] QUIC: Update RFC references
 
 ---
  doc/man3/SSL_CTX_set_quic_method.pod | 11 +++++------
@@ -56,7 +56,7 @@ index 906c7591d9..e38f1d2124 100644
  various parameters and the rules for their processing.
  
 diff --git a/include/openssl/tls1.h b/include/openssl/tls1.h
-index 2669203a28..40ac50e975 100644
+index 54b6621aa3..ee96842e94 100644
 --- a/include/openssl/tls1.h
 +++ b/include/openssl/tls1.h
 @@ -151,7 +151,7 @@ extern "C" {
@@ -82,7 +82,7 @@ index 6da3cc560f..e7c54e633e 100644
          if (s->quic_method != NULL && max_early_data != 0xFFFFFFFF) {
              SSLfatal(s, SSL_AD_ILLEGAL_PARAMETER, SSL_R_INVALID_MAX_EARLY_DATA);
 diff --git a/ssl/statem/extensions_srvr.c b/ssl/statem/extensions_srvr.c
-index 7ad1ec5630..ed53b28aba 100644
+index c23b35593f..a90d15d7df 100644
 --- a/ssl/statem/extensions_srvr.c
 +++ b/ssl/statem/extensions_srvr.c
 @@ -1911,7 +1911,7 @@ EXT_RETURN tls_construct_stoc_early_data(SSL *s, WPACKET *pkt,
@@ -108,5 +108,5 @@ index 36cbba2a50..f9235d4160 100644
              *confunc = NULL;
              *mt = SSL3_MT_DUMMY;
 -- 
-2.40.0.rc0
+2.42.0
 

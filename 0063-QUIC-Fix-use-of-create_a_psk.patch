@@ -1,0 +1,25 @@
+From ee904e9093c377d0919a65dae9e06530c4459c6b Mon Sep 17 00:00:00 2001
+From: Todd Short <todd.short@me.com>
+Date: Tue, 1 Aug 2023 13:59:55 -0400
+Subject: [PATCH 63/63] QUIC: Fix use of create_a_psk
+
+---
+ test/sslapitest.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/test/sslapitest.c b/test/sslapitest.c
+index 5d2a754043..18d7941d2d 100644
+--- a/test/sslapitest.c
++++ b/test/sslapitest.c
+@@ -10395,7 +10395,7 @@ static int quic_setupearly_data_test(SSL_CTX **cctx, SSL_CTX **sctx,
+         return 0;
+ 
+     if (idx == 2) {
+-        clientpsk = create_a_psk(*clientssl);
++      clientpsk = create_a_psk(*clientssl, SHA384_DIGEST_LENGTH);
+         if (!TEST_ptr(clientpsk)
+                 || !TEST_true(SSL_SESSION_set_max_early_data(clientpsk,
+                                                              0xffffffffu))
+-- 
+2.42.0
+

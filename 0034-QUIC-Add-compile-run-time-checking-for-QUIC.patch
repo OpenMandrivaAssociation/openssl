@@ -1,7 +1,7 @@
-From b7d0687819a4c53243cc73c45b5a7db79f678eff Mon Sep 17 00:00:00 2001
+From 14347b7d94207b9e44a39889aaf84809f674de81 Mon Sep 17 00:00:00 2001
 From: Todd Short <todd.short@me.com>
 Date: Fri, 5 Mar 2021 15:22:18 -0500
-Subject: [PATCH 34/60] QUIC: Add compile/run-time checking for QUIC
+Subject: [PATCH 34/63] QUIC: Add compile/run-time checking for QUIC
 
 ---
  apps/info.c                  | 12 ++++++++++++
@@ -48,10 +48,10 @@ index c68603652f..f0f043b7f2 100644
      }
      if (opt_num_rest() != 0)
 diff --git a/crypto/info.c b/crypto/info.c
-index a0dc2e8013..480bb7e6af 100644
+index 9ef9ee4704..f8a495e098 100644
 --- a/crypto/info.c
 +++ b/crypto/info.c
-@@ -199,6 +199,10 @@ const char *OPENSSL_info(int t)
+@@ -203,6 +203,10 @@ const char *OPENSSL_info(int t)
          if (ossl_cpu_info_str[0] != '\0')
              return ossl_cpu_info_str + strlen(CPUINFO_PREFIX);
          break;
@@ -82,7 +82,7 @@ index e1cf16e2a1..946bb151ba 100644
  
  For an unknown I<t>, NULL is returned.
 diff --git a/include/openssl/crypto.h.in b/include/openssl/crypto.h.in
-index 7232f647e8..53a3758e89 100644
+index fb0c7cbb87..6eca308b32 100644
 --- a/include/openssl/crypto.h.in
 +++ b/include/openssl/crypto.h.in
 @@ -176,6 +176,10 @@ const char *OPENSSL_info(int type);
@@ -97,5 +97,5 @@ index 7232f647e8..53a3758e89 100644
  
  struct crypto_ex_data_st {
 -- 
-2.40.0.rc0
+2.42.0
 

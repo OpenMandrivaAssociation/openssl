@@ -1,7 +1,7 @@
-From af07ef29ad16fdc44f31b3cbae116e7ca57c73cb Mon Sep 17 00:00:00 2001
+From b3b6db9ea45d45ccf064c06fe20f876844f6ef83 Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Mon, 26 Aug 2019 13:14:19 -0400
-Subject: [PATCH 07/60] QUIC: Fix duplicate word in docs
+Subject: [PATCH 07/63] QUIC: Fix duplicate word in docs
 
 ---
  doc/man3/SSL_CTX_set_quic_method.pod | 2 +-
@@ -21,5 +21,5 @@ index d938eb4e30..60bf704944 100644
  used to limit buffering in the QUIC implementation.
  
 -- 
-2.40.0.rc0
+2.42.0
 

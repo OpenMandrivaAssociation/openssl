@@ -1,7 +1,7 @@
-From 30029d2bc5bff4a8eeb18f340a5fdea658121be1 Mon Sep 17 00:00:00 2001
+From 50edeee44a1aed9eb5e819859aa3e561f307aaa0 Mon Sep 17 00:00:00 2001
 From: kaduk <kaduk-github@mit.edu>
 Date: Fri, 12 Mar 2021 13:03:14 -0800
-Subject: [PATCH 38/60] QUIC: Tighten up some language in
+Subject: [PATCH 38/63] QUIC: Tighten up some language in
  SSL_CTX_set_quic_method.pod (#18)
 
 ---
@@ -28,5 +28,5 @@ index 86eb257e91..906c7591d9 100644
  =head1 NOTES
  
 -- 
-2.40.0.rc0
+2.42.0
 

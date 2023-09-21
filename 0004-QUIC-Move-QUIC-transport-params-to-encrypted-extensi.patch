@@ -1,7 +1,7 @@
-From c67f65cc5efdccd3c1840056960b9b3fe1a554de Mon Sep 17 00:00:00 2001
+From 796c5cd87644b07d7bd079388cc6495b2731b266 Mon Sep 17 00:00:00 2001
 From: Todd Short <tshort@akamai.com>
 Date: Thu, 15 Aug 2019 11:35:10 -0400
-Subject: [PATCH 04/60] QUIC: Move QUIC transport params to encrypted
+Subject: [PATCH 04/63] QUIC: Move QUIC transport params to encrypted
  extensions
 
 ---
@@ -9,10 +9,10 @@ Subject: [PATCH 04/60] QUIC: Move QUIC transport params to encrypted
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/ssl/statem/extensions.c b/ssl/statem/extensions.c
-index 4a2fcf0e3a..9a7245eb79 100644
+index d8fa8e6913..548772be6d 100644
 --- a/ssl/statem/extensions.c
 +++ b/ssl/statem/extensions.c
-@@ -377,7 +377,7 @@ static const EXTENSION_DEFINITION ext_defs[] = {
+@@ -376,7 +376,7 @@ static const EXTENSION_DEFINITION ext_defs[] = {
  #ifndef OPENSSL_NO_QUIC
      {
          TLSEXT_TYPE_quic_transport_parameters,
@@ -22,5 +22,5 @@ index 4a2fcf0e3a..9a7245eb79 100644
          init_quic_transport_params,
          tls_parse_ctos_quic_transport_params, tls_parse_stoc_quic_transport_params,
 -- 
-2.40.0.rc0
+2.42.0
 

@@ -1,7 +1,7 @@
-From e27d130644032b62b6ab1cb9a4622e4a99c0cb3d Mon Sep 17 00:00:00 2001
+From e0900dbdeb1888fdb65af501ad8454463ef9a214 Mon Sep 17 00:00:00 2001
 From: Benjamin Kaduk <bkaduk@akamai.com>
 Date: Tue, 7 Sep 2021 09:17:56 -0700
-Subject: [PATCH 51/60] QUIC: expound on what DoS attacks QUIC avoids
+Subject: [PATCH 51/63] QUIC: expound on what DoS attacks QUIC avoids
 
 The limit on the amount of queued data is to avoid being an amplification
 vector, specifically.
@@ -25,5 +25,5 @@ index b2d78872ca..1ed076c301 100644
  encryption level.
  
 -- 
-2.40.0.rc0
+2.42.0
 

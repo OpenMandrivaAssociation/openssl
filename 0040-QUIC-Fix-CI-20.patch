@@ -1,7 +1,7 @@
-From a746e924ad14b39bcc8d5cde7038e9c06944e9c6 Mon Sep 17 00:00:00 2001
+From 523bacebab18d0d0d5649a6096a4190ea733b518 Mon Sep 17 00:00:00 2001
 From: Todd Short <tmshort@users.noreply.github.com>
 Date: Thu, 18 Mar 2021 12:42:01 -0400
-Subject: [PATCH 40/60] QUIC: Fix CI (#20)
+Subject: [PATCH 40/63] QUIC: Fix CI (#20)
 
 Fixes #2 and #3 and #22
 
@@ -16,7 +16,7 @@ Fixes an issue with extension defintions and `no-quic`
  4 files changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/Configure b/Configure
-index 01a59d91f9..26ad8aff46 100755
+index bd4e0943bf..2b37fd497a 100755
 --- a/Configure
 +++ b/Configure
 @@ -578,6 +578,7 @@ my @disable_cascades = (
@@ -37,7 +37,7 @@ index 01a59d91f9..26ad8aff46 100755
      "sock"              => [ "dgram" ],
      "dtls"              => [ @dtls ],
 diff --git a/doc/build.info b/doc/build.info
-index ec8778f2ac..91de84cbed 100644
+index 00dc150721..8f7186d89b 100644
 --- a/doc/build.info
 +++ b/doc/build.info
 @@ -2263,6 +2263,10 @@ DEPEND[html/man3/SSL_CTX_set_psk_client_callback.html]=man3/SSL_CTX_set_psk_clie
@@ -68,10 +68,10 @@ index ec8778f2ac..91de84cbed 100644
  man/man3/SSL_CTX_set_read_ahead.3 \
  man/man3/SSL_CTX_set_record_padding_callback.3 \
 diff --git a/ssl/statem/extensions.c b/ssl/statem/extensions.c
-index 0d245516d4..2f8b80fb6f 100644
+index 34ba69e85e..a972f3be26 100644
 --- a/ssl/statem/extensions.c
 +++ b/ssl/statem/extensions.c
-@@ -396,6 +396,7 @@ static const EXTENSION_DEFINITION ext_defs[] = {
+@@ -395,6 +395,7 @@ static const EXTENSION_DEFINITION ext_defs[] = {
      },
  #else
      INVALID_EXTENSION,
@@ -80,7 +80,7 @@ index 0d245516d4..2f8b80fb6f 100644
      {
          /* Must be immediately before pre_shared_key */
 diff --git a/ssl/statem/extensions_srvr.c b/ssl/statem/extensions_srvr.c
-index bb16bb9436..7ad1ec5630 100644
+index bfab225651..c23b35593f 100644
 --- a/ssl/statem/extensions_srvr.c
 +++ b/ssl/statem/extensions_srvr.c
 @@ -1912,7 +1912,7 @@ EXT_RETURN tls_construct_stoc_early_data(SSL *s, WPACKET *pkt,
@@ -93,5 +93,5 @@ index bb16bb9436..7ad1ec5630 100644
  #endif
  
 -- 
-2.40.0.rc0
+2.42.0
 

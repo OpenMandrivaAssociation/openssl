@@ -1,7 +1,7 @@
-From ca7881bf731efbdb4f1d90580236733fe17defa9 Mon Sep 17 00:00:00 2001
+From 6f0a1d5c216d28997e1fd4590b194e70a921779d Mon Sep 17 00:00:00 2001
 From: Benjamin Kaduk <bkaduk@akamai.com>
 Date: Tue, 7 Sep 2021 14:21:22 -0700
-Subject: [PATCH 53/60] QUIC: use SSL_IS_QUIC() in more places
+Subject: [PATCH 53/63] QUIC: use SSL_IS_QUIC() in more places
 
 ---
  doc/man3/SSL_CTX_set_quic_method.pod | 2 +-
@@ -49,5 +49,5 @@ index f9235d4160..9d925091b6 100644
              *mt = SSL3_MT_DUMMY;
              break;
 -- 
-2.40.0.rc0
+2.42.0
 
