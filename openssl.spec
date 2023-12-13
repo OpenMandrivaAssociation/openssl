@@ -221,10 +221,10 @@ arm*)
 	TARGET=%{_target_os}-armv4
 	;;
 riscv32)
-	TARGET=%{_target_os}-generic32
+	TARGET=%{_target_os}32-riscv32
 	;;
 riscv64)
-	TARGET=%{_target_os}-generic64
+	TARGET=%{_target_os}64-riscv64
 	;;
 i*86|pentium*|athlon*)
 	TARGET=%{_target_os}-x86
@@ -233,7 +233,11 @@ i*86|pentium*|athlon*)
 	TARGET=%{_target_os}-%{_arch}
 	;;
 esac
+# There's no separate linux64-riscv64-clang target, but
+# linux64-riscv64 works with clang
+%ifnarch %{riscv64}
 echo %{__cc} |grep -q clang && TARGET="${TARGET}-clang"
+%endif
 
 %if %{with compat32}
 export CFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing -m32 -isystem %{_includedir}"
