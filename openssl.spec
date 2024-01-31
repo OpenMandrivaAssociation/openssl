@@ -30,7 +30,7 @@
 %define static32 libopenssl-static-devel
 
 Name:		openssl
-Version:	3.2.0
+Version:	3.2.1
 Release:	%{?beta:0.%{beta}.}1
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
@@ -268,6 +268,8 @@ cd build
 %if %{with pgo}
 export LD_LIBRARY_PATH="$(pwd)"
 
+CC="%{__cc}" \
+CXX="%{__cxx}" \
 CFLAGS="$CFLAGS -fprofile-generate %{pollyflags}" \
 CXXFLAGS="%{optflags} -fprofile-generate %{pollyflags}" \
 LDFLAGS="$LDFLAGS -fprofile-generate" \
