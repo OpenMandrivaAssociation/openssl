@@ -1791,7 +1791,7 @@ index 45286653b9..b0bafe7549 100644
  }
  
 @@ -10902,6 +11039,9 @@ int setup_tests(void)
-     ADD_ALL_TESTS(test_pipelining, 6);
+     ADD_ALL_TESTS(test_pipelining, 7);
  #endif
      ADD_ALL_TESTS(test_handshake_retry, 16);
 +#ifndef OPENSSL_NO_QUIC
