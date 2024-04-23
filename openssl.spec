@@ -30,7 +30,7 @@
 %define static32 libopenssl-static-devel
 
 Name:		openssl
-Version:	3.2.1
+Version:	3.3.0
 Release:	%{?beta:0.%{beta}.}1
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
@@ -126,6 +126,7 @@ Development files for OpenSSL.
 %{_libdir}/pkgconfig/libssl.pc
 %{_libdir}/pkgconfig/openssl.pc
 %doc %{_docdir}/openssl
+%{_libdir}/cmake/OpenSSL
 
 %package -n %{static}
 Summary:	Static libraries for OpenSSL
@@ -179,6 +180,7 @@ Development files for OpenSSL.
 %{_prefix}/lib/pkgconfig/libcrypto.pc
 %{_prefix}/lib/pkgconfig/libssl.pc
 %{_prefix}/lib/pkgconfig/openssl.pc
+%{_prefix}/lib/cmake/OpenSSL
 
 %package -n %{static32}
 Summary:	Static libraries for OpenSSL (32-bit)
