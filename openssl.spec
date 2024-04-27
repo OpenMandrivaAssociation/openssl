@@ -245,6 +245,8 @@ echo %{__cc} |grep -q clang && TARGET="${TARGET}-clang"
 export CFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing -m32 -isystem %{_includedir}"
 export LDFLAGS="%(echo %{optflags} |sed -e 's,-mx32,,g;s,-m64,,g;s,-flto,,g') -fno-strict-aliasing -m32"
 
+cp build.info build.info.orig
+sed -i -e 's,LIBDIR=,LIBDIR=lib,g' build.info
 mkdir build32
 cd build32
 ../Configure \
@@ -256,8 +258,10 @@ cd build32
 
 %make_build
 cd ..
+mv -f build.info.orig build.info
 %endif
 
+sed -i -e 's,LIBDIR=,LIBDIR=%{_lib},g' build.info
 export CFLAGS="%{optflags} -fno-strict-aliasing"
 export LDFLAGS="%{optflags} -fno-strict-aliasing"
 %ifarch %{ix86}
