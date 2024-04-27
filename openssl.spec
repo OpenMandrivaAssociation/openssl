@@ -258,7 +258,8 @@ cd build32
 
 %make_build
 cd ..
-mv -f build.info.orig build.info
+mv build.info build.info.32
+mv build.info.orig build.info
 %endif
 
 sed -i -e 's,LIBDIR=,LIBDIR=%{_lib},g' build.info
@@ -325,7 +326,11 @@ CXX="%{__cxx}" \
 
 %install
 %if %{with compat32}
+mv build.info build.info.64
+mv build.info.32 build.info
 %make_install install_sw -C build32
+mv build.info build.info.32
+mv build.info.64 build.info
 %endif
 %make_install install_sw install_fips install_man_docs -C build
 
