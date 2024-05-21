@@ -31,7 +31,7 @@
 
 Name:		openssl
 Version:	3.3.0
-Release:	%{?beta:0.%{beta}.}2
+Release:	%{?beta:0.%{beta}.}3
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
@@ -255,6 +255,7 @@ cd build32
 	--libdir=%{_prefix}/lib \
 	--openssldir=%{_sysconfdir}/pki/tls \
 	threads shared zlib sctp 386 enable-fips enable-ktls no-tests
+sed -i -e 's,^LIBDIR=$,LIBDIR=lib,' Makefile
 
 %make_build
 cd ..
@@ -321,6 +322,7 @@ CXX="%{__cxx}" \
 	386 \
 %endif
 	threads shared zlib sctp enable-fips enable-ktls no-tests
+sed -i -e 's,^LIBDIR=$,LIBDIR=%{_lib},' Makefile
 
 %make_build
 
