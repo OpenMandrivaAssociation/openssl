@@ -30,7 +30,7 @@
 %define static32 libopenssl-static-devel
 
 Name:		openssl
-Version:	3.3.2
+Version:	3.4.0
 Release:	%{?beta:0.%{beta}.}1
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
