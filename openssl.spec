@@ -9,7 +9,13 @@
 %if %{cross_compiling}
 %bcond_with pgo
 %else
+%ifarch %{aarch64}
+# FIXME as of 3.4.0, clang 19.1.4, `openssl speed`
+# crashes at runtime, causing PGO to fail
+%bcond_with pgo
+%else
 %bcond_without pgo
+%endif
 %endif
 
 %global optflags %{optflags} -O3
