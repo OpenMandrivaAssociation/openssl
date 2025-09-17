@@ -48,6 +48,7 @@ License:	Apache 2.0
 BuildRequires:	perl
 BuildRequires:	perl(Pod::Man)
 BuildRequires:	perl(Pod::Html)
+BuildRequires:	perl(Time::Piece)
 BuildRequires:	pkgconfig(libsctp)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	atomic-devel
