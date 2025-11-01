@@ -20,9 +20,18 @@
 
 %global optflags %{optflags} -O3
 
+# More parallelization could be beneficial, but `openssl speed` shows polly does
+# not actually improve openssl performance. Yet it is suspected of introducing
+# some hard to trace problems (policykitd crashing when installing a package)
+%bcond_with polly
+
+%if %{with polly}
 # (tpg) use LLVM/polly for polyhedra optimization and automatic vector code generation
 %define pollyflags -mllvm -polly -mllvm -polly-position=early -mllvm -polly-parallel=true -fopenmp -fopenmp-version=50 -mllvm -polly-dependences-computeout=5000000 -mllvm -polly-detect-profitability-min-per-loop-insts=40 -mllvm -polly-tiling=true -mllvm -polly-prevect-width=256 -mllvm -polly-vectorizer=stripmine -mllvm -polly-omp-backend=LLVM -mllvm -polly-num-threads=0 -mllvm -polly-enable-delicm=true -mllvm -extra-vectorizer-passes -mllvm -enable-cond-stores-vec -mllvm -slp-vectorize-hor-store -mllvm -enable-loopinterchange -mllvm -enable-loop-distribute -mllvm -enable-unroll-and-jam -mllvm -enable-loop-flatten -mllvm -unroll-runtime-multi-exit -mllvm -aggressive-ext-opt -mllvm -polly-scheduling=dynamic -mllvm -polly-scheduling-chunksize=1 -mllvm -polly-invariant-load-hoisting -mllvm -polly-loopfusion-greedy -mllvm -polly-run-inliner
 # (tpg) 2022-11-21 this -mllvm -polly-run-dce causes segfault on aarch64
+%else
+%define pollyflags %{nil}
+%endif
 
 #define beta beta1
 %define major 3
@@ -37,7 +46,7 @@
 
 Name:		openssl
 Version:	3.6.0
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
