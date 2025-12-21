@@ -54,6 +54,7 @@ Patch0:		openssl-3.0-additional-clang-targets.patch
 # QUIC support patches from https://github.com/quictls/openssl
 # Currently none required
 License:	Apache 2.0
+BuildRequires:	make
 BuildRequires:	perl
 BuildRequires:	perl(Pod::Man)
 BuildRequires:	perl(Pod::Html)
