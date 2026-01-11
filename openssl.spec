@@ -242,8 +242,8 @@ arm*)
 riscv32)
 	TARGET=%{_target_os}32-riscv32
 	;;
-riscv64)
-	TARGET=%{_target_os}64-riscv64
+riscv64|loongarch64)
+	TARGET=%{_target_os}64-%{_arch}
 	;;
 i*86|pentium*|athlon*)
 	TARGET=%{_target_os}-x86
@@ -254,7 +254,7 @@ i*86|pentium*|athlon*)
 esac
 # There's no separate linux64-riscv64-clang target, but
 # linux64-riscv64 works with clang
-%ifnarch %{riscv64}
+%ifnarch %{riscv64} %{loongarch64}
 echo %{__cc} |grep -q clang && TARGET="${TARGET}-clang"
 %endif
 
