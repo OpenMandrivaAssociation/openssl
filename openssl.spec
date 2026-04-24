@@ -34,7 +34,7 @@
 %endif
 
 #define beta beta1
-%define major 3
+%define major 4
 %define libssl %mklibname ssl %{major}
 %define libcrypto %mklibname crypto %{major}
 %define devel %mklibname openssl -d
@@ -45,14 +45,11 @@
 %define static32 libopenssl-static-devel
 
 Name:		openssl
-Version:	3.6.2
+Version:	4.0.0
 Release:	%{?beta:0.%{beta}.}1
 Group:		System/Libraries
 Summary:	The OpenSSL cryptography and TLS library
 Source0:	https://www.openssl.org/source/openssl-%{version}%{?beta:-%{beta}}.tar.gz
-Patch0:		openssl-3.0-additional-clang-targets.patch
-# QUIC support patches from https://github.com/quictls/openssl
-# Currently none required
 License:	Apache 2.0
 BuildRequires:	make
 BuildRequires:	perl
@@ -63,6 +60,11 @@ BuildRequires:	pkgconfig(libsctp)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	atomic-devel
 BuildRequires:	llvm-polly
+
+%patchlist
+openssl-3.0-additional-clang-targets.patch
+# https://bugs.gentoo.org/972756
+https://bugs.gentoo.org/attachment.cgi?id=959066#/openssl-4.0-x86_32.patch
 
 %description
 The OpenSSL cryptography and TLS library.
@@ -76,13 +78,7 @@ The OpenSSL cryptography and TLS library.
 %{_sysconfdir}/pki/tls/openssl.cnf
 %{_sysconfdir}/pki/tls/openssl.cnf.dist
 %{_sysconfdir}/pki/tls/fipsmodule.cnf
-%{_bindir}/c_rehash
 %{_bindir}/openssl
-%dir %{_libdir}/engines-3
-%{_libdir}/engines-3/afalg.so
-%{_libdir}/engines-3/capi.so
-%{_libdir}/engines-3/loader_attic.so
-%{_libdir}/engines-3/padlock.so
 %dir %{_libdir}/ossl-modules
 %{_libdir}/ossl-modules/legacy.so
 %{_libdir}/ossl-modules/fips.so
@@ -221,11 +217,6 @@ Requires:	%{lib32crypto} = %{EVRD}
 Plugins for the 32-bit version of OpenSSL.
 
 %files 32
-%dir %{_prefix}/lib/engines-3
-%{_prefix}/lib/engines-3/afalg.so
-%{_prefix}/lib/engines-3/capi.so
-%{_prefix}/lib/engines-3/loader_attic.so
-%{_prefix}/lib/engines-3/padlock.so
 %dir %{_prefix}/lib/ossl-modules
 %{_prefix}/lib/ossl-modules/legacy.so
 %{_prefix}/lib/ossl-modules/fips.so

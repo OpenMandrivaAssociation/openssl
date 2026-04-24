@@ -1,0 +1,20 @@
+--- a/crypto/evp/encode.c	2026-04-14 22:04:16.000000000 +1000
++++ b/crypto/evp/encode.c	2026-04-17 00:04:39.406669653 +1000
+@@ -405,7 +405,7 @@
+         j = evp_encodeblock_int(ctx, out, in, inl - (inl % EVP_ENCODE_B64_LENGTH),
+             &wrap_cnt);
+     } else {
+-#if defined(__AVX2__)
++#if defined(__AVX2__) && defined(__LP64__)
+         const int newlines = !(ctx->flags & EVP_ENCODE_CTX_NO_NEWLINES) ? EVP_ENCODE_B64_LENGTH : 0;
+ 
+         j = encode_base64_avx2(ctx,
+@@ -473,7 +473,7 @@
+ {
+     int wrap_cnt = 0;
+ 
+-#if defined(__AVX2__)
++#if defined(__AVX2__) && defined(__LP64__)
+     return (int)encode_base64_avx2(NULL, t, f, dlen, 0, &wrap_cnt);
+ #elif defined(HAS_IA32CAP_IS_64)
+     if ((OPENSSL_ia32cap_P[2] & (1u << 5)) != 0)
