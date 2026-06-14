@@ -1,20 +1,32 @@
---- a/crypto/evp/encode.c	2026-04-14 22:04:16.000000000 +1000
-+++ b/crypto/evp/encode.c	2026-04-17 00:04:39.406669653 +1000
-@@ -405,7 +405,7 @@
+diff -up openssl-4.0.1/crypto/evp/encode.c.2~ openssl-4.0.1/crypto/evp/encode.c
+--- openssl-4.0.1/crypto/evp/encode.c.2~	2026-06-09 13:36:41.000000000 +0200
++++ openssl-4.0.1/crypto/evp/encode.c	2026-06-14 20:01:30.610672897 +0200
+@@ -175,14 +175,14 @@ int EVP_EncodeUpdate(EVP_ENCODE_CTX *ctx
          j = evp_encodeblock_int(ctx, out, in, inl - (inl % EVP_ENCODE_B64_LENGTH),
              &wrap_cnt);
      } else {
--#if defined(__AVX2__)
-+#if defined(__AVX2__) && defined(__LP64__)
+-#if defined(__AVX2__) && defined(HAVE_AVX2_INTRINSICS)
++#if defined(__AVX2__) && defined(HAVE_AVX2_INTRINSICS) && defined(__LP64__)
          const int newlines = !(ctx->flags & EVP_ENCODE_CTX_NO_NEWLINES) ? EVP_ENCODE_B64_LENGTH : 0;
  
          j = encode_base64_avx2(ctx,
-@@ -473,7 +473,7 @@
+             (unsigned char *)out,
+             (const unsigned char *)in,
+             inl - (inl % EVP_ENCODE_B64_LENGTH), newlines, &wrap_cnt);
+-#elif defined(HAS_IA32CAP_IS_64) && defined(HAVE_AVX2_INTRINSICS)
++#elif defined(HAS_IA32CAP_IS_64) && defined(HAVE_AVX2_INTRINSICS) && defined(__LP64__)
+         if ((OPENSSL_ia32cap_P[2] & (1u << 5)) != 0) {
+             const int newlines = !(ctx->flags & EVP_ENCODE_CTX_NO_NEWLINES) ? EVP_ENCODE_B64_LENGTH : 0;
+ 
+@@ -243,9 +243,9 @@ int EVP_EncodeBlock(unsigned char *t, co
  {
      int wrap_cnt = 0;
  
--#if defined(__AVX2__)
-+#if defined(__AVX2__) && defined(__LP64__)
+-#if defined(__AVX2__) && defined(HAVE_AVX2_INTRINSICS)
++#if defined(__AVX2__) && defined(HAVE_AVX2_INTRINSICS) && defined(__LP64__)
      return (int)encode_base64_avx2(NULL, t, f, dlen, 0, &wrap_cnt);
- #elif defined(HAS_IA32CAP_IS_64)
+-#elif defined(HAS_IA32CAP_IS_64) && defined(HAVE_AVX2_INTRINSICS)
++#elif defined(HAS_IA32CAP_IS_64) && defined(HAVE_AVX2_INTRINSICS) && defined(__LP64__)
      if ((OPENSSL_ia32cap_P[2] & (1u << 5)) != 0)
+         return (int)encode_base64_avx2(NULL, t, f, dlen, 0, &wrap_cnt);
+     else
