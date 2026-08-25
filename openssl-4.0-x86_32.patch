@@ -1,6 +1,6 @@
-diff -up openssl-4.0.1/crypto/evp/encode.c.2~ openssl-4.0.1/crypto/evp/encode.c
---- openssl-4.0.1/crypto/evp/encode.c.2~	2026-06-09 13:36:41.000000000 +0200
-+++ openssl-4.0.1/crypto/evp/encode.c	2026-06-14 20:01:30.610672897 +0200
+diff -up openssl-4.0.2/crypto/evp/encode.c.2~ openssl-4.0.2/crypto/evp/encode.c
+--- openssl-4.0.2/crypto/evp/encode.c.2~	2026-08-25 00:00:00.000000000 +0200
++++ openssl-4.0.2/crypto/evp/encode.c	2026-08-25 21:30:00.000000000 +0200
 @@ -175,14 +175,14 @@ int EVP_EncodeUpdate(EVP_ENCODE_CTX *ctx
          j = evp_encodeblock_int(ctx, out, in, inl - (inl % EVP_ENCODE_B64_LENGTH),
              &wrap_cnt);
