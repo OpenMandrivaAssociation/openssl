@@ -338,11 +338,18 @@ sed -i -e 's,^LIBDIR=$,LIBDIR=%{_lib},' Makefile
 %if %{with compat32}
 mv build.info build.info.64
 mv build.info.32 build.info
-%make_install install_sw -C build32
+# OpenSSL 4.1's install target already runs install_fips. That copies
+# fipsmodule.cnf mode 0444 into the shared openssldir, and a later cp
+# cannot replace it. install_sw does not install fips.so, so install
+# the 32-bit module explicitly and drop its config. The native install
+# must write the 64-bit module hash.
+%{__make} -C build32 DESTDIR=%{buildroot} INSTALL="%{__install} -p" install_sw install_fips
+rm -f %{buildroot}%{_sysconfdir}/pki/tls/fipsmodule.cnf
 mv build.info build.info.32
 mv build.info.64 build.info
 %endif
-%make_install install_sw install_fips install_man_docs -C build
+# A second install_fips fails the same way: the generated config is read-only.
+%make_install -C build
 
 # Replace bogus absolute symlinks pointing to the buildroot
 cd %{buildroot}%{_mandir}
