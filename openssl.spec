@@ -86,6 +86,10 @@ The OpenSSL cryptography and TLS library.
 %doc %{_mandir}/man5/*
 %doc %{_mandir}/man7/*
 
+# tsget uses Net::Curl::Easy. That module is not packaged, so the
+# generated dependency would make openssl-perl uninstallable.
+%global __requires_exclude %{?__requires_exclude:%{__requires_exclude}|}^perl\\(Net::Curl::.*\\)$
+
 %package perl
 Summary:	Perl based tools for working with OpenSSL
 Group:		System/Libraries
